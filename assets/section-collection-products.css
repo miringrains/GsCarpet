@@ -1,4 +1,8 @@
 /* Collection Products Section Styles */
+.collection-products-section {
+  padding-top: var(--space-md);
+}
+
 .collection-products {
   min-height: 50vh;
 }
@@ -11,6 +15,7 @@
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
   padding: var(--space-sm) 0;
+  margin-bottom: var(--space-md);
 }
 
 .collection-toolbar__inner {
@@ -54,7 +59,7 @@
 
 /* Collection Layout */
 .collection-content {
-  padding: var(--space-xl) 0;
+  padding: var(--space-md) 0 var(--space-xl);
 }
 
 .collection-layout {
