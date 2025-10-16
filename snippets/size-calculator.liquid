@@ -57,7 +57,7 @@
               <div class="size-option__visual">
                 <div 
                   class="size-option__shape"
-                  style="width: {{ width | times: 10 }}px; height: {{ length | times: 10 }}px;"
+                  :style="`width: ${{ width }} * 10}px; height: ${{{ length }} * 10}px;`"
                 ></div>
               </div>
               <div class="size-option__info">
