@@ -210,17 +210,17 @@
 
             <!-- Product Grid -->
             <div 
-              class="product-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+              class="product-grid"
               x-show="!loading"
             >
               {% for product in collection.products %}
                 <div 
-                  class="product-card card"
+                  class="product-card"
                   data-animate="fade-up"
                   data-animate-delay="{{ forloop.index0 | times: 50 }}"
                 >
                   <a href="{{ product.url }}" class="product-card__link">
-                    <div class="product-card__image card__image">
+                    <div class="product-card__image">
                       {% if product.featured_image %}
                         {% render 'image',
                           image: product.featured_image,
@@ -253,7 +253,7 @@
                       <div class="product-card__actions">
                         <button 
                           class="product-card__action"
-                          @click.prevent="$store.quickView.show('{{ product.id }}')"
+                          @click.prevent="$store.quickView.show('{{ product.handle }}')"
                           aria-label="Quick view"
                         >
                           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -276,7 +276,7 @@
                     </div>
                   </a>
                   
-                  <div class="product-card__content card__content">
+                  <div class="product-card__content">
                     <!-- Material Badge -->
                     {% if product.metafields.custom.material %}
                       <span class="product-card__material badge">
@@ -751,6 +751,15 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: var(--transition-base);
+  }
+  
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
   }
 
   .product-card__link {
@@ -763,9 +772,13 @@
     position: relative;
     overflow: hidden;
     background-color: var(--color-background-subtle);
+    aspect-ratio: 1 / 1;
   }
 
   .product-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     transition: var(--transition-slow);
   }
 
@@ -844,6 +857,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
+    padding: var(--space-md);
   }
 
   .product-card__material {
@@ -885,6 +899,9 @@
 
   .product-card__customize {
     margin-top: var(--space-sm);
+    width: 100%;
+    font-size: 14px;
+    padding: 12px 20px;
   }
 
   /* Pagination */
