@@ -37,21 +37,26 @@
 {%- if image != blank -%}
   <img
     src="{{ image | image_url: width: width }}"
-    srcset="{%- for w in widths_array -%}
-      {%- if image.width >= w -%}
-        {{ image | image_url: width: w }} {{ w }}w{%- unless forloop.last -%},{%- endunless -%}
-      {%- endif -%}
-    {%- endfor -%}"
+    {%- if image.width -%}
+      srcset="{%- for w in widths_array -%}
+        {%- assign w_num = w | plus: 0 -%}
+        {%- if image.width >= w_num -%}
+          {{ image | image_url: width: w_num }} {{ w_num }}w{%- unless forloop.last -%}, {%- endunless -%}
+        {%- endif -%}
+      {%- endfor -%}"
+    {%- endif -%}
     width="{{ width }}"
     height="{{ height | default: width | divided_by: image_aspect_ratio | round }}"
     alt="{{ image_alt }}"
     loading="{{ image_loading }}"
     style="object-position: {{ focal_point }};"
-    {% if class %}class="{{ class }}"{% endif %}
-    {% if sizes %}sizes="{{ sizes }}"{% endif %}
-    {% for attribute in attributes %}
-      {{ attribute[0] }}="{{ attribute[1] }}"
-    {% endfor %}
+    {%- if class %} class="{{ class }}"{% endif -%}
+    {%- if sizes %} sizes="{{ sizes }}"{% endif -%}
+    {%- for attribute in attributes -%}
+      {%- if attribute[0] and attribute[1] -%}
+        {{ attribute[0] }}="{{ attribute[1] }}"
+      {%- endif -%}
+    {%- endfor -%}
   >
 {%- else -%}
   {%- comment -%} Placeholder when no image {%- endcomment -%}

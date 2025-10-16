@@ -361,11 +361,24 @@ body {
   margin-right: 8px;
 }
 
-/* Remove decorative elements from product cards */
-.product-card__actions,
-.product-card__badge,
-.product-card__customize {
+/* Remove decorative elements from product cards but keep customize button */
+.product-card__actions {
   display: none;
+}
+
+@media (min-width: 1024px) {
+  .product-card__actions {
+    display: flex;
+  }
+}
+
+/* Show customize button */
+.product-card__customize {
+  display: block;
+  margin-top: var(--space-md);
+  width: 100%;
+  font-size: 14px;
+  padding: 12px 20px;
 }
 
 /* Collection Cards */
@@ -715,9 +728,11 @@ body {
   }
 }
 
-/* Hide collection filters on mobile */
-.collection-filters {
-  display: none;
+/* Collection filters - show on desktop, hide on mobile by default */
+@media (max-width: 1023px) {
+  .collection-filters:not(.collection-filters--open) {
+    display: none;
+  }
 }
 
 /* Product page refinements */
