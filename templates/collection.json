@@ -1,10 +1,19 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "collection-header": {
       "type": "collection-header",
       "settings": {
         "text_alignment": "center",
-        "min_height": 350,
+        "min_height": 200,
         "min_height_mobile": 250,
         "overlay_opacity": 40
       }
@@ -19,6 +28,7 @@
         "show_material": true,
         "show_customize_button": true,
         "customize_button_text": "Customize Size",
+        "show_sample_button": true,
         "show_filters": true,
         "filter_size": true,
         "size_options": "4x6,5x7,6x9,8x10,9x12,10x14,12x15,Custom",
