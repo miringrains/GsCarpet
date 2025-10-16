@@ -334,4 +334,4 @@ window.addCustomRugToCart = async function(productId, properties) {
     console.error('Error adding custom rug to cart:', error);
     throw error;
   }
-};
+};/* Force sync Thu Oct 16 10:20:59 EDT 2025 */
