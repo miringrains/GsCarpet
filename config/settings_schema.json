@@ -18,8 +18,16 @@
         "type": "font_picker",
         "id": "type_primary_font",
         "default": "work_sans_n4",
-        "label": "t:general.primary"
+        "label": "t:general.primary",
+        "info": "Used for body text and general content"
       },
+      {
+        "type": "font_picker",
+        "id": "type_display_font",
+        "default": "work_sans_n7",
+        "label": "Display Font",
+        "info": "Used for headings and large text"
+      }
     ]
   },
   {
@@ -57,26 +65,96 @@
     "name": "t:general.colors",
     "settings": [
       {
+        "type": "header",
+        "content": "Primary Colors"
+      },
+      {
         "type": "color",
         "id": "background_color",
-        "default": "#FFFFFF",
-        "label": "t:labels.background"
+        "default": "#FAFAFA",
+        "label": "t:labels.background",
+        "info": "Main background color for the site"
       },
       {
         "type": "color",
         "id": "foreground_color",
+        "default": "#000000",
+        "label": "t:labels.foreground",
+        "info": "Primary text color"
+      },
+      {
+        "type": "color",
+        "id": "accent_color",
+        "default": "#000000",
+        "label": "Accent Color",
+        "info": "Used for buttons, links, and highlights"
+      },
+      {
+        "type": "color",
+        "id": "accent_color_hover",
         "default": "#333333",
-        "label": "t:labels.foreground"
+        "label": "Accent Hover Color",
+        "info": "Hover state for accent elements"
+      },
+      {
+        "type": "header",
+        "content": "Design Options"
       },
       {
         "type": "range",
         "id": "input_corner_radius",
         "min": 0,
-        "max": 10,
+        "max": 20,
         "step": 1,
         "unit": "px",
         "label": "t:labels.input_corner_radius",
-        "default": 4
+        "default": 8
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_dark_mode",
+        "label": "Enable Dark Mode Support",
+        "default": false,
+        "info": "Automatically switches to dark theme based on user preference"
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Social accounts"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook",
+        "info": "https://facebook.com/yourstore"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram",
+        "info": "https://instagram.com/yourstore"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter",
+        "label": "Twitter",
+        "info": "https://twitter.com/yourstore"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest",
+        "label": "Pinterest",
+        "info": "https://pinterest.com/yourstore"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube",
+        "label": "YouTube",
+        "info": "https://youtube.com/yourstore"
       }
     ]
   }

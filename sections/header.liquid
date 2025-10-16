@@ -1,54 +1,684 @@
-<header>
-  <h2 class="header__title">
-    {{ shop.name | link_to: routes.root_url }}
-  </h2>
+<header class="site-header" x-data="header()" :class="{ 'header--scrolled': isScrolled, 'header--hidden': isHidden }" @scroll.window="handleScroll">
+  <div class="header__wrapper">
+    <div class="header__container container">
+      <!-- Mobile Menu Toggle -->
+      <button 
+        class="header__mobile-toggle lg:hidden"
+        @click="mobileMenuOpen = !mobileMenuOpen"
+        aria-label="Toggle menu"
+      >
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
 
-  <div class="header__menu">
-    {% for link in section.settings.menu.links %}
-      {{ link.title | link_to: link.url }}
-    {% endfor %}
+      <!-- Logo -->
+      <div class="header__logo">
+        <a href="{{ routes.root_url }}" class="header__logo-link">
+          {% if section.settings.logo %}
+            {% render 'image',
+              image: section.settings.logo,
+              width: section.settings.logo_width,
+              height: section.settings.logo_width | divided_by: section.settings.logo.aspect_ratio,
+              alt: shop.name,
+              class: 'header__logo-image'
+            %}
+          {% else %}
+            <span class="header__logo-text">{{ shop.name }}</span>
+          {% endif %}
+        </a>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <nav class="header__nav hidden lg:flex">
+        {% for link in section.settings.menu.links %}
+          {% if link.links != blank %}
+            <div class="header__nav-item" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+              <a href="{{ link.url }}" class="header__nav-link">
+                {{ link.title }}
+                <svg class="header__nav-arrow" width="12" height="8" viewBox="0 0 12 8" fill="none">
+                  <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+              </a>
+              
+              <!-- Mega Menu -->
+              <div 
+                class="header__mega-menu" 
+                x-show="open"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 translate-y-2"
+                x-transition:enter-end="opacity-1 translate-y-0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-1 translate-y-0"
+                x-transition:leave-end="opacity-0 translate-y-2"
+              >
+                <div class="container">
+                  <div class="header__mega-menu-grid">
+                    {% for child_link in link.links %}
+                      <a href="{{ child_link.url }}" class="header__mega-menu-item">
+                        <span class="header__mega-menu-title">{{ child_link.title }}</span>
+                        {% if child_link.links != blank %}
+                          <div class="header__mega-menu-children">
+                            {% for grandchild_link in child_link.links %}
+                              <a href="{{ grandchild_link.url }}" class="header__mega-menu-child">
+                                {{ grandchild_link.title }}
+                              </a>
+                            {% endfor %}
+                          </div>
+                        {% endif %}
+                      </a>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <a href="{{ link.url }}" class="header__nav-link">{{ link.title }}</a>
+          {% endif %}
+        {% endfor %}
+      </nav>
+
+      <!-- Header Actions -->
+      <div class="header__actions">
+        <!-- Search Toggle -->
+        <button 
+          class="header__action-btn"
+          @click="searchOpen = true"
+          aria-label="Search"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <!-- Account -->
+        {% if shop.customer_accounts_enabled %}
+          <a href="{{ routes.account_url }}" class="header__action-btn" aria-label="Account">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        {% endif %}
+
+        <!-- Cart -->
+        <button 
+          class="header__action-btn header__cart-btn"
+          @click="$store.cart.openDrawer()"
+          aria-label="Cart"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M9 22C9.55228 22 10 21.5523 10 21C10 20.4477 9.55228 20 9 20C8.44772 20 8 20.4477 8 21C8 21.5523 8.44772 22 9 22Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20 22C20.5523 22 21 21.5523 21 21C21 20.4477 20.5523 20 20 20C19.4477 20 19 20.4477 19 21C19 21.5523 19.4477 22 20 22Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          {% if cart.item_count > 0 %}
+            <span class="header__cart-count">{{ cart.item_count }}</span>
+          {% endif %}
+        </button>
+      </div>
+    </div>
   </div>
 
-  <div class="header__icons">
-    {% if shop.customer_accounts_enabled %}
-      {{ 'icon-account.svg' | inline_asset_content | link_to: routes.account_url }}
-    {% endif %}
-
-    <a href="{{ routes.cart_url }}">
-      {% if cart.item_count > 0 %}
-        <sup>{{ cart.item_count }}</sup>
-      {% endif %}
-
-      {{ 'icon-cart.svg' | inline_asset_content }}
-    </a>
+  <!-- Mobile Menu -->
+  <div 
+    class="header__mobile-menu lg:hidden"
+    x-show="mobileMenuOpen"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="-translate-x-full"
+    x-transition:enter-end="translate-x-0"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="translate-x-0"
+    x-transition:leave-end="-translate-x-full"
+    @click.away="mobileMenuOpen = false"
+  >
+    <div class="header__mobile-menu-header">
+      <h3 class="header__mobile-menu-title">Menu</h3>
+      <button @click="mobileMenuOpen = false" class="header__mobile-menu-close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    
+    <nav class="header__mobile-nav">
+      {% for link in section.settings.menu.links %}
+        {% if link.links != blank %}
+          <div x-data="{ subOpen: false }">
+            <button 
+              @click="subOpen = !subOpen" 
+              class="header__mobile-nav-item header__mobile-nav-parent"
+            >
+              <span>{{ link.title }}</span>
+              <svg width="12" height="8" viewBox="0 0 12 8" fill="none" :class="{ 'rotate-180': subOpen }">
+                <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+            </button>
+            <div x-show="subOpen" x-collapse class="header__mobile-submenu">
+              {% for child_link in link.links %}
+                <a href="{{ child_link.url }}" class="header__mobile-submenu-item">
+                  {{ child_link.title }}
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% else %}
+          <a href="{{ link.url }}" class="header__mobile-nav-item">{{ link.title }}</a>
+        {% endif %}
+      {% endfor %}
+    </nav>
   </div>
+
+  <!-- Search Overlay -->
+  <div 
+    class="header__search-overlay"
+    x-show="searchOpen"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-1"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-1"
+    x-transition:leave-end="opacity-0"
+    @click="searchOpen = false"
+  >
+    <div 
+      class="header__search-modal"
+      @click.stop
+      x-show="searchOpen"
+      x-transition:enter="transition ease-out duration-300"
+      x-transition:enter-start="opacity-0 -translate-y-4"
+      x-transition:enter-end="opacity-1 translate-y-0"
+      x-transition:leave="transition ease-in duration-200"
+      x-transition:leave-start="opacity-1 translate-y-0"
+      x-transition:leave-end="opacity-0 -translate-y-4"
+    >
+      <form action="{{ routes.search_url }}" method="get" class="header__search-form">
+        <input 
+          type="search" 
+          name="q" 
+          placeholder="Search for rugs..." 
+          class="header__search-input"
+          x-ref="searchInput"
+          @keydown.escape="searchOpen = false"
+        >
+        <button type="submit" class="header__search-submit">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </button>
+      </form>
+      
+      <button @click="searchOpen = false" class="header__search-close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Overlay -->
+  <div 
+    class="header__overlay lg:hidden"
+    x-show="mobileMenuOpen"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-1"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-1"
+    x-transition:leave-end="opacity-0"
+    @click="mobileMenuOpen = false"
+  ></div>
 </header>
 
+<!-- Cart Drawer -->
+{% render 'cart-drawer' %}
+
+<script>
+  function header() {
+    return {
+      mobileMenuOpen: false,
+      searchOpen: false,
+      isScrolled: false,
+      isHidden: false,
+      lastScroll: 0,
+      
+      handleScroll() {
+        const currentScroll = window.scrollY;
+        
+        // Add scrolled state
+        this.isScrolled = currentScroll > 50;
+        
+        // Hide/show header on scroll
+        if (currentScroll > this.lastScroll && currentScroll > 500) {
+          this.isHidden = true;
+        } else {
+          this.isHidden = false;
+        }
+        
+        this.lastScroll = currentScroll;
+      },
+      
+      init() {
+        // Initialize scroll position
+        this.handleScroll();
+        
+        // Focus search input when opened
+        this.$watch('searchOpen', value => {
+          if (value) {
+            this.$nextTick(() => {
+              this.$refs.searchInput?.focus();
+            });
+          }
+        });
+      }
+    }
+  }
+</script>
+
 {% stylesheet %}
-  header {
-    height: 5rem;
+  /* Header Base Styles */
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-sticky);
+    background-color: var(--color-surface);
+    transition: var(--transition-base);
+  }
+
+  .site-header.header--scrolled {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .site-header.header--hidden {
+    transform: translateY(-100%);
+  }
+
+  .header__wrapper {
+    border-bottom: 1px solid var(--color-border);
+    transition: var(--transition-base);
+  }
+
+  .header--scrolled .header__wrapper {
+    border-bottom-color: transparent;
+  }
+
+  .header__container {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: 5rem;
+    gap: var(--space-lg);
   }
-  header a {
-    position: relative;
-    text-decoration: none;
-    color: var(--color-foreground);
-  }
-  header a sup {
-    position: absolute;
-    left: 100%;
-    overflow: hidden;
-    max-width: var(--page-margin);
-  }
-  header svg {
-    width: 2rem;
-  }
-  header .header__menu,
-  header .header__icons {
+
+  /* Mobile Toggle */
+  .header__mobile-toggle {
     display: flex;
-    gap: 1rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .hamburger-line {
+    display: block;
+    width: 1.5rem;
+    height: 2px;
+    background-color: var(--color-text-primary);
+    margin: 3px 0;
+    transition: var(--transition-base);
+  }
+
+  /* Logo */
+  .header__logo {
+    flex-shrink: 0;
+  }
+
+  .header__logo-link {
+    display: block;
+    text-decoration: none;
+    color: var(--color-text-primary);
+  }
+
+  .header__logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: var(--font-display--family);
+    letter-spacing: -0.02em;
+  }
+
+  .header__logo-image {
+    height: 2.5rem;
+    width: auto;
+  }
+
+  /* Desktop Navigation */
+  .header__nav {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-lg);
+  }
+
+  .header__nav-item {
+    position: relative;
+  }
+
+  .header__nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    transition: var(--transition-base);
+  }
+
+  .header__nav-link:hover {
+    color: var(--color-accent);
+  }
+
+  .header__nav-arrow {
+    width: 0.75rem;
+    height: 0.75rem;
+    transition: var(--transition-base);
+  }
+
+  .header__nav-item:hover .header__nav-arrow {
+    transform: rotate(180deg);
+  }
+
+  /* Mega Menu */
+  .header__mega-menu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding-top: 1rem;
+    min-width: 600px;
+  }
+
+  .header__mega-menu > .container {
+    background-color: var(--color-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    padding: var(--space-md);
+  }
+
+  .header__mega-menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-md);
+  }
+
+  .header__mega-menu-item {
+    display: block;
+    text-decoration: none;
+  }
+
+  .header__mega-menu-title {
+    display: block;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-xs);
+  }
+
+  .header__mega-menu-children {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .header__mega-menu-child {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: var(--transition-base);
+  }
+
+  .header__mega-menu-child:hover {
+    color: var(--color-accent);
+  }
+
+  /* Header Actions */
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .header__action-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-primary);
+    transition: var(--transition-base);
+  }
+
+  .header__action-btn:hover {
+    color: var(--color-accent);
+  }
+
+  .header__action-btn svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .header__cart-count {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.25rem;
+    background-color: var(--color-accent);
+    color: var(--color-text-inverse);
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* Mobile Menu */
+  .header__mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 300px;
+    background-color: var(--color-surface);
+    z-index: var(--z-modal);
+    overflow-y: auto;
+  }
+
+  .header__mobile-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .header__mobile-menu-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .header__mobile-menu-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .header__mobile-nav {
+    padding: var(--space-md);
+  }
+
+  .header__mobile-nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: var(--space-sm) 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-base);
+  }
+
+  .header__mobile-nav-item:hover {
+    color: var(--color-accent);
+  }
+
+  .header__mobile-nav-item svg {
+    width: 0.75rem;
+    height: 0.75rem;
+    transition: var(--transition-base);
+  }
+
+  .header__mobile-submenu {
+    padding-left: var(--space-md);
+    overflow: hidden;
+  }
+
+  .header__mobile-submenu-item {
+    display: block;
+    padding: var(--space-xs) 0;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: var(--transition-base);
+  }
+
+  .header__mobile-submenu-item:hover {
+    color: var(--color-accent);
+  }
+
+  /* Search Overlay */
+  .header__search-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: var(--z-modal-backdrop);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: var(--space-3xl);
+  }
+
+  .header__search-modal {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 var(--space-md);
+  }
+
+  .header__search-form {
+    position: relative;
+  }
+
+  .header__search-input {
+    width: 100%;
+    padding: var(--space-md) var(--space-xl) var(--space-md) var(--space-md);
+    font-size: 1.25rem;
+    background-color: var(--color-surface);
+    border: none;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .header__search-input:focus {
+    outline: none;
+  }
+
+  .header__search-submit {
+    position: absolute;
+    right: var(--space-sm);
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    background-color: var(--color-accent);
+    color: var(--color-text-inverse);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition-base);
+  }
+
+  .header__search-submit:hover {
+    background-color: var(--color-accent-hover);
+  }
+
+  .header__search-close {
+    position: absolute;
+    top: -3rem;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+
+  /* Overlay */
+  .header__overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: var(--z-modal-backdrop);
+  }
+
+  /* Utility Classes for Alpine */
+  .rotate-180 {
+    transform: rotate(180deg);
+  }
+
+  /* Compensate for fixed header */
+  body {
+    padding-top: 5rem;
   }
 {% endstylesheet %}
 
@@ -57,9 +687,25 @@
   "name": "t:general.header",
   "settings": [
     {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "default": 150,
+      "unit": "px",
+      "label": "Logo width"
+    },
+    {
       "type": "link_list",
       "id": "menu",
-      "label": "t:labels.menu"
+      "label": "t:labels.menu",
+      "default": "main-menu"
     }
   ]
 }

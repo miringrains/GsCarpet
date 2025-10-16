@@ -1,39 +1,301 @@
-<footer>
-  <div class="footer__copyright">
-    &copy;
-    {{ 'now' | date: '%Y' }}
-    {{ shop.name | link_to: routes.root_url }}, {{ powered_by_link }}
-  </div>
-
-  <div class="footer__links">
-    {% for link in section.settings.menu.links %}
-      {{ link.title | link_to: link.url }}
-    {% endfor %}
-  </div>
-
-  <div class="footer__payment">
-    {% if section.settings.show_payment_icons %}
-      {% for type in shop.enabled_payment_types %}
-        {{ type | payment_type_svg_tag }}
-      {% endfor %}
-    {% endif %}
+<footer class="site-footer">
+  <div class="footer__wrapper">
+    <div class="container">
+      <!-- Main Footer Content -->
+      <div class="footer__content">
+        <div class="footer__grid">
+          <!-- Brand Column -->
+          <div class="footer__brand">
+            <a href="{{ routes.root_url }}" class="footer__logo">
+              {% if section.settings.logo %}
+                {% render 'image',
+                  image: section.settings.logo,
+                  width: section.settings.logo_width,
+                  height: section.settings.logo_width | divided_by: section.settings.logo.aspect_ratio,
+                  alt: shop.name,
+                  class: 'footer__logo-image'
+                %}
+              {% else %}
+                <span class="footer__logo-text">{{ shop.name }}</span>
+              {% endif %}
+            </a>
+            
+            {% if section.settings.about_text %}
+              <p class="footer__about text-body text-secondary">
+                {{ section.settings.about_text }}
+              </p>
+            {% endif %}
+            
+            {% if section.settings.show_social %}
+              <div class="footer__social">
+                {% render 'social-links' %}
+              </div>
+            {% endif %}
+          </div>
+          
+          <!-- Menu Columns -->
+          {% for block in section.blocks %}
+            {% case block.type %}
+              {% when 'menu' %}
+                <div class="footer__menu" {{ block.shopify_attributes }}>
+                  <h3 class="footer__menu-title">{{ block.settings.title }}</h3>
+                  <ul class="footer__menu-list">
+                    {% for link in linklists[block.settings.menu].links %}
+                      <li class="footer__menu-item">
+                        <a href="{{ link.url }}" class="footer__menu-link">
+                          {{ link.title }}
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              
+              {% when 'newsletter' %}
+                <div class="footer__newsletter" {{ block.shopify_attributes }}>
+                  <h3 class="footer__newsletter-title">{{ block.settings.title }}</h3>
+                  {% if block.settings.text %}
+                    <p class="footer__newsletter-text text-body text-secondary">
+                      {{ block.settings.text }}
+                    </p>
+                  {% endif %}
+                  
+                  <form 
+                    action="/contact#contact_form" 
+                    method="post" 
+                    id="footer-newsletter"
+                    class="footer__newsletter-form"
+                  >
+                    <input type="hidden" name="form_type" value="customer">
+                    <input type="hidden" name="utf8" value="✓">
+                    <input type="hidden" name="contact[tags]" value="newsletter">
+                    
+                    <div class="footer__newsletter-input-group">
+                      <input 
+                        type="email" 
+                        name="contact[email]"
+                        placeholder="{{ block.settings.placeholder | default: 'Enter your email' }}"
+                        class="form-input footer__newsletter-input"
+                        required
+                      >
+                      <button type="submit" class="btn btn--primary footer__newsletter-btn">
+                        {{ block.settings.button_text | default: 'Subscribe' }}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+            {% endcase %}
+          {% endfor %}
+        </div>
+      </div>
+      
+      <!-- Footer Bottom -->
+      <div class="footer__bottom">
+        <div class="footer__bottom-content">
+          <p class="footer__copyright text-sm text-secondary">
+            &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ section.settings.copyright_text | default: 'All rights reserved.' }}
+          </p>
+          
+          {% if section.settings.show_payment_icons %}
+            <div class="footer__payment">
+              {% for type in shop.enabled_payment_types %}
+                <span class="footer__payment-icon">
+                  {{ type | payment_type_svg_tag }}
+                </span>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
   </div>
 </footer>
 
 {% stylesheet %}
-  footer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 2rem;
+  /* Footer Styles - Minimal with generous spacing */
+  .site-footer {
+    margin-top: var(--space-3xl);
+    background-color: var(--color-background-subtle);
+    border-top: 1px solid var(--color-border);
   }
-  footer a {
+  
+  .footer__wrapper {
+    padding: var(--space-2xl) 0 var(--space-xl);
+  }
+  
+  /* Footer Content */
+  .footer__content {
+    padding-bottom: var(--space-2xl);
+    border-bottom: 1px solid var(--color-border);
+  }
+  
+  .footer__grid {
+    display: grid;
+    gap: var(--space-2xl);
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+  }
+  
+  @media (max-width: 1024px) {
+    .footer__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-xl);
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .footer__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+    }
+  }
+  
+  /* Brand Column */
+  .footer__brand {
+    max-width: 360px;
+  }
+  
+  .footer__logo {
+    display: inline-block;
+    margin-bottom: var(--space-md);
     text-decoration: none;
-    color: var(--color-foreground);
+    color: var(--color-text-primary);
   }
-  footer .footer__links,
-  footer .footer__payment {
+  
+  .footer__logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: var(--font-display--family);
+    letter-spacing: -0.02em;
+  }
+  
+  .footer__logo-image {
+    height: 2rem;
+    width: auto;
+  }
+  
+  .footer__about {
+    margin-bottom: var(--space-md);
+    line-height: 1.7;
+  }
+  
+  .footer__social {
     display: flex;
-    gap: 1rem;
+    gap: var(--space-sm);
+  }
+  
+  /* Menu Columns */
+  .footer__menu-title,
+  .footer__newsletter-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+    color: var(--color-text-primary);
+  }
+  
+  .footer__menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .footer__menu-item {
+    margin-bottom: var(--space-sm);
+  }
+  
+  .footer__menu-link {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: var(--transition-base);
+  }
+  
+  .footer__menu-link:hover {
+    color: var(--color-text-primary);
+  }
+  
+  /* Newsletter */
+  .footer__newsletter {
+    grid-column: span 1;
+  }
+  
+  @media (max-width: 1024px) {
+    .footer__newsletter {
+      grid-column: span 2;
+      max-width: 400px;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .footer__newsletter {
+      grid-column: span 1;
+      max-width: none;
+    }
+  }
+  
+  .footer__newsletter-text {
+    margin-bottom: var(--space-md);
+    line-height: 1.6;
+  }
+  
+  .footer__newsletter-input-group {
+    display: flex;
+    gap: var(--space-xs);
+  }
+  
+  @media (max-width: 480px) {
+    .footer__newsletter-input-group {
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+  }
+  
+  .footer__newsletter-input {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .footer__newsletter-btn {
+    flex-shrink: 0;
+  }
+  
+  /* Footer Bottom */
+  .footer__bottom {
+    padding-top: var(--space-lg);
+  }
+  
+  .footer__bottom-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+  }
+  
+  @media (max-width: 640px) {
+    .footer__bottom-content {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+  
+  .footer__copyright {
+    margin: 0;
+  }
+  
+  .footer__payment {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+  
+  .footer__payment-icon {
+    display: flex;
+    align-items: center;
+    height: 32px;
+  }
+  
+  .footer__payment-icon svg {
+    height: 100%;
+    width: auto;
+    max-width: 50px;
   }
 {% endstylesheet %}
 
@@ -42,15 +304,126 @@
   "name": "t:general.footer",
   "settings": [
     {
-      "type": "link_list",
-      "id": "menu",
-      "label": "t:labels.menu"
+      "type": "header",
+      "content": "Brand"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 50,
+      "max": 250,
+      "step": 10,
+      "default": 120,
+      "unit": "px",
+      "label": "Logo width"
+    },
+    {
+      "type": "textarea",
+      "id": "about_text",
+      "label": "About text",
+      "default": "Premium handcrafted rugs designed to transform your space. Custom sizes available for every room."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "label": "Show social links",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Footer bottom"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "default": "All rights reserved."
     },
     {
       "type": "checkbox",
       "id": "show_payment_icons",
       "label": "t:labels.show_payment_icons",
       "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Menu title",
+          "default": "Quick Links"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "default": "footer"
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Subscribe"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Get exclusive offers and be the first to know about new collections."
+        },
+        {
+          "type": "text",
+          "id": "placeholder",
+          "label": "Input placeholder",
+          "default": "Enter your email"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button text",
+          "default": "Subscribe"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        {
+          "type": "menu",
+          "settings": {
+            "title": "Shop",
+            "menu": "footer"
+          }
+        },
+        {
+          "type": "menu",
+          "settings": {
+            "title": "Support",
+            "menu": "footer"
+          }
+        },
+        {
+          "type": "newsletter"
+        }
+      ]
     }
   ]
 }

@@ -6,6 +6,9 @@
 
     {% # Load and preload the critical CSS %}
     {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
+    
+    {% # Load theme base styles %}
+    {{ 'theme-base.css' | asset_url | stylesheet_tag }}
 
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}
@@ -19,5 +22,20 @@
     {{ content_for_layout }}
 
     {% sections 'footer-group' %}
+    
+    {% # JavaScript files %}
+    {{ 'alpine.min.js' | asset_url | script_tag: defer: true }}
+    {{ 'animations.js' | asset_url | script_tag: defer: true }}
+    {{ 'custom-calculator.js' | asset_url | script_tag: defer: true }}
+    
+    {% # Initialize Alpine components %}
+    <script>
+      document.addEventListener('alpine:init', () => {
+        // Alpine components will be initialized here
+      });
+    </script>
+    
+    {% # Quick View Modal %}
+    {% render 'quick-view-modal' %}
   </body>
 </html>

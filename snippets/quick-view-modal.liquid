@@ -1,0 +1,268 @@
+{% comment %}
+  Quick View Modal
+  Mobile-optimized product quick view
+{% endcomment %}
+
+<div 
+  class="quick-view-modal"
+  x-data="quickViewModal()"
+  x-show="$store.quickView.open"
+  x-transition:enter="transition ease-out duration-300"
+  x-transition:enter-start="opacity-0"
+  x-transition:enter-end="opacity-1"
+  x-transition:leave="transition ease-in duration-200"
+  x-transition:leave-start="opacity-1"
+  x-transition:leave-end="opacity-0"
+  @click="$store.quickView.close()"
+  @keydown.escape="$store.quickView.close()"
+>
+  <div 
+    class="quick-view-modal__content"
+    @click.stop
+    x-show="$store.quickView.open"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0 scale-95"
+    x-transition:enter-end="opacity-1 scale-100"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-1 scale-100"
+    x-transition:leave-end="opacity-0 scale-95"
+  >
+    <button 
+      class="quick-view-modal__close"
+      @click="$store.quickView.close()"
+      aria-label="Close quick view"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+    </button>
+    
+    <div class="quick-view-modal__inner" x-html="productContent">
+      <!-- Product content will be loaded here -->
+    </div>
+  </div>
+</div>
+
+<style>
+  .quick-view-modal {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-md);
+  }
+  
+  .quick-view-modal__content {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    background-color: var(--color-surface);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+  }
+  
+  .quick-view-modal__close {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: var(--transition-base);
+  }
+  
+  .quick-view-modal__close:hover {
+    background-color: var(--color-background-subtle);
+  }
+  
+  .quick-view-modal__inner {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Quick View Product Layout */
+  .quick-view-product {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 500px;
+  }
+  
+  @media (max-width: 768px) {
+    .quick-view-modal {
+      padding: 0;
+    }
+    
+    .quick-view-modal__content {
+      max-width: 100%;
+      max-height: 100%;
+      height: 100%;
+      border-radius: 0;
+    }
+    
+    .quick-view-product {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+  }
+  
+  .quick-view-product__images {
+    position: relative;
+    background-color: var(--color-background-subtle);
+    overflow: hidden;
+  }
+  
+  .quick-view-product__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .quick-view-product__info {
+    padding: var(--space-lg);
+  }
+  
+  @media (max-width: 768px) {
+    .quick-view-product__info {
+      padding: var(--space-md);
+    }
+  }
+  
+  .quick-view-product__title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 var(--space-sm);
+  }
+  
+  .quick-view-product__price {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: var(--space-md);
+  }
+  
+  .quick-view-product__description {
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--space-lg);
+  }
+  
+  .quick-view-product__actions {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+  }
+  
+  @media (max-width: 480px) {
+    .quick-view-product__actions {
+      flex-direction: column;
+    }
+    
+    .quick-view-product__actions .btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('alpine:init', () => {
+    // Global quick view store
+    Alpine.store('quickView', {
+      open: false,
+      productId: null,
+      
+      async show(productId) {
+        this.productId = productId;
+        this.open = true;
+        // Prevent body scroll when modal is open
+        document.body.style.overflow = 'hidden';
+      },
+      
+      close() {
+        this.open = false;
+        this.productId = null;
+        // Restore body scroll
+        document.body.style.overflow = '';
+      }
+    });
+  });
+  
+  function quickViewModal() {
+    return {
+      productContent: '<div class="loading-spinner"></div>',
+      
+      init() {
+        this.$watch('$store.quickView.productId', async (productId) => {
+          if (productId) {
+            await this.loadProduct(productId);
+          }
+        });
+      },
+      
+      async loadProduct(productId) {
+        try {
+          // In a real implementation, this would fetch product data
+          // For now, we'll create a placeholder
+          this.productContent = `
+            <div class="quick-view-product">
+              <div class="quick-view-product__images">
+                <div class="loading-spinner"></div>
+              </div>
+              <div class="quick-view-product__info">
+                <h2 class="quick-view-product__title">Loading...</h2>
+                <p class="quick-view-product__price">...</p>
+                <p class="quick-view-product__description">Loading product details...</p>
+                <div class="quick-view-product__actions">
+                  <button class="btn btn--primary">Add to Cart</button>
+                  <a href="/products/${productId}" class="btn btn--secondary">View Details</a>
+                </div>
+              </div>
+            </div>
+          `;
+          
+          // Simulate loading
+          setTimeout(() => {
+            this.productContent = `
+              <div class="quick-view-product">
+                <div class="quick-view-product__images">
+                  <img src="https://via.placeholder.com/600x600" alt="Product" class="quick-view-product__image">
+                </div>
+                <div class="quick-view-product__info">
+                  <h2 class="quick-view-product__title">Premium Handwoven Rug</h2>
+                  <p class="quick-view-product__price">$299.00</p>
+                  <p class="quick-view-product__description">
+                    Beautiful handwoven rug made from premium materials. Perfect for any modern living space.
+                  </p>
+                  <div class="quick-view-product__actions">
+                    <button class="btn btn--primary" @click="addToCart()">Add to Cart</button>
+                    <a href="/products/${productId}" class="btn btn--secondary">View Details</a>
+                  </div>
+                </div>
+              </div>
+            `;
+          }, 500);
+        } catch (error) {
+          console.error('Error loading product:', error);
+          this.productContent = '<p class="text-center">Error loading product</p>';
+        }
+      },
+      
+      addToCart() {
+        // Add to cart logic here
+        this.$store.quickView.close();
+        this.$store.cart.openDrawer();
+      }
+    }
+  }
+</script>

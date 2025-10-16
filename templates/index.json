@@ -9,12 +9,96 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "hello-world",
-      "settings": {}
+    "hero": {
+      "type": "hero-minimal",
+      "settings": {
+        "subtitle": "Premium Collection",
+        "title": "Handcrafted Rugs for Modern Living",
+        "text": "Discover our curated collection of premium rugs, crafted with care and designed to transform your space.",
+        "button_text": "Shop Collection",
+        "button_link": "/collections/all",
+        "secondary_button_text": "Custom Size",
+        "secondary_button_link": "/pages/custom-size",
+        "show_scroll_indicator": true
+      }
+    },
+    "featured_collections": {
+      "type": "featured-collections",
+      "blocks": {
+        "collection_1": {
+          "type": "collection",
+          "settings": {
+            "collection": "living-room",
+            "title": "Living Room"
+          }
+        },
+        "collection_2": {
+          "type": "collection",
+          "settings": {
+            "collection": "bedroom",
+            "title": "Bedroom"
+          }
+        },
+        "collection_3": {
+          "type": "collection",
+          "settings": {
+            "collection": "outdoor",
+            "title": "Outdoor"
+          }
+        }
+      },
+      "block_order": ["collection_1", "collection_2", "collection_3"],
+      "settings": {
+        "subtitle": "Curated Collections",
+        "title": "Shop by Room",
+        "collections_per_row": "3",
+        "image_ratio": "133",
+        "text_alignment": "center",
+        "button_text": "Explore"
+      }
+    },
+    "testimonials": {
+      "type": "testimonials-minimal",
+      "blocks": {
+        "testimonial_1": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The quality of the rug exceeded my expectations. The custom sizing was perfect for our living room, and the ordering process was seamless.",
+            "author": "Sarah Johnson",
+            "author_title": "Verified Buyer",
+            "rating": 5
+          }
+        },
+        "testimonial_2": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Beautiful craftsmanship and attention to detail. Our custom rug transformed our space completely. Highly recommend!",
+            "author": "Michael Chen",
+            "author_title": "Interior Designer",
+            "rating": 5
+          }
+        },
+        "testimonial_3": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Fast shipping, excellent customer service, and the rug looks even better in person. Will definitely order again.",
+            "author": "Emma Williams",
+            "author_title": "Repeat Customer",
+            "rating": 5
+          }
+        }
+      },
+      "block_order": ["testimonial_1", "testimonial_2", "testimonial_3"],
+      "settings": {
+        "title": "What Our Customers Say",
+        "autoplay": true,
+        "autoplay_speed": 5
+      }
     }
   },
   "order": [
-    "main"
+    "hero",
+    "featured_collections",
+    "testimonials"
   ]
 }
