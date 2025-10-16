@@ -253,7 +253,7 @@
                       <div class="product-card__actions">
                         <button 
                           class="product-card__action"
-                          @click.prevent="quickView('{{ product.id }}')"
+                          @click.prevent="$store.quickView.show('{{ product.id }}')"
                           aria-label="Quick view"
                         >
                           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -303,7 +303,7 @@
                     <!-- Customize Button -->
                     <button 
                       class="btn btn--primary btn-magnetic product-card__customize"
-                      @click="customizeProduct('{{ product.id }}')"
+                        onclick="window.location.href='{{ product.url }}#customize'"
                     >
                       Customize Size
                     </button>

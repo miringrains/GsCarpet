@@ -9,7 +9,7 @@
 
 {% assign base_price_per_sqft = product.metafields.custom.price_per_sqft | default: 25 %}
 
-<div class="size-calculator" x-data="sizeCalculator()" x-init="init()">
+<div class="size-calculator" x-data="advancedSizeCalculator()" x-init="init()">
   <div class="size-calculator__container">
     
     <!-- Size Selection Tabs -->

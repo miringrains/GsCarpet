@@ -45,7 +45,20 @@
     href="{{ url }}"
   {% endif %}
 >
-  {{ image | image_url: width: width, height: height, crop: crop | image_tag }}
+  {% if image %}
+    {{ image | image_url: width: width, height: height, crop: crop | image_tag: 
+      alt: alt,
+      class: 'image__img',
+      loading: loading,
+      fetchpriority: fetchpriority,
+      sizes: sizes,
+      widths: widths
+    }}
+  {% else %}
+    <div class="image__placeholder">
+      {{ 'image' | placeholder_svg_tag }}
+    </div>
+  {% endif %}
 </{{ wrapper }}>
 
 {% stylesheet %}
@@ -57,8 +70,29 @@
     height: auto;
   }
 
+  .image__img,
   .image > img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+  
+  .image__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-background-subtle, #f5f5f7);
+    color: var(--color-text-tertiary, #999);
+  }
+  
+  .image__placeholder svg {
+    width: 50%;
+    height: 50%;
+    max-width: 120px;
+    max-height: 120px;
+    opacity: 0.3;
   }
 {% endstylesheet %}

@@ -65,8 +65,8 @@
         }
       });
     </script>
-    {{ 'animations.js' | asset_url | script_tag: defer: true }}
-    {{ 'custom-calculator.js' | asset_url | script_tag: defer: true }}
+    <script src="{{ 'animations.js' | asset_url }}" defer></script>
+    <script src="{{ 'custom-calculator.js' | asset_url }}" defer></script>
     
     {% # Quick View Modal %}
     {% render 'quick-view-modal' %}
