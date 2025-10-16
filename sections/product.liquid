@@ -78,21 +78,15 @@
           
           <h1 class="product-info__title text-h2">{{ product.title }}</h1>
           
-          <div class="product-info__price">
-            {% if product.compare_at_price > product.price %}
-              <span class="product-info__price--compare text-secondary">
-                {{ product.compare_at_price | money }}
-              </span>
-            {% endif %}
-            <span class="product-info__price--current text-h3">
-              {% if product.price_varies %}From {% endif %}
-              {{ product.price | money }}
-            </span>
-          </div>
-          
           {% if product.metafields.custom.material %}
             <div class="product-info__badges">
               <span class="badge">{{ product.metafields.custom.material }}</span>
+            </div>
+          {% endif %}
+          
+          {% if product.description != blank %}
+            <div class="product-info__description">
+              {{ product.description | truncate: 200 }}
             </div>
           {% endif %}
         </div>
@@ -351,7 +345,7 @@
   
   /* Product Info */
   .product-info__header {
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--space-compact-lg);
   }
   
   .breadcrumbs {
@@ -373,23 +367,21 @@
   }
   
   .product-info__title {
-    margin: 0 0 var(--space-md);
+    margin: 0 0 var(--space-compact-sm);
   }
   
-  .product-info__price {
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-sm);
-    margin-bottom: var(--space-md);
-  }
-  
-  .product-info__price--compare {
-    text-decoration: line-through;
-  }
   
   .product-info__badges {
     display: flex;
     gap: var(--space-sm);
+    margin-bottom: var(--space-compact-md);
+  }
+  
+  .product-info__description {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    max-width: 600px;
   }
   
   /* Product Form */
@@ -527,10 +519,11 @@
   
   /* Size Calculator Integration */
   .product-info__calculator {
-    margin: var(--space-xl) 0;
-    padding: var(--space-xl);
+    margin: var(--space-compact-md) 0;
+    padding: var(--space-compact-lg);
     background-color: var(--color-background-subtle);
-    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
   }
 {% endstylesheet %}
 

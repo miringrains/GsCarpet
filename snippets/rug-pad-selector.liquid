@@ -139,24 +139,24 @@
 
 <style>
   .rug-pad-selector {
-    margin-top: var(--space-lg);
-    padding-top: var(--space-lg);
+    margin-top: var(--space-compact-lg);
+    padding-top: var(--space-compact-lg);
     border-top: 1px solid var(--color-border);
   }
   
   .pad-header {
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-compact-md);
   }
   
   .pad-title {
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--color-text-primary);
-    margin-bottom: var(--space-xs);
+    margin-bottom: var(--space-compact-xs);
   }
   
   .pad-subtitle {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--color-text-secondary);
   }
   
@@ -178,32 +178,30 @@
   
   .pad-option__content {
     position: relative;
-    padding: var(--space-md);
-    background: var(--color-surface);
-    border: 2px solid var(--color-border);
-    border-radius: var(--radius-md);
+    padding: var(--space-compact-md);
+    background: var(--color-background-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
     transition: all 0.2s ease;
   }
   
   .pad-option:hover .pad-option__content {
-    border-color: var(--color-axolotl);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border-color: var(--color-text-secondary);
   }
   
   .pad-option input:checked + .pad-option__content {
-    background: var(--color-background-subtle);
-    border-color: var(--color-pine-tree);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background: var(--color-surface);
+    border-color: var(--color-text-primary);
   }
   
   .pad-option__badge {
     position: absolute;
-    top: 12px;
-    right: 12px;
-    padding: 4px 12px;
-    background: var(--color-pine-tree);
+    top: 8px;
+    right: 8px;
+    padding: 2px 8px;
+    background: var(--color-text-primary);
     color: white;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -218,21 +216,21 @@
   }
   
   .pad-option__name {
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--color-text-primary);
   }
   
   .pad-option__price {
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--color-pine-tree);
   }
   
   .pad-option__description {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--color-text-secondary);
-    margin-bottom: var(--space-sm);
+    margin-bottom: var(--space-compact-sm);
     line-height: 1.5;
   }
   
@@ -240,7 +238,7 @@
     margin: 0;
     padding: 0;
     list-style: none;
-    font-size: 13px;
+    font-size: 11px;
     color: var(--color-text-tertiary);
   }
   
@@ -260,12 +258,11 @@
   
   /* Recommended Option Highlight */
   .pad-option--recommended .pad-option__content {
-    border-color: var(--color-axolotl);
+    border-color: var(--color-text-secondary);
   }
   
   .pad-option--recommended input:checked + .pad-option__content {
-    border-color: var(--color-pine-tree);
-    border-width: 2px;
+    border-color: var(--color-text-primary);
   }
   
   /* Mobile Responsive */

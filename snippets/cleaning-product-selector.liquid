@@ -96,13 +96,13 @@
 
 <style>
   .product-addons {
-    margin-top: var(--space-xl);
-    padding-top: var(--space-lg);
+    margin-top: var(--space-compact-lg);
+    padding-top: var(--space-compact-lg);
     border-top: 1px solid var(--color-border);
   }
   
   .addons-header {
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-compact-md);
   }
   
   .addons-title {
@@ -144,24 +144,28 @@
   .addon-checkbox__content {
     display: flex;
     align-items: center;
-    gap: var(--space-sm);
-    padding: var(--space-md);
-    background: var(--color-surface);
-    border: 2px solid var(--color-border);
-    border-radius: var(--radius-md);
+    gap: var(--space-compact-sm);
+    padding: var(--space-compact-sm);
+    background: var(--color-background-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
     transition: var(--transition-base);
   }
   
+  .addon-checkbox:hover .addon-checkbox__content {
+    border-color: var(--color-text-secondary);
+  }
+  
   .addon-checkbox input:checked + .addon-checkbox__content {
-    background: var(--color-background-subtle);
-    border-color: var(--color-pine-tree);
+    background: var(--color-surface);
+    border-color: var(--color-text-primary);
   }
   
   .addon-checkbox__check {
-    width: 24px;
-    height: 24px;
-    border: 2px solid var(--color-border);
-    border-radius: 4px;
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--color-border);
+    border-radius: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -170,8 +174,8 @@
   }
   
   .addon-checkbox input:checked + .addon-checkbox__content .addon-checkbox__check {
-    background: var(--color-pine-tree);
-    border-color: var(--color-pine-tree);
+    background: var(--color-text-primary);
+    border-color: var(--color-text-primary);
   }
   
   .addon-checkbox__check svg {
@@ -194,21 +198,21 @@
   }
   
   .addon-checkbox__title {
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 500;
     color: var(--color-text-primary);
   }
   
   .addon-checkbox__value {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--color-text-tertiary);
     font-style: italic;
   }
   
   .addon-description {
-    font-size: 13px;
+    font-size: 11px;
     color: var(--color-text-tertiary);
-    margin-left: 36px;
+    margin-left: 24px;
   }
   
   /* Cleaning Product Selector */
@@ -233,46 +237,43 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 16px;
-    border: 2px solid var(--color-border);
-    border-radius: 12px;
-    background: var(--color-surface);
+    padding: var(--space-compact-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-background-subtle);
     transition: all 0.2s ease;
     text-align: center;
   }
   
   .cleaning-product-label:hover {
-    border-color: var(--color-axolotl);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: var(--color-text-secondary);
   }
   
   .cleaning-product-option input:checked + .cleaning-product-label {
-    border-color: var(--color-pine-tree);
-    background: var(--color-platinum);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    border-color: var(--color-text-primary);
+    background: var(--color-surface);
   }
   
   .cleaning-product-image {
-    width: 80px;
-    height: 80px;
+    width: 48px;
+    height: 48px;
     object-fit: contain;
-    margin-bottom: 12px;
-    border-radius: 8px;
+    margin-bottom: var(--space-compact-xs);
+    border-radius: var(--radius-sm);
     background: white;
-    padding: 8px;
+    padding: 4px;
   }
   
   .cleaning-product-name {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--color-text-primary);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     line-height: 1.3;
   }
   
   .cleaning-product-value {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--color-text-tertiary);
     font-style: italic;
   }

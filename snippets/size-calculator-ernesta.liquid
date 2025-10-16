@@ -335,39 +335,39 @@
   .calculator-header {
     display: flex;
     align-items: baseline;
-    gap: var(--space-md);
-    margin-bottom: var(--space-sm);
+    gap: var(--space-compact-sm);
+    margin-bottom: var(--space-compact-sm);
   }
   
   .calculator-price {
-    font-size: 36px;
+    font-size: 20px;
     font-weight: 600;
     color: var(--color-text-primary);
   }
   
   .calculator-size {
     display: flex;
-    flex-direction: column;
-    gap: 2px;
+    align-items: baseline;
+    gap: var(--space-compact-xs);
   }
   
   .calculator-size span:first-child {
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 500;
     color: var(--color-text-primary);
   }
   
   .calculator-label {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--color-text-secondary);
   }
   
   /* Affirm Financing */
   .calculator-financing {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--color-text-secondary);
-    margin-bottom: var(--space-lg);
-    padding-bottom: var(--space-lg);
+    margin-bottom: var(--space-compact-sm);
+    padding-bottom: var(--space-compact-sm);
     border-bottom: 1px solid var(--color-border);
   }
   
@@ -383,20 +383,21 @@
   
   /* Dimensions */
   .calculator-dimensions {
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-compact-lg);
   }
   
   .dimension-group {
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-compact-md);
   }
   
   .dimension-label {
     display: block;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.5px;
-    color: var(--color-text-primary);
-    margin-bottom: var(--space-sm);
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-compact-xs);
   }
   
   .dimension-selects {
@@ -406,19 +407,19 @@
   
   .dimension-select {
     flex: 1;
-    padding: 12px 16px;
-    font-size: 16px;
+    padding: 6px 8px;
+    font-size: 13px;
     color: var(--color-text-primary);
     background: var(--color-surface);
-    border: none;
-    border-bottom: 2px solid var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
     cursor: pointer;
     transition: var(--transition-base);
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23000000' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236b7280' stroke-width='1.5'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 16px center;
-    padding-right: 40px;
+    background-position: right 8px center;
+    padding-right: 28px;
   }
   
   .dimension-select:hover,
@@ -429,7 +430,7 @@
   
   /* Shape Selection */
   .calculator-shape {
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-compact-lg);
   }
   
   .shape-options {
@@ -452,21 +453,30 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 60px;
-    height: 60px;
-    border: 2px solid var(--color-border);
-    background: var(--color-surface);
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-background-subtle);
     transition: var(--transition-base);
+  }
+  
+  .shape-option:hover .shape-icon {
+    border-color: var(--color-text-secondary);
   }
   
   .shape-option input:checked + .shape-icon {
     border-color: var(--color-text-primary);
-    background: var(--color-background-subtle);
+    background: var(--color-surface);
   }
   
   .shape-icon svg {
-    width: 30px;
-    height: 30px;
+    width: 18px;
+    height: 18px;
+    color: var(--color-text-secondary);
+  }
+  
+  .shape-option input:checked + .shape-icon svg {
     color: var(--color-text-primary);
   }
   
@@ -482,13 +492,13 @@
   }
   
   .unit-btn {
-    padding: 6px 16px;
-    font-size: 14px;
+    padding: 4px 8px;
+    font-size: 11px;
     font-weight: 500;
     color: var(--color-text-secondary);
     background: none;
     border: none;
-    border-radius: 22px;
+    border-radius: 12px;
     cursor: pointer;
     transition: var(--transition-base);
   }
@@ -502,7 +512,7 @@
   /* Tips Link */
   .calculator-tips {
     text-align: right;
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-compact-lg);
   }
   
   .tips-link {
@@ -516,7 +526,7 @@
     font-size: 13px;
     line-height: 1.6;
     color: var(--color-text-tertiary);
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-compact-lg);
   }
   
   .calculator-notice a {
@@ -534,10 +544,11 @@
   .calculator-add,
   .calculator-sample {
     width: 100%;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
-    letter-spacing: 1px;
-    padding: 16px 24px;
+    letter-spacing: 0.5px;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
   }
   
   .calculator-add {
