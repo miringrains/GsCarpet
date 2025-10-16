@@ -5,7 +5,7 @@
 
 <div 
   class="quick-view-modal"
-  x-data="quickViewModal"
+  x-data="quickViewModal()"
   x-show="$store.quickView.isOpen"
   x-cloak
   @keydown.escape.window="$store.quickView.close()"
