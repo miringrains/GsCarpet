@@ -13,10 +13,13 @@
   "sections": {
     "header": {
       "type": "header",
-      "settings": {}
+      "settings": {
+        "logo_width": 150,
+        "menu": "hk-demo"
+      }
     }
   },
   "order": [
     "header"
-  ],
+  ]
 }
