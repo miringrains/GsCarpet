@@ -3,58 +3,62 @@
   Displays product grid with filters and sorting
 {% endcomment %}
 
-<div class="collection-products" x-data="collectionFilters()">
+<div class="collection-products-section" x-data="collectionFilters()">
   <!-- Filter Bar -->
-  <div class="collection-toolbar">
-    <div class="container">
-      <div class="collection-toolbar__inner">
-        <div class="collection-toolbar__count">
-          {{ collection.products_count }} 
-          {%- if collection.products_count == 1 -%}product{%- else -%}products{%- endif -%}
-        </div>
-        
-        <div class="collection-toolbar__controls">
-          <!-- Sort Dropdown -->
-          <div class="collection-toolbar__sort">
-            <label for="sort-by" class="visually-hidden">Sort by</label>
-            <select 
-              id="sort-by" 
-              class="form-select"
-              @change="updateSort($event.target.value)"
-            >
-              {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
-              {% for option in collection.sort_options %}
-                <option value="{{ option.value }}" {% if option.value == sort_by %}selected{% endif %}>
-                  {{ option.name }}
-                </option>
-              {% endfor %}
-            </select>
+  <div class="collection-toolbar-section full-width" 
+    :class="{ 'collection-toolbar-section--sticky': window.scrollY > 500 }"
+    @scroll.window="$el.classList.toggle('collection-toolbar-section--sticky', window.scrollY > 500)"
+  >
+    <div class="collection-toolbar">
+      <div class="container">
+        <div class="collection-toolbar__inner">
+          <div class="collection-toolbar__count">
+            {{ collection.products_count }} 
+            {%- if collection.products_count == 1 -%}product{%- else -%}products{%- endif -%}
           </div>
           
-          <!-- Filter Toggle (Mobile) -->
-          <button 
-            class="btn btn--secondary collection-toolbar__filter-btn lg:hidden"
-            @click="filtersOpen = true"
-          >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M2 5H18M5 10H15M8 15H12" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
-            <span>Filters</span>
-            <span 
-              class="collection-toolbar__filter-count"
-              x-show="activeFilterCount > 0"
-              x-text="activeFilterCount"
-            ></span>
-          </button>
+          <div class="collection-toolbar__controls">
+            <!-- Sort Dropdown -->
+            <div class="collection-toolbar__sort">
+              <label for="sort-by" class="visually-hidden">Sort by</label>
+              <select 
+                id="sort-by" 
+                class="form-select"
+                @change="updateSort($event.target.value)"
+              >
+                {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
+                {% for option in collection.sort_options %}
+                  <option value="{{ option.value }}" {% if option.value == sort_by %}selected{% endif %}>
+                    {{ option.name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            
+            <!-- Filter Toggle (Mobile) -->
+            <button 
+              class="btn btn--secondary collection-toolbar__filter-btn lg:hidden"
+              @click="filtersOpen = true"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M2 5H18M5 10H15M8 15H12" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+              <span>Filters</span>
+              <span 
+                class="collection-toolbar__filter-count"
+                x-show="activeFilterCount > 0"
+                x-text="activeFilterCount"
+              ></span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Main Content Area -->
-  <div class="collection-content">
-    <div class="container">
-      <div class="collection-layout">
+  <div class="collection-content container">
+    <div class="collection-layout">
         <!-- Filters Sidebar -->
         {% if section.settings.show_filters %}
           <aside 
@@ -323,7 +327,6 @@
           {% endpaginate %}
         </div>
       </div>
-    </div>
   </div>
 
   <!-- Filter Overlay (Mobile) -->
@@ -399,6 +402,21 @@
         };
         this.activeFilters = [];
         this.applyFilters();
+      },
+      
+      get priceRangeLeft() {
+        const min = 0;
+        const max = 5000;
+        const currentMin = this.filters.price.min || min;
+        return ((currentMin - min) / (max - min)) * 100;
+      },
+      
+      get priceRangeWidth() {
+        const min = 0;
+        const max = 5000;
+        const currentMin = this.filters.price.min || min;
+        const currentMax = this.filters.price.max || max;
+        return ((currentMax - currentMin) / (max - min)) * 100;
       }
     }
   }
