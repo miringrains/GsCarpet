@@ -209,7 +209,7 @@ document.querySelectorAll('.product-card').forEach((card, index) => {
 - Screen reader announcements
 - Reduced motion support
 
-## Implementation Structure
+## Implementation Structur
 
 ```
 assets/
