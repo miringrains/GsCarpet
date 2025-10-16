@@ -32,7 +32,7 @@
         >
           <a href="{% if collection %}{{ collection.url }}{% else %}/collections/all{% endif %}" class="collection-card__link">
             <div class="collection-card__image">
-              {% if block.settings.image %}
+              {% if block.settings.image != blank and block.settings.image != '' %}
                 {% render 'image',
                   image: block.settings.image,
                   width: 600,

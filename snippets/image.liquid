@@ -1,98 +1,67 @@
-{% doc %}
-  Renders a responsive image that might be wrapped in a link.
+{% comment %}
+  Renders an image with proper responsive attributes and lazy loading
 
-  When `width`, `height` and `crop` are provided, the image will be rendered
-  with a fixed aspect ratio.
+  Accepts:
+  - image: {Object} Shopify image object
+  - width: {Number} Max width of the image
+  - height: {Number} Max height of the image
+  - alt: {String} Alt text for the image
+  - class: {String} CSS classes to add
+  - loading: {String} Loading attribute (lazy/eager)
+  - sizes: {String} Sizes attribute for responsive images
+  - data-*: {String} Any data attributes
 
-  Serves as an example of how to use the `image_url` filter and `image_tag` filter
-  as well as how you can use LiquidDoc to document your code.
+  Usage:
+  {% render 'image', image: product.featured_image, width: 600, height: 800, alt: product.title %}
+{% endcomment %}
 
-  @param {image} image - The image to be rendered
-  @param {string} [url] - An optional destination URL for the image
-  @param {string} [class] - Optional class to be added to the image wrapper
-  @param {number} [width] - The highest resolution width of the image to be rendered
-  @param {number} [height] - The highest resolution height of the image to be rendered
-  @param {string} [crop] - The crop position of the image
-
-  @example
-  {% render 'image', image: product.featured_image %}
-  {% render 'image', image: product.featured_image, url: product.url %}
-  {% render 'image',
-    class: 'product__image',
-    image: product.featured_image,
-    url: product.url,
-    width: 1200,
-    height: 800,
-    crop: 'center',
-  %}
-{% enddoc %}
-
-{% liquid
-  unless height
-    assign width = width | default: image.width
-  endunless
-
-  if url
-    assign wrapper = 'a'
+{%- liquid
+  assign image_alt = alt | default: image.alt | escape
+  assign image_loading = loading | default: 'lazy'
+  assign focal_point = image.presentation.focal_point | default: '50.0% 50.0%'
+  
+  # Calculate aspect ratio for placeholder
+  if image.aspect_ratio
+    assign image_aspect_ratio = image.aspect_ratio
+  elsif width and height
+    assign image_aspect_ratio = width | times: 1.0 | divided_by: height
   else
-    assign wrapper = 'div'
+    assign image_aspect_ratio = 1.0
   endif
-%}
-
-<{{ wrapper }}
-  class="image {{ class }}"
-  {% if url %}
-    href="{{ url }}"
-  {% endif %}
->
-  {% if image %}
-    {{ image | image_url: width: width, height: height, crop: crop | image_tag: 
-      alt: alt,
-      class: 'image__img',
-      loading: loading,
-      fetchpriority: fetchpriority,
-      sizes: sizes,
-      widths: widths
-    }}
-  {% else %}
-    <div class="image__placeholder">
-      {{ 'image' | placeholder_svg_tag }}
-    </div>
-  {% endif %}
-</{{ wrapper }}>
-
-{% stylesheet %}
-  .image {
-    display: block;
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    height: auto;
-  }
-
-  .image__img,
-  .image > img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-  }
   
-  .image__placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--color-background-subtle, #f5f5f7);
-    color: var(--color-text-tertiary, #999);
-  }
-  
-  .image__placeholder svg {
-    width: 50%;
-    height: 50%;
-    max-width: 120px;
-    max-height: 120px;
-    opacity: 0.3;
-  }
-{% endstylesheet %}
+  # Generate srcset for responsive images
+  assign widths = '165, 360, 535, 750, 1070, 1500'
+  assign widths_array = widths | split: ', '
+-%}
+
+{%- if image != blank -%}
+  <img
+    src="{{ image | image_url: width: width }}"
+    srcset="{%- for w in widths_array -%}
+      {%- if image.width >= w -%}
+        {{ image | image_url: width: w }} {{ w }}w{%- unless forloop.last -%},{%- endunless -%}
+      {%- endif -%}
+    {%- endfor -%}"
+    width="{{ width }}"
+    height="{{ height | default: width | divided_by: image_aspect_ratio | round }}"
+    alt="{{ image_alt }}"
+    loading="{{ image_loading }}"
+    style="object-position: {{ focal_point }};"
+    {% if class %}class="{{ class }}"{% endif %}
+    {% if sizes %}sizes="{{ sizes }}"{% endif %}
+    {% for attribute in attributes %}
+      {{ attribute[0] }}="{{ attribute[1] }}"
+    {% endfor %}
+  >
+{%- else -%}
+  {%- comment -%} Placeholder when no image {%- endcomment -%}
+  <div 
+    class="placeholder-image {% if class %}{{ class }}{% endif %}"
+    style="aspect-ratio: {{ image_aspect_ratio }};"
+    {% for attribute in attributes %}
+      {{ attribute[0] }}="{{ attribute[1] }}"
+    {% endfor %}
+  >
+    {{ 'image' | placeholder_svg_tag }}
+  </div>
+{%- endif -%}

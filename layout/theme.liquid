@@ -27,6 +27,7 @@
     {% sections 'footer-group' %}
     
     {% # JavaScript files %}
+    {{ 'alpine-collapse.min.js' | asset_url | script_tag }}
     {{ 'alpine.min.js' | asset_url | script_tag }}
     <script>
       // Ensure Alpine starts with stores properly initialized
@@ -52,13 +53,13 @@
           Alpine.store('quickView', {
             open: false,
             productId: null,
-            
+
             async show(productId) {
               this.productId = productId;
               this.open = true;
               document.body.style.overflow = 'hidden';
             },
-            
+
             close() {
               this.open = false;
               this.productId = null;
@@ -66,6 +67,101 @@
             }
           });
         }
+
+        // Define quickViewModal component
+        Alpine.data('quickViewModal', () => ({
+          product: null,
+          selectedVariant: null,
+          loading: false,
+          imageIndex: 0,
+
+          async init() {
+            this.$watch('$store.quickView.open', async (open) => {
+              if (open && this.$store.quickView.productId) {
+                await this.loadProduct(this.$store.quickView.productId);
+              }
+            });
+          },
+
+          async loadProduct(productId) {
+            this.loading = true;
+            try {
+              const response = await fetch(`/products/${productId}.js`);
+              this.product = await response.json();
+              this.selectedVariant = this.product.variants[0];
+            } catch (error) {
+              console.error('Error loading product:', error);
+            } finally {
+              this.loading = false;
+            }
+          },
+
+          selectVariant(variantId) {
+            this.selectedVariant = this.product.variants.find(v => v.id === variantId);
+          },
+
+          async addToCart() {
+            if (!this.selectedVariant) return;
+
+            try {
+              await fetch('/cart/add.js', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  id: this.selectedVariant.id,
+                  quantity: 1
+                })
+              });
+              
+              // Refresh cart
+              window.location.reload();
+            } catch (error) {
+              console.error('Error adding to cart:', error);
+            }
+          }
+        }));
+
+        // Define productContent component for product pages
+        Alpine.data('productContent', () => ({
+          selectedVariant: null,
+          quantity: 1,
+          currentImageIndex: 0,
+
+          init() {
+            // Initialize with first available variant
+            if (window.productData && window.productData.variants.length > 0) {
+              this.selectedVariant = window.productData.variants[0];
+            }
+          },
+
+          selectVariant(variantId) {
+            this.selectedVariant = window.productData.variants.find(v => v.id === variantId);
+          },
+
+          updateQuantity(change) {
+            this.quantity = Math.max(1, this.quantity + change);
+          },
+
+          async addToCart() {
+            if (!this.selectedVariant) return;
+
+            try {
+              await fetch('/cart/add.js', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  id: this.selectedVariant.id,
+                  quantity: this.quantity
+                })
+              });
+              
+              // Open cart drawer
+              Alpine.store('cart').openDrawer();
+            } catch (error) {
+              console.error('Error adding to cart:', error);
+            }
+          }
+        }))
       });
     </script>
     <script src="{{ 'animations.js' | asset_url }}" defer></script>
