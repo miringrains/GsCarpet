@@ -14,7 +14,11 @@
     "footer": {
       "type": "footer",
       "settings": {
-        "menu": "",
+        "logo": "shopify://shop_images/gmlogo.svg",
+        "logo_width": 110,
+        "about_text": "Premium handcrafted rugs designed to transform your space. Custom sizes available for every room.",
+        "show_social": true,
+        "copyright_text": "All rights reserved.",
         "show_payment_icons": true
       }
     }
