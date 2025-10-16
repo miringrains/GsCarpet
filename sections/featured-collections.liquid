@@ -30,7 +30,7 @@
           data-animate-delay="{{ forloop.index0 | times: 100 }}"
           {{ block.shopify_attributes }}
         >
-          <a href="{{ collection.url }}" class="collection-card__link">
+          <a href="{% if collection %}{{ collection.url }}{% else %}/collections/all{% endif %}" class="collection-card__link">
             <div class="collection-card__image">
               {% if block.settings.image %}
                 {% render 'image',
@@ -38,10 +38,10 @@
                   width: 600,
                   height: 800,
                   loading: 'lazy',
-                  alt: collection.title,
+                  alt: block.settings.title | default: collection.title | default: 'Collection',
                   class: 'collection-card__img'
                 %}
-              {% elsif collection.image %}
+              {% elsif collection and collection.image %}
                 {% render 'image',
                   image: collection.image,
                   width: 600,
@@ -50,7 +50,7 @@
                   alt: collection.title,
                   class: 'collection-card__img'
                 %}
-              {% elsif collection.products.first.featured_image %}
+              {% elsif collection and collection.products.first and collection.products.first.featured_image %}
                 {% render 'image',
                   image: collection.products.first.featured_image,
                   width: 600,
@@ -70,14 +70,14 @@
             
             <div class="collection-card__content">
               <h3 class="collection-card__title text-h3">
-                {{ block.settings.title | default: collection.title }}
+                {{ block.settings.title | default: collection.title | default: 'Collection' }}
               </h3>
               
               {% if block.settings.subtitle %}
                 <p class="collection-card__subtitle text-body text-secondary">
                   {{ block.settings.subtitle }}
                 </p>
-              {% elsif collection.description != blank %}
+              {% elsif collection and collection.description != blank %}
                 <p class="collection-card__subtitle text-body text-secondary">
                   {{ collection.description | strip_html | truncate: 60 }}
                 </p>

@@ -9,6 +9,9 @@
     
     {% # Load theme base styles %}
     {{ 'theme-base.css' | asset_url | stylesheet_tag }}
+    
+    {% # Load Restoration Hardware style theme %}
+    {{ 'restoration-hardware-theme.css' | asset_url | stylesheet_tag }}
 
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}

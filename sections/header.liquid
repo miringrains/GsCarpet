@@ -31,7 +31,7 @@
 
       <!-- Desktop Navigation -->
       <nav class="header__nav hidden lg:flex">
-        {% for link in section.settings.menu.links %}
+        {% for link in linklists[section.settings.menu].links %}
           {% if link.links != blank %}
             <div class="header__nav-item" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
               <a href="{{ link.url }}" class="header__nav-link">
@@ -144,7 +144,7 @@
     </div>
     
     <nav class="header__mobile-nav">
-      {% for link in section.settings.menu.links %}
+      {% for link in linklists[section.settings.menu].links %}
         {% if link.links != blank %}
           <div x-data="{ subOpen: false }">
             <button 
