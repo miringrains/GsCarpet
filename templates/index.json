@@ -21,7 +21,7 @@
         "secondary_button_text": "Custom Size",
         "secondary_button_link": "/pages/custom-size",
         "show_scroll_indicator": true,
-        "color_scheme": "light",
+        "color_scheme": "custom",
         "bg_color": "#ffffff",
         "bg_gradient": "",
         "text_color": "#FAFAFA",
