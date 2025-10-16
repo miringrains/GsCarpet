@@ -287,7 +287,7 @@
     top: 0;
     left: 0;
     right: 0;
-    z-index: var(--z-sticky);
+    z-index: var(--z-index-header);
     background-color: var(--color-surface);
     transition: var(--transition-base);
   }
@@ -527,7 +527,7 @@
     bottom: 0;
     width: 300px;
     background-color: var(--color-surface);
-    z-index: var(--z-modal);
+    z-index: var(--z-index-mobile-menu);
     overflow-y: auto;
   }
 
@@ -610,7 +610,7 @@
     position: fixed;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.7);
-    z-index: var(--z-modal-backdrop);
+    z-index: var(--z-index-modal-backdrop);
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -686,7 +686,7 @@
     position: fixed;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: var(--z-modal-backdrop);
+    z-index: var(--z-index-modal-backdrop);
   }
 
   /* Utility Classes for Alpine */

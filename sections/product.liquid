@@ -287,6 +287,14 @@
     top: calc(5rem + var(--space-md));
   }
   
+  /* Mobile: No sticky - images stay in place */
+  @media (max-width: 1024px) {
+    .product-gallery {
+      position: static;
+      top: auto;
+    }
+  }
+  
   .product-gallery__main {
     position: relative;
     margin-bottom: var(--space-md);

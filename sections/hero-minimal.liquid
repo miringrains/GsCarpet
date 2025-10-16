@@ -3,7 +3,13 @@
   Clean, spacious hero with optional background image or video
 {% endcomment %}
 
-<section class="hero-minimal" data-section-id="{{ section.id }}">
+{% if section.settings.color_scheme == 'custom' %}
+  {% render 'section-theme-styles', section: section %}
+{% else %}
+  {% render 'section-color-schemes', section: section %}
+{% endif %}
+
+<section class="hero-minimal" data-section-id="{{ section.id }}" id="shopify-section-{{ section.id }}">
   {% if section.settings.background_image %}
     <div class="hero-minimal__background">
       {% render 'image',
@@ -16,7 +22,7 @@
         class: 'hero-minimal__bg-image',
         data-parallax: '0.3'
       %}
-      <div class="hero-minimal__overlay"></div>
+      <div class="hero-minimal__overlay" style="background-color: var(--section-overlay-color); opacity: var(--section-overlay-opacity);"></div>
     </div>
   {% endif %}
   
@@ -297,6 +303,81 @@
       "id": "show_scroll_indicator",
       "label": "Show scroll indicator",
       "default": true
+    },
+    {
+      "type": "header",
+      "content": "Theme & Colors"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default (inherit from theme)"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "custom",
+          "label": "Custom"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "paragraph",
+      "content": "Custom color settings below only apply when 'Custom' is selected above."
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color_background",
+      "id": "bg_gradient",
+      "label": "Background gradient"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#2B2C25"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "info": "Leave blank to use text color"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Image overlay color",
+      "default": "rgba(0, 0, 0, 0.3)"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 30
     }
   ],
   "presets": [

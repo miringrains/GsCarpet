@@ -3,7 +3,13 @@
   Minimal grid of collection cards with generous spacing
 {% endcomment %}
 
-<section class="featured-collections py-3xl" data-section-id="{{ section.id }}">
+{% if section.settings.color_scheme == 'custom' %}
+  {% render 'section-theme-styles', section: section %}
+{% else %}
+  {% render 'section-color-schemes', section: section %}
+{% endif %}
+
+<section class="featured-collections py-3xl" data-section-id="{{ section.id }}" id="shopify-section-{{ section.id }}">
   <div class="container">
     {% if section.settings.title or section.settings.subtitle %}
       <div class="section-header text-center mb-2xl">
@@ -321,6 +327,76 @@
       "id": "button_text",
       "label": "Button text",
       "default": "Explore"
+    },
+    {
+      "type": "header",
+      "content": "Theme & Colors"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default (inherit from theme)"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "custom",
+          "label": "Custom"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "paragraph",
+      "content": "Custom color settings below only apply when 'Custom' is selected above."
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#2B2C25"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card background",
+      "default": "#FAFAFA"
+    },
+    {
+      "type": "color",
+      "id": "card_overlay_color",
+      "label": "Card overlay color on hover",
+      "default": "rgba(0, 0, 0, 0.1)"
+    },
+    {
+      "type": "range",
+      "id": "card_overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "%",
+      "label": "Card overlay opacity",
+      "default": 10
     }
   ],
   "blocks": [

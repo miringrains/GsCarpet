@@ -12,6 +12,9 @@
     
     {% # Load Restoration Hardware style theme %}
     {{ 'restoration-hardware-theme.css' | asset_url | stylesheet_tag }}
+    
+    {% # Mobile UX improvements %}
+    {{ 'mobile-improvements.css' | asset_url | stylesheet_tag }}
 
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}

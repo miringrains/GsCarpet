@@ -1,0 +1,336 @@
+/* ============================================
+   Mobile UX Improvements
+   Common sense quality fixes for mobile devices
+   ============================================ */
+
+/* Ensure minimum touch target sizes (44x44px) */
+@media (max-width: 768px) {
+  /* Buttons and clickable elements */
+  .btn,
+  button,
+  a.btn,
+  .header__action-btn,
+  .header__mobile-toggle,
+  .product-option label,
+  .addon-checkbox,
+  .cleaning-product-option,
+  .pad-option,
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Form inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="password"],
+  select,
+  textarea {
+    min-height: 44px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  /* Increase tap area for small icons */
+  .cart-item__remove,
+  .announcement-bar__close,
+  .header__search-close,
+  .header__mobile-menu-close {
+    padding: 8px;
+    margin: -8px;
+  }
+}
+
+/* Prevent horizontal scroll */
+body {
+  overflow-x: hidden;
+}
+
+.site-header,
+.announcement-bar,
+main,
+footer {
+  overflow-x: hidden;
+}
+
+/* Fix sticky elements on mobile */
+@media (max-width: 1024px) {
+  /* Disable sticky positioning for product images */
+  .product-gallery {
+    position: static !important;
+    top: auto !important;
+  }
+  
+  /* Ensure proper scroll behavior */
+  .product-tabs {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* Improve mobile navigation */
+@media (max-width: 768px) {
+  /* Add padding to account for fixed header */
+  body {
+    padding-top: 60px; /* Adjust based on header height */
+  }
+  
+  /* Ensure mobile menu covers everything */
+  .header__mobile-menu {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Improve mobile menu spacing */
+  .header__mobile-nav-item {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  
+  /* Better mobile dropdown indicators */
+  .header__mobile-nav-parent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+}
+
+/* Fix mobile modals and overlays */
+@media (max-width: 768px) {
+  /* Full-width cart drawer on mobile */
+  .cart-drawer__content {
+    max-width: 100%;
+  }
+  
+  /* Better modal padding */
+  .modal,
+  .quick-view-modal {
+    padding: 16px;
+    margin: 16px;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Improve mobile form experience */
+@media (max-width: 768px) {
+  /* Stack form elements */
+  .form-group {
+    margin-bottom: 16px;
+  }
+  
+  /* Full-width buttons on mobile */
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  /* Better select dropdown styling */
+  select {
+    background-position: right 12px center;
+    padding-right: 40px;
+  }
+}
+
+/* Fix mobile image galleries */
+@media (max-width: 768px) {
+  /* Ensure images don't overflow */
+  .product-gallery__main img,
+  .product-gallery__thumb img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Better thumb navigation */
+  .product-gallery__thumbs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  
+  .product-gallery__thumbs::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Improve mobile tables */
+@media (max-width: 768px) {
+  /* Make tables scrollable */
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  table {
+    min-width: 600px;
+  }
+}
+
+/* Fix mobile z-index issues */
+@media (max-width: 768px) {
+  /* Ensure proper stacking order */
+  .site-header {
+    z-index: var(--z-index-header) !important;
+  }
+  
+  .cart-drawer__content {
+    z-index: var(--z-index-cart-drawer) !important;
+  }
+  
+  .header__mobile-menu {
+    z-index: var(--z-index-mobile-menu) !important;
+  }
+}
+
+/* Improve mobile spacing */
+@media (max-width: 768px) {
+  /* Consistent section padding */
+  section,
+  .section {
+    padding: 40px 0;
+  }
+  
+  /* Better container padding */
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  
+  /* Reduce large text on mobile */
+  .text-display,
+  .text-h1,
+  h1 {
+    font-size: 2rem;
+  }
+  
+  .text-h2,
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  .text-h3,
+  h3 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Prevent iOS input zoom */
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="password"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Improve mobile loading states */
+@media (max-width: 768px) {
+  .loading-spinner {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .skeleton {
+    animation-duration: 1.5s;
+  }
+}
+
+/* Fix mobile sticky footer issues */
+@media (max-width: 768px) {
+  /* Ensure content doesn't hide behind fixed elements */
+  main {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Account for iOS Safari bottom bar */
+  .fixed-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Improve mobile animations */
+@media (max-width: 768px) {
+  /* Reduce motion for better performance */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.3s !important;
+    transition-duration: 0.3s !important;
+  }
+  
+  /* Disable parallax on mobile */
+  [data-parallax] {
+    transform: none !important;
+  }
+}
+
+/* Fix common mobile layout issues */
+@media (max-width: 768px) {
+  /* Prevent content from being cut off */
+  * {
+    max-width: 100vw;
+  }
+  
+  /* Fix flexbox issues */
+  .flex-wrap-mobile {
+    flex-wrap: wrap;
+  }
+  
+  /* Stack columns on mobile */
+  .grid,
+  [class*="grid-cols-"] {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Fix absolute positioning issues */
+  .absolute-mobile-static {
+    position: static !important;
+  }
+}
+
+/* Accessibility improvements for mobile */
+@media (max-width: 768px) {
+  /* Better focus indicators */
+  :focus {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  
+  /* Skip to content link */
+  .skip-to-content {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-accent);
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    z-index: 10000;
+  }
+  
+  .skip-to-content:focus {
+    top: 0;
+  }
+}
+
+/* Smooth scrolling with offset for fixed header */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px; /* Adjust based on header height */
+}
+
+/* Prevent pull-to-refresh on Chrome Android */
+body {
+  overscroll-behavior-y: contain;
+}
