@@ -20,7 +20,14 @@
         "button_link": "/collections/all",
         "secondary_button_text": "Custom Size",
         "secondary_button_link": "/pages/custom-size",
-        "show_scroll_indicator": true
+        "show_scroll_indicator": true,
+        "color_scheme": "default",
+        "bg_color": "#ffffff",
+        "bg_gradient": "",
+        "text_color": "#FAFAFA",
+        "heading_color": "#FAFAFA",
+        "overlay_color": "#0000004d",
+        "overlay_opacity": 30
       }
     },
     "featured_collections": {
@@ -64,7 +71,13 @@
         "collections_per_row": "3",
         "image_ratio": "133",
         "text_alignment": "center",
-        "button_text": "Explore"
+        "button_text": "Explore",
+        "color_scheme": "default",
+        "bg_color": "#ffffff",
+        "text_color": "#2b2c25",
+        "card_bg_color": "#fafafa",
+        "card_overlay_color": "#0000001a",
+        "card_overlay_opacity": 10
       }
     },
     "testimonials": {
