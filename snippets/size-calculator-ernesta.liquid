@@ -1,0 +1,575 @@
+{% comment %}
+  Ernesta-Style Size Calculator
+  Clean, minimal custom rug size calculator matching Ernesta's design
+  
+  Parameters:
+  - product: The product object
+  - base_price: Base price per square foot
+{% endcomment %}
+
+{% assign base_price_per_sqft = product.metafields.custom.price_per_sqft | default: 23 %}
+
+<div class="calculator-ernesta" x-data="ernestaCalculator()" x-init="init()">
+  <!-- Price Display Header -->
+  <div class="calculator-header">
+    <div class="calculator-price" x-text="formatPrice(totalPrice)">$575</div>
+    <div class="calculator-size">
+      <span x-text="displaySize">5′ × 5′</span>
+      <span class="calculator-label">Custom-sized Rug</span>
+    </div>
+  </div>
+  
+  <!-- Affirm Financing -->
+  <div class="calculator-financing">
+    Starting at <span x-text="formatPrice(totalPrice / 12)">$52</span>/mo or 0% APR with 
+    <span class="affirm-logo">affirm</span>.
+    <a href="#" class="financing-link">Learn more</a>
+  </div>
+  
+  <!-- Dimensions Section -->
+  <div class="calculator-dimensions">
+    <!-- Width -->
+    <div class="dimension-group">
+      <label class="dimension-label">WIDTH</label>
+      <div class="dimension-selects">
+        <select 
+          class="dimension-select dimension-select--feet"
+          x-model="widthFeet"
+          @change="calculatePrice()"
+        >
+          {% for i in (2..15) %}
+            <option value="{{ i }}">{{ i }} feet</option>
+          {% endfor %}
+        </select>
+        <select 
+          class="dimension-select dimension-select--inches"
+          x-model="widthInches"
+          @change="calculatePrice()"
+        >
+          {% for i in (0..11) %}
+            <option value="{{ i }}">{{ i }} inches</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    
+    <!-- Length -->
+    <div class="dimension-group">
+      <label class="dimension-label">LENGTH</label>
+      <div class="dimension-selects">
+        <select 
+          class="dimension-select dimension-select--feet"
+          x-model="lengthFeet"
+          @change="calculatePrice()"
+        >
+          {% for i in (2..25) %}
+            <option value="{{ i }}">{{ i }} feet</option>
+          {% endfor %}
+        </select>
+        <select 
+          class="dimension-select dimension-select--inches"
+          x-model="lengthInches"
+          @change="calculatePrice()"
+        >
+          {% for i in (0..11) %}
+            <option value="{{ i }}">{{ i }} inches</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Shape Selection -->
+  <div class="calculator-shape">
+    <label class="dimension-label">SHAPE</label>
+    <div class="shape-options">
+      <label class="shape-option">
+        <input type="radio" name="shape" value="rectangle" x-model="shape" @change="calculatePrice()">
+        <span class="shape-icon">
+          <svg viewBox="0 0 40 30" fill="currentColor">
+            <rect width="40" height="30" rx="2"/>
+          </svg>
+        </span>
+      </label>
+      <label class="shape-option">
+        <input type="radio" name="shape" value="round" x-model="shape" @change="handleRoundShape()">
+        <span class="shape-icon">
+          <svg viewBox="0 0 40 40" fill="currentColor">
+            <circle cx="20" cy="20" r="20"/>
+          </svg>
+        </span>
+      </label>
+    </div>
+    
+    <!-- Unit Toggle -->
+    <div class="unit-toggle">
+      <button 
+        class="unit-btn"
+        :class="{ 'unit-btn--active': unitMode === 'feet' }"
+        @click="unitMode = 'feet'"
+      >
+        Ft / in
+      </button>
+      <button 
+        class="unit-btn"
+        :class="{ 'unit-btn--active': unitMode === 'inches' }"
+        @click="unitMode = 'inches'"
+      >
+        Inches
+      </button>
+    </div>
+  </div>
+  
+  <!-- Sizing Tips Link -->
+  <div class="calculator-tips">
+    <a href="#size-guide" class="tips-link">Rug sizing tips</a>
+  </div>
+  
+  <!-- Notice -->
+  <div class="calculator-notice">
+    <p>Due to custom-sized rug fabrication techniques, your finished rug may vary 2" +/- in width and length. Your rug may also vary slightly in color from the sample. For more information, please see our <a href="/pages/faqs">FAQs</a>.</p>
+  </div>
+  
+  <!-- Actions -->
+  <div class="calculator-actions">
+    <form action="/cart/add" method="post" @submit.prevent="addToCart()">
+      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+      <input type="hidden" name="properties[Shape]" :value="shape">
+      <input type="hidden" name="properties[Width]" :value="widthDisplay">
+      <input type="hidden" name="properties[Length]" :value="lengthDisplay" x-show="shape === 'rectangle'">
+      <input type="hidden" name="properties[_CustomPrice]" :value="totalPrice">
+      
+      <button type="submit" class="btn btn--primary btn--large calculator-add">
+        ADD TO CART
+      </button>
+    </form>
+    
+    <button type="button" class="btn btn--secondary btn--large calculator-sample" @click="addSample()">
+      ADD SAMPLE
+    </button>
+  </div>
+</div>
+
+<script>
+  function ernestaCalculator() {
+    return {
+      shape: 'rectangle',
+      widthFeet: 5,
+      widthInches: 0,
+      lengthFeet: 5,
+      lengthInches: 0,
+      unitMode: 'feet',
+      basePrice: {{ base_price_per_sqft }},
+      debounceTimer: null,
+      
+      get widthInFeet() {
+        return this.widthFeet + (this.widthInches / 12);
+      },
+      
+      get lengthInFeet() {
+        return this.lengthFeet + (this.lengthInches / 12);
+      },
+      
+      get area() {
+        if (this.shape === 'round') {
+          const radius = this.widthInFeet / 2;
+          return Math.PI * radius * radius;
+        }
+        return this.widthInFeet * this.lengthInFeet;
+      },
+      
+      get totalPrice() {
+        let price = this.area * this.basePrice;
+        
+        // Shape multiplier
+        if (this.shape === 'round') {
+          price *= 1.15;
+        }
+        
+        // Size tier discounts
+        if (this.area > 100) price *= 0.95;
+        if (this.area > 200) price *= 0.90;
+        
+        // Round to nearest $5
+        return Math.round(price / 5) * 5;
+      },
+      
+      get displaySize() {
+        if (this.shape === 'round') {
+          return this.formatDimension(this.widthFeet, this.widthInches) + ' diameter';
+        }
+        return this.formatDimension(this.widthFeet, this.widthInches) + ' × ' + 
+               this.formatDimension(this.lengthFeet, this.lengthInches);
+      },
+      
+      get widthDisplay() {
+        return this.formatDimension(this.widthFeet, this.widthInches);
+      },
+      
+      get lengthDisplay() {
+        return this.formatDimension(this.lengthFeet, this.lengthInches);
+      },
+      
+      formatDimension(feet, inches) {
+        if (inches === 0) {
+          return feet + '′';
+        }
+        return feet + '′ ' + inches + '″';
+      },
+      
+      formatPrice(price) {
+        return '$' + Math.round(price).toLocaleString();
+      },
+      
+      init() {
+        // Store initial state in sessionStorage
+        const savedState = sessionStorage.getItem('rugCalculatorState');
+        if (savedState) {
+          const state = JSON.parse(savedState);
+          Object.assign(this, state);
+        }
+        
+        // Watch for changes
+        this.$watch('$data', () => {
+          this.saveState();
+        });
+      },
+      
+      calculatePrice() {
+        // Debounce price calculation
+        clearTimeout(this.debounceTimer);
+        this.debounceTimer = setTimeout(() => {
+          // Validation
+          if (this.widthFeet < 2 || this.lengthFeet < 2) {
+            alert('Minimum size is 2′ × 2′');
+            this.widthFeet = Math.max(2, this.widthFeet);
+            this.lengthFeet = Math.max(2, this.lengthFeet);
+          }
+          
+          if (this.widthFeet > 15) {
+            alert('Maximum width is 15′');
+            this.widthFeet = 15;
+          }
+          
+          if (this.lengthFeet > 25) {
+            alert('Maximum length is 25′');
+            this.lengthFeet = 25;
+          }
+          
+          this.saveState();
+        }, 300);
+      },
+      
+      handleRoundShape() {
+        // For round rugs, length = width
+        this.lengthFeet = this.widthFeet;
+        this.lengthInches = this.widthInches;
+        this.calculatePrice();
+      },
+      
+      saveState() {
+        const state = {
+          shape: this.shape,
+          widthFeet: this.widthFeet,
+          widthInches: this.widthInches,
+          lengthFeet: this.lengthFeet,
+          lengthInches: this.lengthInches,
+          unitMode: this.unitMode
+        };
+        sessionStorage.setItem('rugCalculatorState', JSON.stringify(state));
+      },
+      
+      async addToCart() {
+        const formData = new FormData();
+        formData.append('id', '{{ product.selected_or_first_available_variant.id }}');
+        formData.append('quantity', '1');
+        formData.append('properties[Shape]', this.shape.charAt(0).toUpperCase() + this.shape.slice(1));
+        formData.append('properties[Size]', this.displaySize);
+        formData.append('properties[Width]', this.widthDisplay);
+        if (this.shape === 'rectangle') {
+          formData.append('properties[Length]', this.lengthDisplay);
+        }
+        formData.append('properties[Area]', this.area.toFixed(1) + ' sq ft');
+        formData.append('properties[_CustomPrice]', this.totalPrice);
+        
+        try {
+          const response = await fetch('/cart/add.js', {
+            method: 'POST',
+            body: formData
+          });
+          
+          if (response.ok) {
+            // Trigger cart drawer
+            if (window.Alpine && Alpine.store('cart')) {
+              Alpine.store('cart').openDrawer();
+            }
+            // Refresh cart count
+            const cartResponse = await fetch('/cart.js');
+            const cart = await cartResponse.json();
+            document.querySelectorAll('.header__cart-count').forEach(el => {
+              el.textContent = cart.item_count;
+            });
+          }
+        } catch (error) {
+          console.error('Error adding to cart:', error);
+          alert('Error adding to cart. Please try again.');
+        }
+      },
+      
+      async addSample() {
+        // Add sample logic here
+        alert('Sample ordering coming soon!');
+      }
+    }
+  }
+</script>
+
+<style>
+  /* Ernesta-Style Calculator */
+  .calculator-ernesta {
+    max-width: 600px;
+    font-family: var(--font-primary--family);
+  }
+  
+  /* Price Header */
+  .calculator-header {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+    margin-bottom: var(--space-sm);
+  }
+  
+  .calculator-price {
+    font-size: 36px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+  
+  .calculator-size {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .calculator-size span:first-child {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+  }
+  
+  .calculator-label {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+  }
+  
+  /* Affirm Financing */
+  .calculator-financing {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+  }
+  
+  .affirm-logo {
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+  
+  .financing-link {
+    color: var(--color-text-secondary);
+    text-decoration: underline;
+  }
+  
+  /* Dimensions */
+  .calculator-dimensions {
+    margin-bottom: var(--space-lg);
+  }
+  
+  .dimension-group {
+    margin-bottom: var(--space-md);
+  }
+  
+  .dimension-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-sm);
+  }
+  
+  .dimension-selects {
+    display: flex;
+    gap: var(--space-sm);
+  }
+  
+  .dimension-select {
+    flex: 1;
+    padding: 12px 16px;
+    font-size: 16px;
+    color: var(--color-text-primary);
+    background: var(--color-surface);
+    border: none;
+    border-bottom: 2px solid var(--color-text-primary);
+    cursor: pointer;
+    transition: var(--transition-base);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23000000' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+  }
+  
+  .dimension-select:hover,
+  .dimension-select:focus {
+    border-color: var(--color-text-primary);
+    outline: none;
+  }
+  
+  /* Shape Selection */
+  .calculator-shape {
+    margin-bottom: var(--space-lg);
+  }
+  
+  .shape-options {
+    display: flex;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+  
+  .shape-option {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .shape-option input {
+    position: absolute;
+    opacity: 0;
+  }
+  
+  .shape-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border: 2px solid var(--color-border);
+    background: var(--color-surface);
+    transition: var(--transition-base);
+  }
+  
+  .shape-option input:checked + .shape-icon {
+    border-color: var(--color-text-primary);
+    background: var(--color-background-subtle);
+  }
+  
+  .shape-icon svg {
+    width: 30px;
+    height: 30px;
+    color: var(--color-text-primary);
+  }
+  
+  /* Unit Toggle */
+  .unit-toggle {
+    display: flex;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 24px;
+    padding: 2px;
+    width: fit-content;
+    margin-left: auto;
+  }
+  
+  .unit-btn {
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    background: none;
+    border: none;
+    border-radius: 22px;
+    cursor: pointer;
+    transition: var(--transition-base);
+  }
+  
+  .unit-btn--active {
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Tips Link */
+  .calculator-tips {
+    text-align: right;
+    margin-bottom: var(--space-lg);
+  }
+  
+  .tips-link {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    text-decoration: underline;
+  }
+  
+  /* Notice */
+  .calculator-notice {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--color-text-tertiary);
+    margin-bottom: var(--space-lg);
+  }
+  
+  .calculator-notice a {
+    color: inherit;
+    text-decoration: underline;
+  }
+  
+  /* Actions */
+  .calculator-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  
+  .calculator-add,
+  .calculator-sample {
+    width: 100%;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 16px 24px;
+  }
+  
+  .calculator-add {
+    background: #3B5CCF;
+    color: white;
+    border: none;
+  }
+  
+  .calculator-add:hover {
+    background: #2E4AAE;
+  }
+  
+  .calculator-sample {
+    background: transparent;
+    color: var(--color-text-primary);
+    border: 2px solid var(--color-text-primary);
+  }
+  
+  .calculator-sample:hover {
+    background: var(--color-text-primary);
+    color: white;
+  }
+  
+  /* Mobile Responsive */
+  @media (max-width: 640px) {
+    .calculator-header {
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    
+    .dimension-selects {
+      flex-direction: column;
+    }
+  }
+</style>

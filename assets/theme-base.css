@@ -141,9 +141,20 @@ h1, h2, h3, h4, h5, h6,
 
 .container {
   width: 100%;
-  max-width: var(--page-width);
+  max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: 0 var(--page-margin);
+  padding: 0 var(--container-padding);
+}
+
+/* Full-width sections with contained content */
+.section--full-width {
+  width: 100%;
+  /* Background extends full width */
+}
+
+.section--full-width .container {
+  /* Content respects max-width */
+  max-width: var(--container-max-width);
 }
 
 @media (max-width: 640px) {

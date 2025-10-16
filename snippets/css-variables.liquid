@@ -27,30 +27,41 @@
     --page-margin: {{ settings.min_page_margin }}px;
     --page-margin-mobile: 16px;
     
-  /* Restoration Hardware Minimal Color Palette */
-  --color-surface: #FFFFFF;
-  --color-background: #FFFFFF;
-  --color-background-subtle: #FAFAFA;
-  --color-foreground: #000000;
+    /* Container System */
+    --container-max-width: 1200px;
+    --container-padding: 24px;
+    --grid-gap: 24px;
+    
+  /* Ernesta-Style Color Palette */
+  --color-black-olive: #3E3A37;    /* Primary dark */
+  --color-pine-tree: #2B2C25;      /* Darkest accent */
+  --color-axolotl: #71705C;        /* Mid-tone */
+  --color-platinum: #EAE9E6;       /* Light background */
   
-  /* Text Colors - Refined */
-  --color-text-primary: #000000;
-  --color-text-secondary: #666666;
-  --color-text-tertiary: #999999;
+  /* Core Colors */
+  --color-surface: #FFFFFF;
+  --color-background: {{ settings.background_color | default: '#EAE9E6' }};
+  --color-background-subtle: var(--color-platinum);
+  --color-foreground: {{ settings.foreground_color | default: '#2B2C25' }};
+  
+  /* Text Colors */
+  --color-text-primary: var(--color-pine-tree);
+  --color-text-secondary: var(--color-black-olive);
+  --color-text-tertiary: var(--color-axolotl);
   --color-text-muted: #B8B8B8;
   --color-text-inverse: #FFFFFF;
   
-  /* Accent Colors - Extremely Subtle */
-  --color-accent: #2C2C2C;
-  --color-accent-hover: #000000;
-  --color-accent-light: rgba(0, 0, 0, 0.06);
+  /* Accent Colors */
+  --color-accent: {{ settings.accent_color | default: '#2B2C25' }};
+  --color-accent-hover: {{ settings.accent_color_hover | default: '#3E3A37' }};
+  --color-accent-light: rgba(62, 58, 55, 0.06);
   --color-success: #52C41A;
   --color-error: #FF4D4F;
     
     /* Borders */
-    --color-border: rgba(0, 0, 0, 0.06);
-    --color-border-medium: rgba(0, 0, 0, 0.12);
-    --color-border-dark: rgba(0, 0, 0, 0.24);
+    --color-border: rgba(62, 58, 55, 0.15);      /* Black Olive at 15% */
+    --color-border-medium: rgba(62, 58, 55, 0.25);
+    --color-border-dark: rgba(62, 58, 55, 0.40);
     
     /* Shadows - Premium, subtle depth */
     --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.03);

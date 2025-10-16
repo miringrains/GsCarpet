@@ -1,0 +1,285 @@
+{% comment %}
+  Rug Pad Selector
+  Allows customers to add rug pad options to their purchase
+{% endcomment %}
+
+<div class="rug-pad-selector" x-data="rugPadSelector()">
+  <div class="pad-header">
+    <h4 class="pad-title">Protect Your Investment</h4>
+    <p class="pad-subtitle">Add a premium rug pad for comfort and longevity</p>
+  </div>
+  
+  <div class="pad-options">
+    <!-- No Pad Option -->
+    <label class="pad-option">
+      <input 
+        type="radio" 
+        name="properties[Rug Pad]" 
+        value="None"
+        x-model="selectedPad"
+        @change="updatePadPrice()"
+      >
+      <div class="pad-option__content">
+        <div class="pad-option__header">
+          <span class="pad-option__name">No Rug Pad</span>
+          <span class="pad-option__price">$0</span>
+        </div>
+      </div>
+    </label>
+    
+    <!-- Classic Felt Attached -->
+    <label class="pad-option">
+      <input 
+        type="radio" 
+        name="properties[Rug Pad]" 
+        value="Classic Felt - Attached"
+        x-model="selectedPad"
+        @change="updatePadPrice()"
+      >
+      <div class="pad-option__content">
+        <div class="pad-option__header">
+          <span class="pad-option__name">Classic Felt - Attached</span>
+          <span class="pad-option__price">+$100</span>
+        </div>
+        <p class="pad-option__description">
+          Premium felt padding permanently attached to your rug for seamless comfort
+        </p>
+        <ul class="pad-option__features">
+          <li>Extra cushioning underfoot</li>
+          <li>Protects floors from scratches</li>
+          <li>Extends rug life</li>
+        </ul>
+      </div>
+    </label>
+    
+    <!-- Classic Felt Detached -->
+    <label class="pad-option">
+      <input 
+        type="radio" 
+        name="properties[Rug Pad]" 
+        value="Classic Felt - Detached"
+        x-model="selectedPad"
+        @change="updatePadPrice()"
+      >
+      <div class="pad-option__content">
+        <div class="pad-option__header">
+          <span class="pad-option__name">Classic Felt - Detached</span>
+          <span class="pad-option__price">+$100</span>
+        </div>
+        <p class="pad-option__description">
+          Separate felt pad for flexibility and easy cleaning
+        </p>
+        <ul class="pad-option__features">
+          <li>Removable for cleaning</li>
+          <li>Reusable with other rugs</li>
+          <li>Same comfort as attached</li>
+        </ul>
+      </div>
+    </label>
+    
+    <!-- Dual Grip Detached -->
+    <label class="pad-option pad-option--recommended">
+      <input 
+        type="radio" 
+        name="properties[Rug Pad]" 
+        value="Dual Grip - Detached"
+        x-model="selectedPad"
+        @change="updatePadPrice()"
+      >
+      <div class="pad-option__content">
+        <span class="pad-option__badge">Recommended</span>
+        <div class="pad-option__header">
+          <span class="pad-option__name">Dual Grip - Detached</span>
+          <span class="pad-option__price">+$120</span>
+        </div>
+        <p class="pad-option__description">
+          Premium dual-surface technology for maximum grip and protection
+        </p>
+        <ul class="pad-option__features">
+          <li>Superior non-slip grip</li>
+          <li>Prevents rug movement</li>
+          <li>Ideal for high-traffic areas</li>
+          <li>Safe for all floor types</li>
+        </ul>
+      </div>
+    </label>
+  </div>
+  
+  <!-- Hidden input for pad price -->
+  <input type="hidden" name="properties[_PadPrice]" :value="padPrice">
+</div>
+
+<script>
+  function rugPadSelector() {
+    return {
+      selectedPad: 'None',
+      padPrice: 0,
+      
+      padPrices: {
+        'None': 0,
+        'Classic Felt - Attached': 100,
+        'Classic Felt - Detached': 100,
+        'Dual Grip - Detached': 120
+      },
+      
+      init() {
+        // Pre-select recommended option
+        this.selectedPad = 'Dual Grip - Detached';
+        this.updatePadPrice();
+      },
+      
+      updatePadPrice() {
+        this.padPrice = this.padPrices[this.selectedPad] || 0;
+        // Dispatch event for other components to listen to
+        this.$dispatch('pad-price-updated', { pad: this.selectedPad, price: this.padPrice });
+      }
+    }
+  }
+</script>
+
+<style>
+  .rug-pad-selector {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border);
+  }
+  
+  .pad-header {
+    margin-bottom: var(--space-md);
+  }
+  
+  .pad-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-xs);
+  }
+  
+  .pad-subtitle {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+  }
+  
+  .pad-options {
+    display: grid;
+    gap: var(--space-sm);
+  }
+  
+  .pad-option {
+    position: relative;
+    display: block;
+    cursor: pointer;
+  }
+  
+  .pad-option input {
+    position: absolute;
+    opacity: 0;
+  }
+  
+  .pad-option__content {
+    position: relative;
+    padding: var(--space-md);
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+  }
+  
+  .pad-option:hover .pad-option__content {
+    border-color: var(--color-axolotl);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  
+  .pad-option input:checked + .pad-option__content {
+    background: var(--color-background-subtle);
+    border-color: var(--color-pine-tree);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .pad-option__badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 4px 12px;
+    background: var(--color-pine-tree);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 4px;
+  }
+  
+  .pad-option__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .pad-option__name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+  
+  .pad-option__price {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-pine-tree);
+  }
+  
+  .pad-option__description {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-sm);
+    line-height: 1.5;
+  }
+  
+  .pad-option__features {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+    color: var(--color-text-tertiary);
+  }
+  
+  .pad-option__features li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 4px;
+  }
+  
+  .pad-option__features li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--color-pine-tree);
+    font-weight: 600;
+  }
+  
+  /* Recommended Option Highlight */
+  .pad-option--recommended .pad-option__content {
+    border-color: var(--color-axolotl);
+  }
+  
+  .pad-option--recommended input:checked + .pad-option__content {
+    border-color: var(--color-pine-tree);
+    border-width: 2px;
+  }
+  
+  /* Mobile Responsive */
+  @media (max-width: 640px) {
+    .pad-option__content {
+      padding: var(--space-sm);
+    }
+    
+    .pad-option__features {
+      display: none;
+    }
+    
+    .pad-option input:checked + .pad-option__content .pad-option__features {
+      display: block;
+    }
+  }
+</style>

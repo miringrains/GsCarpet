@@ -1,383 +1,337 @@
 /**
- * Custom Size Calculator for Rugs
- * Handles size calculations, price updates, and cart integration
+ * Custom Rug Size Calculator
+ * Advanced pricing logic and utilities for custom rug calculations
  */
 
-class CustomSizeCalculator {
-  constructor() {
-    this.init();
-  }
-
-  init() {
-    // Initialize Alpine.js components for size calculator
-    document.addEventListener('alpine:init', () => {
-      Alpine.data('advancedSizeCalculator', () => ({
-        // State
-        sizeMode: 'standard',
-        shape: 'rectangle',
-        width: 8,
-        length: 10,
-        unit: 'ft',
-        basePrice: 25,
-        quantity: 1,
-        
-        // Room presets
-        roomPresets: {
-          living: { width: 8, length: 10, name: 'Living Room' },
-          dining: { width: 9, length: 12, name: 'Dining Room' },
-          bedroom: { width: 6, length: 9, name: 'Bedroom' },
-          hallway: { width: 3, length: 10, name: 'Hallway' },
-          entryway: { width: 5, length: 7, name: 'Entryway' },
-          kitchen: { width: 5, length: 8, name: 'Kitchen' }
-        },
-        
-        // Initialize
-        init() {
-          // Get base price from product metafields if available
-          const priceElement = document.querySelector('[data-price-per-sqft]');
-          if (priceElement) {
-            this.basePrice = parseFloat(priceElement.dataset.pricePerSqft);
-          }
-          
-          // Load saved preferences
-          this.loadPreferences();
-        },
-        
-        // Computed properties
-        get widthInFeet() {
-          return this.convertToFeet(this.width, this.unit);
-        },
-        
-        get lengthInFeet() {
-          return this.convertToFeet(this.length, this.unit);
-        },
-        
-        get area() {
-          const w = this.widthInFeet;
-          const l = this.lengthInFeet;
-          
-          switch (this.shape) {
-            case 'round':
-              return Math.PI * Math.pow(w / 2, 2);
-            case 'oval':
-              return Math.PI * (w / 2) * (l / 2);
-            default:
-              return w * l;
-          }
-        },
-        
-        get totalPrice() {
-          return this.area * this.basePrice * this.quantity;
-        },
-        
-        get pricePerRug() {
-          return this.area * this.basePrice;
-        },
-        
-        get sizeText() {
-          if (this.shape === 'square' || this.shape === 'round') {
-            return `${this.width} ${this.unit}`;
-          }
-          return `${this.width} x ${this.length} ${this.unit}`;
-        },
-        
-        get areaText() {
-          return `${this.area.toFixed(1)} sq ft`;
-        },
-        
-        // Methods
-        selectShape(shape) {
-          this.shape = shape;
-          
-          // Adjust dimensions for special shapes
-          if (shape === 'square') {
-            this.length = this.width;
-          } else if (shape === 'runner') {
-            this.width = 3;
-            this.length = 10;
-          }
-          
-          this.savePreferences();
-        },
-        
-        selectStandardSize(width, length) {
-          this.sizeMode = 'standard';
-          this.width = width;
-          this.length = length;
-          this.shape = 'rectangle';
-          this.unit = 'ft';
-          this.savePreferences();
-        },
-        
-        selectRoomPreset(roomType) {
-          const preset = this.roomPresets[roomType];
-          if (preset) {
-            this.width = preset.width;
-            this.length = preset.length;
-            this.shape = 'rectangle';
-            this.unit = 'ft';
-          }
-        },
-        
-        convertToFeet(value, fromUnit) {
-          switch (fromUnit) {
-            case 'in':
-              return value / 12;
-            case 'cm':
-              return value / 30.48;
-            default:
-              return value;
-          }
-        },
-        
-        convertFromFeet(value, toUnit) {
-          switch (toUnit) {
-            case 'in':
-              return value * 12;
-            case 'cm':
-              return value * 30.48;
-            default:
-              return value;
-          }
-        },
-        
-        changeUnit(newUnit) {
-          // Convert current values to new unit
-          const widthInFeet = this.convertToFeet(this.width, this.unit);
-          const lengthInFeet = this.convertToFeet(this.length, this.unit);
-          
-          this.width = Math.round(this.convertFromFeet(widthInFeet, newUnit) * 10) / 10;
-          this.length = Math.round(this.convertFromFeet(lengthInFeet, newUnit) * 10) / 10;
-          this.unit = newUnit;
-          
-          this.savePreferences();
-        },
-        
-        validateDimensions() {
-          // Minimum and maximum sizes
-          const minSize = 1;
-          const maxSize = 30; // feet
-          
-          const widthInFeet = this.widthInFeet;
-          const lengthInFeet = this.lengthInFeet;
-          
-          if (widthInFeet < minSize || lengthInFeet < minSize) {
-            return { valid: false, message: 'Minimum size is 1 ft' };
-          }
-          
-          if (widthInFeet > maxSize || lengthInFeet > maxSize) {
-            return { valid: false, message: 'Maximum size is 30 ft' };
-          }
-          
-          return { valid: true };
-        },
-        
-        formatPrice(price) {
-          return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD'
-          }).format(price);
-        },
-        
-        savePreferences() {
-          // Save user preferences to localStorage
-          const preferences = {
-            shape: this.shape,
-            unit: this.unit,
-            lastWidth: this.width,
-            lastLength: this.length
-          };
-          localStorage.setItem('rugCalculatorPrefs', JSON.stringify(preferences));
-        },
-        
-        loadPreferences() {
-          // Load saved preferences
-          const saved = localStorage.getItem('rugCalculatorPrefs');
-          if (saved) {
-            try {
-              const prefs = JSON.parse(saved);
-              this.shape = prefs.shape || 'rectangle';
-              this.unit = prefs.unit || 'ft';
-            } catch (e) {
-              console.error('Error loading preferences:', e);
-            }
-          }
-        },
-        
-        async addToCart() {
-          const validation = this.validateDimensions();
-          if (!validation.valid) {
-            alert(validation.message);
-            return;
-          }
-          
-          // Prepare cart data
-          const formData = new FormData();
-          const variantId = document.querySelector('[name="id"]').value;
-          
-          formData.append('id', variantId);
-          formData.append('quantity', this.quantity);
-          
-          // Add custom properties
-          formData.append('properties[Shape]', this.shape.charAt(0).toUpperCase() + this.shape.slice(1));
-          formData.append('properties[Size]', this.sizeText);
-          formData.append('properties[Area]', this.areaText);
-          formData.append('properties[Unit Price]', this.formatPrice(this.pricePerRug));
-          formData.append('properties[Total Price]', this.formatPrice(this.totalPrice));
-          
-          if (this.shape !== 'square' && this.shape !== 'round') {
-            formData.append('properties[Width]', `${this.width} ${this.unit}`);
-            formData.append('properties[Length]', `${this.length} ${this.unit}`);
-          } else {
-            const dimension = this.shape === 'round' ? 'Diameter' : 'Size';
-            formData.append(`properties[${dimension}]`, `${this.width} ${this.unit}`);
-          }
-          
-          try {
-            const response = await fetch('/cart/add.js', {
-              method: 'POST',
-              body: formData
-            });
-            
-            if (response.ok) {
-              const item = await response.json();
-              
-              // Trigger cart update event
-              document.dispatchEvent(new CustomEvent('cart:added', {
-                detail: { item, quantity: this.quantity }
-              }));
-              
-              // Open cart drawer if available
-              if (window.Alpine && Alpine.store('cart')) {
-                Alpine.store('cart').openDrawer();
-              }
-              
-              // Show success message
-              this.showSuccessMessage();
-            } else {
-              throw new Error('Failed to add to cart');
-            }
-          } catch (error) {
-            console.error('Error adding to cart:', error);
-            alert('Error adding to cart. Please try again.');
-          }
-        },
-        
-        showSuccessMessage() {
-          // Create and show success notification
-          const notification = document.createElement('div');
-          notification.className = 'cart-notification';
-          notification.innerHTML = `
-            <div class="cart-notification__content">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm-1 15l-5-5 1.41-1.41L9 12.17l7.59-7.59L18 6l-9 9z"/>
-              </svg>
-              <span>Custom rug added to cart!</span>
-            </div>
-          `;
-          
-          document.body.appendChild(notification);
-          
-          // Animate in
-          setTimeout(() => {
-            notification.classList.add('cart-notification--visible');
-          }, 10);
-          
-          // Remove after 3 seconds
-          setTimeout(() => {
-            notification.classList.remove('cart-notification--visible');
-            setTimeout(() => {
-              notification.remove();
-            }, 300);
-          }, 3000);
-        }
-      }));
-    });
-  }
-  
-  // Utility functions
-  static calculateShipping(area, location = 'US') {
-    // Calculate shipping based on size and location
-    const baseShipping = 15;
-    const perSqFt = 0.5;
-    
-    let shipping = baseShipping + (area * perSqFt);
-    
-    // International shipping
-    if (location !== 'US') {
-      shipping *= 2.5;
-    }
-    
-    // Free shipping threshold
-    if (shipping > 100 && location === 'US') {
-      shipping = 0;
-    }
-    
-    return shipping;
-  }
-  
-  static estimateProductionTime(area) {
-    // Estimate production time based on size
-    const baseDays = 7;
-    const perSqFt = 0.2;
-    
-    const days = Math.ceil(baseDays + (area * perSqFt));
-    
-    return {
-      min: days,
-      max: days + 3,
-      text: `${days}-${days + 3} business days`
+class RugPriceCalculator {
+  constructor(options = {}) {
+    this.basePricePerSqFt = options.basePricePerSqFt || 23;
+    this.shapeMultipliers = {
+      rectangle: 1.0,
+      square: 1.0,
+      round: 1.15,
+      oval: 1.10,
+      runner: 1.05
+    };
+    this.materialMultipliers = options.materialMultipliers || {
+      wool: 1.0,
+      jute: 0.8,
+      silk: 2.5,
+      synthetic: 0.7,
+      cotton: 0.9
     };
   }
+
+  /**
+   * Calculate area based on dimensions and shape
+   */
+  calculateArea(width, length, shape = 'rectangle') {
+    switch (shape) {
+      case 'round':
+        // For round rugs, use width as diameter
+        const radius = width / 2;
+        return Math.PI * radius * radius;
+      
+      case 'oval':
+        // Oval area = π × a × b (where a and b are semi-axes)
+        return Math.PI * (width / 2) * (length / 2);
+      
+      case 'square':
+        // For square, length equals width
+        return width * width;
+      
+      default:
+        // Rectangle or runner
+        return width * length;
+    }
+  }
+
+  /**
+   * Get size tier discount based on area
+   */
+  getSizeTierMultiplier(area) {
+    if (area >= 200) return 0.90;  // 10% discount for very large rugs
+    if (area >= 100) return 0.95;  // 5% discount for large rugs
+    if (area >= 50) return 0.98;   // 2% discount for medium-large rugs
+    return 1.0;
+  }
+
+  /**
+   * Calculate total price
+   */
+  calculatePrice(dimensions, options = {}) {
+    const {
+      width,
+      length,
+      shape = 'rectangle',
+      material = 'wool',
+      includeProtection = false,
+      includePad = false,
+      padType = 'classic-detached'
+    } = { ...dimensions, ...options };
+
+    // Calculate base area
+    const area = this.calculateArea(width, length, shape);
+    
+    // Base price calculation
+    let price = area * this.basePricePerSqFt;
+    
+    // Apply shape multiplier
+    price *= this.shapeMultipliers[shape] || 1.0;
+    
+    // Apply material multiplier
+    price *= this.materialMultipliers[material] || 1.0;
+    
+    // Apply size tier discount
+    price *= this.getSizeTierMultiplier(area);
+    
+    // Add-ons
+    if (includeProtection) {
+      // Protection treatment scales with size
+      price += Math.max(62, area * 0.5);
+    }
+    
+    if (includePad) {
+      // Pad pricing
+      const padPrices = {
+        'classic-attached': 100,
+        'classic-detached': 100,
+        'dual-grip': 120
+      };
+      price += padPrices[padType] || 100;
+    }
+    
+    // Round to nearest $5
+    return Math.round(price / 5) * 5;
+  }
+
+  /**
+   * Format dimension for display
+   */
+  formatDimension(feet, inches = 0) {
+    if (inches === 0) {
+      return `${feet}′`;
+    }
+    return `${feet}′ ${inches}″`;
+  }
+
+  /**
+   * Format size for display
+   */
+  formatSize(width, length, shape = 'rectangle') {
+    const widthDisplay = this.formatDimension(Math.floor(width), Math.round((width % 1) * 12));
+    
+    if (shape === 'round') {
+      return `${widthDisplay} diameter`;
+    }
+    
+    if (shape === 'square') {
+      return widthDisplay;
+    }
+    
+    const lengthDisplay = this.formatDimension(Math.floor(length), Math.round((length % 1) * 12));
+    return `${widthDisplay} × ${lengthDisplay}`;
+  }
+
+  /**
+   * Validate dimensions
+   */
+  validateDimensions(width, length, shape = 'rectangle') {
+    const errors = [];
+    
+    // Minimum size validation
+    const minSize = 2; // 2 feet minimum
+    if (width < minSize) {
+      errors.push(`Width must be at least ${minSize} feet`);
+    }
+    
+    if (shape !== 'round' && shape !== 'square' && length < minSize) {
+      errors.push(`Length must be at least ${minSize} feet`);
+    }
+    
+    // Maximum size validation
+    const maxWidth = 15;
+    const maxLength = 25;
+    
+    if (width > maxWidth) {
+      errors.push(`Width cannot exceed ${maxWidth} feet`);
+    }
+    
+    if (shape !== 'round' && shape !== 'square' && length > maxLength) {
+      errors.push(`Length cannot exceed ${maxLength} feet`);
+    }
+    
+    // Shape-specific validation
+    if (shape === 'round' && width > 15) {
+      errors.push('Round rugs cannot exceed 15 feet in diameter');
+    }
+    
+    if (shape === 'runner') {
+      const ratio = length / width;
+      if (ratio < 2.5) {
+        errors.push('Runners should be at least 2.5 times longer than they are wide');
+      }
+    }
+    
+    return {
+      valid: errors.length === 0,
+      errors
+    };
+  }
+
+  /**
+   * Get room size recommendations
+   */
+  getRoomRecommendations() {
+    return {
+      'living-room': {
+        small: { width: 5, length: 7, label: 'Small Living Room' },
+        medium: { width: 8, length: 10, label: 'Medium Living Room' },
+        large: { width: 9, length: 12, label: 'Large Living Room' }
+      },
+      'dining-room': {
+        '4-seat': { width: 6, length: 8, label: '4-Seat Table' },
+        '6-seat': { width: 8, length: 10, label: '6-Seat Table' },
+        '8-seat': { width: 9, length: 12, label: '8-Seat Table' }
+      },
+      'bedroom': {
+        twin: { width: 5, length: 8, label: 'Twin Bed' },
+        queen: { width: 6, length: 9, label: 'Queen Bed' },
+        king: { width: 8, length: 10, label: 'King Bed' }
+      },
+      'hallway': {
+        narrow: { width: 2.5, length: 8, label: 'Narrow Hallway' },
+        standard: { width: 3, length: 10, label: 'Standard Hallway' },
+        wide: { width: 4, length: 12, label: 'Wide Hallway' }
+      }
+    };
+  }
+
+  /**
+   * Convert between units
+   */
+  convertUnits(value, fromUnit, toUnit) {
+    // Conversion factors to feet
+    const toFeet = {
+      'ft': 1,
+      'in': 1 / 12,
+      'cm': 1 / 30.48,
+      'm': 3.28084
+    };
+    
+    // Convert to feet first
+    const inFeet = value * (toFeet[fromUnit] || 1);
+    
+    // Convert from feet to target unit
+    const fromFeet = {
+      'ft': 1,
+      'in': 12,
+      'cm': 30.48,
+      'm': 0.3048
+    };
+    
+    return inFeet * (fromFeet[toUnit] || 1);
+  }
 }
 
-// Initialize when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    new CustomSizeCalculator();
+// Initialize global calculator instance
+window.rugCalculator = new RugPriceCalculator();
+
+// Alpine.js store for calculator state
+document.addEventListener('alpine:init', () => {
+  Alpine.store('calculator', {
+    // State
+    shape: 'rectangle',
+    widthFeet: 5,
+    widthInches: 0,
+    lengthFeet: 5,
+    lengthInches: 0,
+    material: 'wool',
+    includeProtection: false,
+    includePad: false,
+    padType: 'classic-detached',
+    
+    // Computed
+    get width() {
+      return this.widthFeet + (this.widthInches / 12);
+    },
+    
+    get length() {
+      return this.lengthFeet + (this.lengthInches / 12);
+    },
+    
+    get area() {
+      return window.rugCalculator.calculateArea(this.width, this.length, this.shape);
+    },
+    
+    get price() {
+      return window.rugCalculator.calculatePrice({
+        width: this.width,
+        length: this.length,
+        shape: this.shape,
+        material: this.material,
+        includeProtection: this.includeProtection,
+        includePad: this.includePad,
+        padType: this.padType
+      });
+    },
+    
+    get displaySize() {
+      return window.rugCalculator.formatSize(this.width, this.length, this.shape);
+    },
+    
+    // Methods
+    setDimensions(widthFeet, widthInches, lengthFeet, lengthInches) {
+      this.widthFeet = widthFeet;
+      this.widthInches = widthInches;
+      this.lengthFeet = lengthFeet;
+      this.lengthInches = lengthInches;
+    },
+    
+    setShape(shape) {
+      this.shape = shape;
+      // For round/square, make length equal width
+      if (shape === 'round' || shape === 'square') {
+        this.lengthFeet = this.widthFeet;
+        this.lengthInches = this.widthInches;
+      }
+    },
+    
+    validate() {
+      return window.rugCalculator.validateDimensions(this.width, this.length, this.shape);
+    }
   });
-} else {
-  new CustomSizeCalculator();
-}
+});
 
-// Export for use in other scripts
-window.CustomSizeCalculator = CustomSizeCalculator;
-
-// Add notification styles
-const styles = `
-  .cart-notification {
-    position: fixed;
-    top: 100px;
-    right: 20px;
-    z-index: 9999;
-    transform: translateX(400px);
-    transition: transform 0.3s ease;
-  }
+// Utility function for Shopify integration
+window.addCustomRugToCart = async function(productId, properties) {
+  const formData = new FormData();
+  formData.append('id', productId);
+  formData.append('quantity', 1);
   
-  .cart-notification--visible {
-    transform: translateX(0);
-  }
+  // Add all properties
+  Object.entries(properties).forEach(([key, value]) => {
+    formData.append(`properties[${key}]`, value);
+  });
   
-  .cart-notification__content {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 24px;
-    background-color: #000;
-    color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    font-size: 16px;
-    font-weight: 500;
+  try {
+    const response = await fetch('/cart/add.js', {
+      method: 'POST',
+      body: formData
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to add to cart');
+    }
+    
+    const result = await response.json();
+    
+    // Trigger cart update event
+    document.dispatchEvent(new CustomEvent('cart:added', { detail: result }));
+    
+    return result;
+  } catch (error) {
+    console.error('Error adding custom rug to cart:', error);
+    throw error;
   }
-  
-  .cart-notification__content svg {
-    flex-shrink: 0;
-    color: #52C41A;
-  }
-`;
-
-// Add styles to document
-const styleSheet = document.createElement('style');
-styleSheet.textContent = styles;
-document.head.appendChild(styleSheet);
+};

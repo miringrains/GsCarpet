@@ -100,7 +100,17 @@
         <!-- Custom Size Calculator Integration -->
         {% if section.settings.show_size_calculator %}
           <div class="product-info__calculator">
-            {% render 'size-calculator', product: product %}
+            {% render 'size-calculator-ernesta', product: product %}
+            
+            <!-- Rug Pad Options -->
+            {% if section.settings.show_rug_pad_options %}
+              {% render 'rug-pad-selector', product: product %}
+            {% endif %}
+            
+            <!-- Free Add-ons -->
+            {% if section.settings.show_free_addons %}
+              {% render 'cleaning-product-selector', product: product %}
+            {% endif %}
           </div>
         {% else %}
           <!-- Standard Product Form -->
@@ -532,6 +542,20 @@
       "label": "Show custom size calculator",
       "default": true,
       "info": "Display the custom size calculator instead of standard options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rug_pad_options",
+      "label": "Show rug pad options",
+      "default": true,
+      "info": "Display rug pad selection with attached/detached options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_free_addons",
+      "label": "Show free add-ons",
+      "default": true,
+      "info": "Display free cleaning service and product selection"
     }
   ],
   "disabled_on": {

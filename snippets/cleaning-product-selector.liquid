@@ -1,0 +1,304 @@
+{% comment %}
+  Free Cleaning Product Selector
+  Allows customers to select free cleaning add-ons with their rug purchase
+{% endcomment %}
+
+<div class="product-addons" x-data="productAddons()">
+  <div class="addons-header">
+    <h3 class="addons-title">Free Add-ons with Your Purchase</h3>
+    <p class="addons-subtitle">Enhance your rug care with these complimentary items</p>
+  </div>
+  
+  <!-- Free Professional Cleaning -->
+  <div class="addon-item">
+    <label class="addon-checkbox">
+      <input 
+        type="checkbox" 
+        name="properties[Free Professional Cleaning]" 
+        value="Yes"
+        x-model="freeCleaningIncluded"
+      >
+      <div class="addon-checkbox__content">
+        <div class="addon-checkbox__check">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="addon-checkbox__info">
+          <span class="addon-checkbox__title">1 Free Professional Cleaning Service</span>
+          <span class="addon-checkbox__value">$150 value</span>
+        </div>
+      </div>
+    </label>
+    <p class="addon-description">Redeem within 2 years of purchase at any participating location</p>
+  </div>
+  
+  <!-- Free Cleaning Product -->
+  <div class="addon-item">
+    <h4 class="addon-label">Choose Your Free G's Cleaning Product</h4>
+    <div class="cleaning-product-selector">
+      <!-- All Purpose Cleaner -->
+      <label class="cleaning-product-option">
+        <input 
+          type="radio" 
+          name="properties[Free Cleaning Product]" 
+          value="G's All Purpose Cleaner"
+          x-model="selectedCleaningProduct"
+        >
+        <div class="cleaning-product-label">
+          <img 
+            src="{{ 'gs-apc-v2.webp' | asset_url }}" 
+            alt="G's All Purpose Cleaner"
+            class="cleaning-product-image"
+            loading="lazy"
+          >
+          <span class="cleaning-product-name">G's All Purpose Cleaner</span>
+          <span class="cleaning-product-value">$29 value</span>
+        </div>
+      </label>
+      
+      <!-- Stain & Odor -->
+      <label class="cleaning-product-option">
+        <input 
+          type="radio" 
+          name="properties[Free Cleaning Product]" 
+          value="G's Stain & Odor"
+          x-model="selectedCleaningProduct"
+        >
+        <div class="cleaning-product-label">
+          <img 
+            src="{{ 'gs-stain-odor-v2.webp' | asset_url }}" 
+            alt="G's Stain & Odor"
+            class="cleaning-product-image"
+            loading="lazy"
+          >
+          <span class="cleaning-product-name">G's Stain & Odor</span>
+          <span class="cleaning-product-value">$34 value</span>
+        </div>
+      </label>
+    </div>
+  </div>
+</div>
+
+<script>
+  function productAddons() {
+    return {
+      freeCleaningIncluded: true,
+      selectedCleaningProduct: "G's All Purpose Cleaner",
+      
+      init() {
+        // Pre-select the free cleaning by default
+        this.freeCleaningIncluded = true;
+      }
+    }
+  }
+</script>
+
+<style>
+  .product-addons {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border);
+  }
+  
+  .addons-header {
+    margin-bottom: var(--space-lg);
+  }
+  
+  .addons-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-xs);
+  }
+  
+  .addons-subtitle {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+  }
+  
+  .addon-item {
+    margin-bottom: var(--space-lg);
+  }
+  
+  .addon-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-md);
+    display: block;
+  }
+  
+  /* Checkbox Style */
+  .addon-checkbox {
+    display: block;
+    cursor: pointer;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .addon-checkbox input {
+    position: absolute;
+    opacity: 0;
+  }
+  
+  .addon-checkbox__content {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition: var(--transition-base);
+  }
+  
+  .addon-checkbox input:checked + .addon-checkbox__content {
+    background: var(--color-background-subtle);
+    border-color: var(--color-pine-tree);
+  }
+  
+  .addon-checkbox__check {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--color-border);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-surface);
+    transition: var(--transition-base);
+  }
+  
+  .addon-checkbox input:checked + .addon-checkbox__content .addon-checkbox__check {
+    background: var(--color-pine-tree);
+    border-color: var(--color-pine-tree);
+  }
+  
+  .addon-checkbox__check svg {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: var(--transition-base);
+    color: white;
+  }
+  
+  .addon-checkbox input:checked + .addon-checkbox__content .addon-checkbox__check svg {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  .addon-checkbox__info {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .addon-checkbox__title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+  }
+  
+  .addon-checkbox__value {
+    font-size: 14px;
+    color: var(--color-text-tertiary);
+    font-style: italic;
+  }
+  
+  .addon-description {
+    font-size: 13px;
+    color: var(--color-text-tertiary);
+    margin-left: 36px;
+  }
+  
+  /* Cleaning Product Selector */
+  .cleaning-product-selector {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .cleaning-product-option {
+    position: relative;
+    flex: 1;
+    max-width: 160px;
+    cursor: pointer;
+  }
+  
+  .cleaning-product-option input {
+    position: absolute;
+    opacity: 0;
+  }
+  
+  .cleaning-product-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    border: 2px solid var(--color-border);
+    border-radius: 12px;
+    background: var(--color-surface);
+    transition: all 0.2s ease;
+    text-align: center;
+  }
+  
+  .cleaning-product-label:hover {
+    border-color: var(--color-axolotl);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .cleaning-product-option input:checked + .cleaning-product-label {
+    border-color: var(--color-pine-tree);
+    background: var(--color-platinum);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+  
+  .cleaning-product-image {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    background: white;
+    padding: 8px;
+  }
+  
+  .cleaning-product-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  
+  .cleaning-product-value {
+    font-size: 12px;
+    color: var(--color-text-tertiary);
+    font-style: italic;
+  }
+  
+  /* Mobile Responsive */
+  @media (max-width: 640px) {
+    .cleaning-product-selector {
+      flex-direction: column;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+    
+    .cleaning-product-option {
+      max-width: 100%;
+    }
+    
+    .cleaning-product-label {
+      flex-direction: row;
+      text-align: left;
+      gap: 16px;
+    }
+    
+    .cleaning-product-image {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 0;
+    }
+  }
+</style>
