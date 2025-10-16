@@ -12,6 +12,7 @@
     "hero": {
       "type": "hero-minimal",
       "settings": {
+        "background_image": "shopify://shop_images/3_2.jpg",
         "subtitle": "Premium Collection",
         "title": "Handcrafted Rugs for Modern Living",
         "text": "Discover our curated collection of premium rugs, crafted with care and designed to transform your space.",
@@ -29,25 +30,34 @@
           "type": "collection",
           "settings": {
             "collection": "living-room",
-            "title": "Living Room"
+            "image": "shopify://shop_images/AdobeStock_192950948.webp",
+            "title": "Living Room",
+            "subtitle": ""
           }
         },
         "collection_2": {
           "type": "collection",
           "settings": {
             "collection": "bedroom",
-            "title": "Bedroom"
+            "image": "shopify://shop_images/AB98_swatch.jpg",
+            "title": "Bedroom",
+            "subtitle": ""
           }
         },
         "collection_3": {
           "type": "collection",
           "settings": {
             "collection": "outdoor",
-            "title": "Outdoor"
+            "title": "Outdoor",
+            "subtitle": ""
           }
         }
       },
-      "block_order": ["collection_1", "collection_2", "collection_3"],
+      "block_order": [
+        "collection_1",
+        "collection_2",
+        "collection_3"
+      ],
       "settings": {
         "subtitle": "Curated Collections",
         "title": "Shop by Room",
@@ -88,7 +98,11 @@
           }
         }
       },
-      "block_order": ["testimonial_1", "testimonial_2", "testimonial_3"],
+      "block_order": [
+        "testimonial_1",
+        "testimonial_2",
+        "testimonial_3"
+      ],
       "settings": {
         "title": "What Our Customers Say",
         "autoplay": true,
