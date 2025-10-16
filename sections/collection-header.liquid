@@ -12,7 +12,7 @@
     <div class="collection-header__overlay" style="opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }}"></div>
   {% endif %}
   
-  <div class="container">
+  <div class="collection-header__container">
     <div class="collection-header__content">
       <h1 class="collection-header__title text-h1">{{ collection.title }}</h1>
       {% if collection.description != blank %}
@@ -82,7 +82,7 @@
       "step": 50,
       "unit": "px",
       "label": "Minimum height",
-      "default": 350
+      "default": 280
     },
     {
       "type": "range",
@@ -92,7 +92,7 @@
       "step": 50,
       "unit": "px",
       "label": "Minimum height (mobile)",
-      "default": 250
+      "default": 200
     },
     {
       "type": "header",

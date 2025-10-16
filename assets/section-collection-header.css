@@ -1,13 +1,14 @@
 /* Collection Header Section Styles */
 .collection-header {
   position: relative;
-  padding: var(--space-3xl) 0 var(--space-2xl);
+  width: 100%;
+  padding: var(--space-2xl) 0;
   background-color: var(--color-background-subtle);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   overflow: hidden;
-  min-height: var(--collection-header-min-height, 350px);
+  min-height: var(--collection-header-min-height, 280px);
   display: flex;
   align-items: center;
 }
@@ -19,9 +20,16 @@
   z-index: 1;
 }
 
-.collection-header__content {
+.collection-header__container {
   position: relative;
   z-index: 2;
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.collection-header__content {
   max-width: 800px;
   text-align: var(--collection-header-text-align, center);
   margin-left: var(--collection-header-content-margin-left);
@@ -49,8 +57,8 @@
 
 @media (max-width: 768px) {
   .collection-header {
-    min-height: var(--collection-header-min-height-mobile, 250px);
-    padding: var(--space-2xl) 0 var(--space-xl);
+    min-height: var(--collection-header-min-height-mobile, 200px);
+    padding: var(--space-xl) 0;
   }
   
   .collection-header__content {
