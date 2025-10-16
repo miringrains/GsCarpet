@@ -7,6 +7,7 @@
   class="cart-drawer"
   x-data="cartDrawer()"
   x-show="$store.cart.drawerOpen"
+  x-cloak
   x-transition:enter="transition ease-out duration-300"
   x-transition:enter-start="translate-x-full"
   x-transition:enter-end="translate-x-0"
@@ -226,6 +227,7 @@
 <div 
   class="cart-drawer__overlay"
   x-show="$store.cart.drawerOpen"
+  x-cloak
   x-transition:enter="transition ease-out duration-300"
   x-transition:enter-start="opacity-0"
   x-transition:enter-end="opacity-1"
@@ -242,20 +244,25 @@
 
 <script>
   // Alpine.js store for cart state
-  document.addEventListener('alpine:init', () => {
-    Alpine.store('cart', {
-      drawerOpen: false,
-      updating: false,
-      
-      openDrawer() {
-        this.drawerOpen = true;
-      },
-      
-      closeDrawer() {
-        this.drawerOpen = false;
-      }
-    });
+document.addEventListener('alpine:init', () => {
+  Alpine.store('cart', {
+    drawerOpen: false,
+    updating: false,
+    
+    init() {
+      // Ensure drawer is closed on initialization
+      this.drawerOpen = false;
+    },
+    
+    openDrawer() {
+      this.drawerOpen = true;
+    },
+    
+    closeDrawer() {
+      this.drawerOpen = false;
+    }
   });
+});
 
   // Cart drawer component
   function cartDrawer() {

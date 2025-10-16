@@ -24,16 +24,49 @@
     {% sections 'footer-group' %}
     
     {% # JavaScript files %}
-    {{ 'alpine.min.js' | asset_url | script_tag: defer: true }}
-    {{ 'animations.js' | asset_url | script_tag: defer: true }}
-    {{ 'custom-calculator.js' | asset_url | script_tag: defer: true }}
-    
-    {% # Initialize Alpine components %}
+    {{ 'alpine.min.js' | asset_url | script_tag }}
     <script>
+      // Ensure Alpine starts with stores properly initialized
       document.addEventListener('alpine:init', () => {
-        // Alpine components will be initialized here
+        // Initialize cart store if not already done
+        if (!Alpine.store('cart')) {
+          Alpine.store('cart', {
+            drawerOpen: false,
+            updating: false,
+            
+            openDrawer() {
+              this.drawerOpen = true;
+            },
+            
+            closeDrawer() {
+              this.drawerOpen = false;
+            }
+          });
+        }
+        
+        // Initialize quick view store if not already done
+        if (!Alpine.store('quickView')) {
+          Alpine.store('quickView', {
+            open: false,
+            productId: null,
+            
+            async show(productId) {
+              this.productId = productId;
+              this.open = true;
+              document.body.style.overflow = 'hidden';
+            },
+            
+            close() {
+              this.open = false;
+              this.productId = null;
+              document.body.style.overflow = '';
+            }
+          });
+        }
       });
     </script>
+    {{ 'animations.js' | asset_url | script_tag: defer: true }}
+    {{ 'custom-calculator.js' | asset_url | script_tag: defer: true }}
     
     {% # Quick View Modal %}
     {% render 'quick-view-modal' %}
