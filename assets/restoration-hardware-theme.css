@@ -132,12 +132,21 @@ body {
 /* Logo Sizing Fix */
 .header__logo {
   max-width: 160px;
+  display: flex;
+  align-items: center;
+}
+
+.header__logo-link {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
 }
 
 .header__logo-image {
-  max-height: 40px;
-  width: auto;
-  height: auto;
+  max-height: 40px !important;
+  height: 40px !important;
+  width: auto !important;
+  object-fit: contain;
 }
 
 .header__logo-text {
@@ -148,7 +157,19 @@ body {
 }
 
 /* Navigation - Refined */
+.header__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.header__nav-item {
+  position: relative;
+}
+
 .header__nav-link {
+  display: inline-flex;
+  align-items: center;
   font-size: 13px;
   font-weight: 400;
   letter-spacing: 0.5px;
@@ -156,10 +177,20 @@ body {
   color: var(--color-secondary);
   padding: 0 var(--space-md);
   transition: var(--transition-smooth);
+  text-decoration: none;
 }
 
 .header__nav-link:hover {
   color: var(--color-primary);
+}
+
+.header__nav-arrow {
+  margin-left: 4px;
+  transition: var(--transition-smooth);
+}
+
+.header__nav-item:hover .header__nav-arrow {
+  transform: rotate(180deg);
 }
 
 /* Header Actions */
@@ -679,7 +710,8 @@ body {
   }
   
   .header__logo-image {
-    max-height: 32px;
+    max-height: 32px !important;
+    height: 32px !important;
   }
   
   h1, .h1, .text-h1 {
@@ -821,4 +853,19 @@ body {
 .color-swatch--active {
   border-color: #000;
   border-width: 2px;
+}
+
+/* Additional Logo Constraints */
+.header__logo img {
+  max-height: 40px !important;
+  height: 40px !important;
+  width: auto !important;
+  object-fit: contain !important;
+}
+
+@media (max-width: 768px) {
+  .header__logo img {
+    max-height: 32px !important;
+    height: 32px !important;
+  }
 }

@@ -361,17 +361,32 @@
   }
 
   .header__logo-image {
-    height: 2.5rem;
-    width: auto;
+    max-height: 40px !important;
+    height: 40px !important;
+    width: auto !important;
+    object-fit: contain !important;
+  }
+  
+  @media (max-width: 768px) {
+    .header__logo-image {
+      max-height: 32px !important;
+      height: 32px !important;
+    }
   }
 
   /* Desktop Navigation */
   .header__nav {
     flex: 1;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     gap: var(--space-lg);
+  }
+  
+  @media (min-width: 1024px) {
+    .header__nav {
+      display: flex;
+    }
   }
 
   .header__nav-item {
