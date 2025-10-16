@@ -239,6 +239,28 @@
 {% render 'cart-drawer' %}
 {% render 'quick-view-modal' %}
 
+<style>
+  #shopify-section-{{ section.id }} {
+    --header-logo-width: {{ section.settings.logo_width }}px;
+    --header-logo-max-width-mobile: {{ section.settings.logo_width | times: 0.8 }}px;
+  }
+  
+  .header__logo-image {
+    max-width: var(--header-logo-width);
+    max-height: 40px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+  
+  @media (max-width: 767px) {
+    .header__logo-image {
+      max-width: var(--header-logo-max-width-mobile);
+      max-height: 32px;
+    }
+  }
+</style>
+
 <script>
   function header() {
     return {

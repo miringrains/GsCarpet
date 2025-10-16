@@ -114,12 +114,7 @@ body {
   height: 40px;
 }
 
-.header__logo-image {
-  max-height: 40px !important;
-  height: 40px !important;
-  width: auto !important;
-  object-fit: contain;
-}
+/* Logo sizing now handled by CSS variables in header section */
 
 .header__logo-text {
   font-size: 20px;
@@ -687,10 +682,7 @@ body {
     height: 64px;
   }
   
-  .header__logo-image {
-    max-height: 32px !important;
-    height: 32px !important;
-  }
+  /* Logo sizing now handled by CSS variables in header section */
   
   h1, .h1, .text-h1 {
     font-size: 28px;

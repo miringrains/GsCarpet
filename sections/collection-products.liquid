@@ -1,0 +1,574 @@
+{% comment %}
+  Collection Products Section
+  Displays product grid with filters and sorting
+{% endcomment %}
+
+<div class="collection-products" x-data="collectionFilters()">
+  <!-- Filter Bar -->
+  <div class="collection-toolbar">
+    <div class="container">
+      <div class="collection-toolbar__inner">
+        <div class="collection-toolbar__count">
+          {{ collection.products_count }} 
+          {%- if collection.products_count == 1 -%}product{%- else -%}products{%- endif -%}
+        </div>
+        
+        <div class="collection-toolbar__controls">
+          <!-- Sort Dropdown -->
+          <div class="collection-toolbar__sort">
+            <label for="sort-by" class="visually-hidden">Sort by</label>
+            <select 
+              id="sort-by" 
+              class="form-select"
+              @change="updateSort($event.target.value)"
+            >
+              {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
+              {% for option in collection.sort_options %}
+                <option value="{{ option.value }}" {% if option.value == sort_by %}selected{% endif %}>
+                  {{ option.name }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          
+          <!-- Filter Toggle (Mobile) -->
+          <button 
+            class="btn btn--secondary collection-toolbar__filter-btn lg:hidden"
+            @click="filtersOpen = true"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M2 5H18M5 10H15M8 15H12" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            <span>Filters</span>
+            <span 
+              class="collection-toolbar__filter-count"
+              x-show="activeFilterCount > 0"
+              x-text="activeFilterCount"
+            ></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="collection-content">
+    <div class="container">
+      <div class="collection-layout">
+        <!-- Filters Sidebar -->
+        {% if section.settings.show_filters %}
+          <aside 
+            class="collection-filters"
+            :class="{ 'collection-filters--open': filtersOpen }"
+          >
+            <div class="collection-filters__header lg:hidden">
+              <h3 class="collection-filters__title">Filters</h3>
+              <button 
+                @click="filtersOpen = false"
+                class="collection-filters__close"
+                aria-label="Close filters"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="collection-filters__content">
+              <!-- Active Filters -->
+              <div class="active-filters" x-show="activeFilterCount > 0">
+                <div class="active-filters__header">
+                  <span class="active-filters__title">Active Filters</span>
+                  <button 
+                    @click="clearAllFilters()"
+                    class="active-filters__clear"
+                  >
+                    Clear All
+                  </button>
+                </div>
+                <div class="active-filters__list">
+                  <template x-for="filter in activeFilters" :key="filter.id">
+                    <button 
+                      class="active-filter-pill"
+                      @click="removeFilter(filter)"
+                    >
+                      <span x-text="filter.label"></span>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.5"/>
+                      </svg>
+                    </button>
+                  </template>
+                </div>
+              </div>
+
+              <!-- Filter Groups -->
+              {% if section.settings.filter_size %}
+                {% render 'collection-filter-group',
+                  title: 'Size',
+                  type: 'size',
+                  options: section.settings.size_options
+                %}
+              {% endif %}
+
+              {% if section.settings.filter_color %}
+                {% render 'collection-filter-group',
+                  title: 'Color',
+                  type: 'color',
+                  options: section.settings.color_options
+                %}
+              {% endif %}
+
+              {% if section.settings.filter_material %}
+                {% render 'collection-filter-group',
+                  title: 'Material',
+                  type: 'material',
+                  options: section.settings.material_options
+                %}
+              {% endif %}
+
+              {% if section.settings.filter_price %}
+                {% render 'collection-filter-group',
+                  title: 'Price',
+                  type: 'price',
+                  min: 0,
+                  max: 5000
+                %}
+              {% endif %}
+
+              {% if section.settings.filter_shape %}
+                {% render 'collection-filter-group',
+                  title: 'Shape',
+                  type: 'shape',
+                  options: section.settings.shape_options
+                %}
+              {% endif %}
+
+              {% if section.settings.filter_features %}
+                {% render 'collection-filter-group',
+                  title: 'Features',
+                  type: 'features',
+                  options: section.settings.feature_options
+                %}
+              {% endif %}
+            </div>
+
+            <!-- Filter Actions (Mobile) -->
+            <div class="collection-filters__actions lg:hidden">
+              <button 
+                @click="applyFilters()"
+                class="btn btn--primary btn--large"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </aside>
+        {% endif %}
+
+        <!-- Products Grid -->
+        <div class="collection-grid {% unless section.settings.show_filters %}collection-grid--full{% endunless %}">
+          {% paginate collection.products by section.settings.products_per_page %}
+            <!-- Loading State -->
+            <div 
+              class="collection-loading"
+              x-show="loading"
+              x-transition
+            >
+              <div class="collection-loading__spinner"></div>
+            </div>
+
+            <!-- Product Grid -->
+            <div 
+              class="product-grid product-grid--{{ section.settings.grid_columns }}"
+              x-show="!loading"
+            >
+              {% for product in collection.products %}
+                <div 
+                  class="product-card"
+                  data-animate="fade-up"
+                  data-animate-delay="{{ forloop.index0 | times: 50 }}"
+                >
+                  <div class="product-card__inner">
+                    <a href="{{ product.url }}" class="product-card__link">
+                      <div class="product-card__image">
+                        {% if product.featured_image %}
+                          {% render 'image',
+                            image: product.featured_image,
+                            width: 480,
+                            height: 640,
+                            crop: 'center',
+                            alt: product.title,
+                            class: 'product-card__img',
+                            loading: 'lazy'
+                          %}
+                          
+                          {% if product.images.size > 1 and section.settings.show_secondary_image %}
+                            {% render 'image',
+                              image: product.images[1],
+                              width: 480,
+                              height: 640,
+                              crop: 'center',
+                              alt: product.title,
+                              class: 'product-card__img product-card__img--hover',
+                              loading: 'lazy'
+                            %}
+                          {% endif %}
+                        {% else %}
+                          <div class="product-card__placeholder">
+                            {{ 'product-1' | placeholder_svg_tag }}
+                          </div>
+                        {% endif %}
+                        
+                        <!-- Badges -->
+                        {% if product.metafields.custom.best_seller == true %}
+                          <span class="product-card__badge product-card__badge--bestseller">
+                            Best Seller
+                          </span>
+                        {% elsif product.available == false %}
+                          <span class="product-card__badge product-card__badge--soldout">
+                            Sold Out
+                          </span>
+                        {% elsif product.metafields.custom.new == true %}
+                          <span class="product-card__badge product-card__badge--new">
+                            New
+                          </span>
+                        {% endif %}
+                      </div>
+                    </a>
+                    
+                    <!-- Color Swatches -->
+                    {% if product.metafields.custom.color_options %}
+                      <div class="product-card__swatches">
+                        {% assign colors = product.metafields.custom.color_options | split: ',' %}
+                        {% for color in colors limit: 5 %}
+                          <button 
+                            class="product-card__swatch" 
+                            data-color="{{ color | strip }}"
+                            style="background-color: {{ color | strip | downcase | replace: ' ', '' }}"
+                            aria-label="{{ color | strip }}"
+                          ></button>
+                        {% endfor %}
+                        {% if colors.size > 5 %}
+                          <span class="product-card__swatch-more">+{{ colors.size | minus: 5 }}</span>
+                        {% endif %}
+                      </div>
+                    {% endif %}
+                    
+                    <!-- Add Sample Button -->
+                    {% if section.settings.show_sample_button %}
+                      <button 
+                        class="product-card__sample"
+                        onclick="window.location.href='{{ product.url }}?sample=true'"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                          <path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                        ADD SAMPLE
+                      </button>
+                    {% endif %}
+                    
+                    <div class="product-card__info">
+                      <h3 class="product-card__title">
+                        <a href="{{ product.url }}">{{ product.title }}</a>
+                      </h3>
+                      
+                      <p class="product-card__type">
+                        {{ product.metafields.custom.material | default: product.type }}
+                        {% if product.metafields.custom.construction %}
+                          {{ product.metafields.custom.construction }}
+                        {% endif %}
+                        Rug
+                      </p>
+                      
+                      {% if product.metafields.custom.default_size %}
+                        <p class="product-card__size">{{ product.metafields.custom.default_size }}</p>
+                      {% endif %}
+                      
+                      <div class="product-card__price">
+                        {% if product.compare_at_price > product.price %}
+                          <span class="product-card__price--compare">
+                            {{ product.compare_at_price | money_without_currency }}
+                          </span>
+                        {% endif %}
+                        <span class="product-card__price--current">
+                          {% if product.price_varies %}From {% endif %}${{ product.price | money_without_currency }}
+                        </span>
+                        {% if product.compare_at_price > product.price %}
+                          {% assign discount = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price | round %}
+                          <span class="product-card__price--discount">{{ discount }}% off</span>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+
+            <!-- No Results -->
+            {% if collection.products_count == 0 %}
+              <div class="collection-empty">
+                <h2 class="collection-empty__title">No products found</h2>
+                <p class="collection-empty__text">Try adjusting your filters or browse our other collections.</p>
+                <a href="{{ routes.collections_url }}" class="btn btn--primary">
+                  Browse Collections
+                </a>
+              </div>
+            {% endif %}
+
+            <!-- Pagination -->
+            {% if paginate.pages > 1 %}
+              <nav class="pagination" aria-label="Pagination">
+                {{ paginate | default_pagination }}
+              </nav>
+            {% endif %}
+          {% endpaginate %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Overlay (Mobile) -->
+  <div 
+    class="collection-filters__overlay lg:hidden"
+    x-show="filtersOpen"
+    x-cloak
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-1"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-1"
+    x-transition:leave-end="opacity-0"
+    @click="filtersOpen = false"
+  ></div>
+</div>
+
+<script>
+  function collectionFilters() {
+    return {
+      filtersOpen: false,
+      loading: false,
+      activeFilters: [],
+      filters: {
+        size: [],
+        color: [],
+        material: [],
+        price: { min: null, max: null },
+        shape: [],
+        features: []
+      },
+      
+      get activeFilterCount() {
+        let count = 0;
+        count += this.filters.size.length;
+        count += this.filters.color.length;
+        count += this.filters.material.length;
+        count += this.filters.shape.length;
+        count += this.filters.features.length;
+        if (this.filters.price.min || this.filters.price.max) count++;
+        return count;
+      },
+      
+      updateSort(value) {
+        const url = new URL(window.location);
+        url.searchParams.set('sort_by', value);
+        window.location = url;
+      },
+      
+      applyFilters() {
+        // In a real implementation, this would update the URL and reload products
+        this.loading = true;
+        setTimeout(() => {
+          this.loading = false;
+          this.filtersOpen = false;
+        }, 500);
+      },
+      
+      removeFilter(filter) {
+        // Remove filter logic
+        this.activeFilters = this.activeFilters.filter(f => f.id !== filter.id);
+        this.applyFilters();
+      },
+      
+      clearAllFilters() {
+        this.filters = {
+          size: [],
+          color: [],
+          material: [],
+          price: { min: null, max: null },
+          shape: [],
+          features: []
+        };
+        this.activeFilters = [];
+        this.applyFilters();
+      }
+    }
+  }
+</script>
+
+{{ 'section-collection-products.css' | asset_url | stylesheet_tag }}
+
+{% schema %}
+{
+  "name": "Collection Products",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Grid Layout"
+    },
+    {
+      "type": "select",
+      "id": "grid_columns",
+      "label": "Products per row",
+      "options": [
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 12,
+      "max": 48,
+      "step": 6,
+      "default": 24,
+      "label": "Products per page"
+    },
+    {
+      "type": "header",
+      "content": "Product Cards"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "label": "Show second image on hover",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quick_view",
+      "label": "Show quick view button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_material",
+      "label": "Show material badge",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_customize_button",
+      "label": "Show customize button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "customize_button_text",
+      "label": "Customize button text",
+      "default": "Customize Size"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sample_button",
+      "label": "Show add sample button",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Filters"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filters",
+      "label": "Show filters",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "filter_size",
+      "label": "Enable size filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "size_options",
+      "label": "Size options",
+      "default": "4x6,5x7,6x9,8x10,9x12,10x14,12x15,Custom",
+      "info": "Comma-separated list"
+    },
+    {
+      "type": "checkbox",
+      "id": "filter_color",
+      "label": "Enable color filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "color_options",
+      "label": "Color options",
+      "default": "Beige,Black,Blue,Brown,Gray,Green,Ivory,Multi,Orange,Pink,Red,White",
+      "info": "Comma-separated list"
+    },
+    {
+      "type": "checkbox",
+      "id": "filter_material",
+      "label": "Enable material filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "material_options",
+      "label": "Material options",
+      "default": "Wool,Jute,Sisal,Cotton,Synthetic,Silk,Bamboo,Seagrass",
+      "info": "Comma-separated list"
+    },
+    {
+      "type": "checkbox",
+      "id": "filter_price",
+      "label": "Enable price filter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "filter_shape",
+      "label": "Enable shape filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "shape_options",
+      "label": "Shape options",
+      "default": "Rectangle,Round,Runner,Square,Oval,Hexagon",
+      "info": "Comma-separated list"
+    },
+    {
+      "type": "checkbox",
+      "id": "filter_features",
+      "label": "Enable features filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "feature_options",
+      "label": "Feature options",
+      "default": "Stain Resistant,Pet Friendly,Machine Washable,Outdoor Safe,Non-Slip,Reversible",
+      "info": "Comma-separated list"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Products"
+    }
+  ]
+}
+{% endschema %}

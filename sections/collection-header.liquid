@@ -1,0 +1,125 @@
+{% comment %}
+  Collection Header Section
+  Displays collection title, description, and optional background image
+{% endcomment %}
+
+<div class="collection-header" 
+  {% if section.settings.bg_image or collection.image %}
+    style="background-image: url('{{ section.settings.bg_image | default: collection.image | image_url: width: 1920 }}');"
+  {% endif %}
+>
+  {% if section.settings.bg_image or collection.image %}
+    <div class="collection-header__overlay" style="opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }}"></div>
+  {% endif %}
+  
+  <div class="container">
+    <div class="collection-header__content">
+      <h1 class="collection-header__title text-h1">{{ collection.title }}</h1>
+      {% if collection.description != blank %}
+        <div class="collection-header__description text-body-lg text-secondary">
+          {{ collection.description }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{{ 'section-collection-header.css' | asset_url | stylesheet_tag }}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --collection-header-min-height: {{ section.settings.min_height }}px;
+    --collection-header-min-height-mobile: {{ section.settings.min_height_mobile }}px;
+    --collection-header-text-align: {{ section.settings.text_alignment }};
+    --collection-header-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    
+    {% if section.settings.text_alignment == 'center' %}
+      --collection-header-content-margin-left: auto;
+      --collection-header-content-margin-right: auto;
+    {% elsif section.settings.text_alignment == 'right' %}
+      --collection-header-content-margin-left: auto;
+      --collection-header-content-margin-right: 0;
+    {% else %}
+      --collection-header-content-margin-left: 0;
+      --collection-header-content-margin-right: 0;
+    {% endif %}
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Collection Header",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "min_height",
+      "min": 200,
+      "max": 600,
+      "step": 50,
+      "unit": "px",
+      "label": "Minimum height",
+      "default": 350
+    },
+    {
+      "type": "range",
+      "id": "min_height_mobile",
+      "min": 150,
+      "max": 400,
+      "step": 50,
+      "unit": "px",
+      "label": "Minimum height (mobile)",
+      "default": 250
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background image",
+      "info": "Optional. If not set, will use collection image if available."
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 10,
+      "unit": "%",
+      "default": 40,
+      "label": "Overlay opacity",
+      "info": "Controls the darkness of overlay on background image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Header"
+    }
+  ]
+}
+{% endschema %}
