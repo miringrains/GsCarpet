@@ -592,6 +592,11 @@
   @media (max-width: 1023px) {
     .collection-layout {
       grid-template-columns: 1fr;
+      gap: 0; /* Remove gap on mobile since filters are overlay */
+    }
+    
+    .collection-grid {
+      grid-column: 1; /* Ensure it takes full width */
     }
 
     .collection-filters {
@@ -651,10 +656,17 @@
   }
 
   .collection-filters__overlay {
+    display: none; /* Hidden by default on desktop */
     position: fixed;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: var(--z-modal-backdrop);
+  }
+  
+  @media (max-width: 1023px) {
+    .collection-filters--open ~ .collection-filters__overlay {
+      display: block;
+    }
   }
 
   /* Active Filters */
@@ -714,9 +726,15 @@
     height: 0.875rem;
   }
 
-  /* Product Grid */
+  /* Product Grid Container */
   .collection-grid {
     position: relative;
+    width: 100%;
+    min-height: 500px; /* Prevent collapse */
+  }
+  
+  .product-grid {
+    width: 100%;
   }
 
   .collection-loading {
