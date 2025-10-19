@@ -10,7 +10,7 @@
 {
   "sections": {
     "hero": {
-      "type": "hero-perfect",
+      "type": "hero",
       "settings": {
         "background_image": "shopify://shop_images/AdobeStock_1369793718.webp",
         "subtitle": "Premium Collection",
