@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hero Section Test</title>
+</head>
+<body>
+    <h1>Testing Hero Section Visibility</h1>
+    
+    <h2>What we know:</h2>
+    <ul>
+        <li>✅ GitHub sync is working (hero-debug showed up)</li>
+        <li>✅ hero.liquid file exists with full content</li>
+        <li>✅ No linting errors in the file</li>
+        <li>✅ Schema block is present (lines 311-715)</li>
+        <li>❌ Hero section not showing in customizer</li>
+    </ul>
+    
+    <h2>Next steps:</h2>
+    <ol>
+        <li>Wait 1 minute and check if "Test Simple Hero" appears in customizer</li>
+        <li>If test hero shows but main hero doesn't = schema JSON issue</li>
+        <li>If neither shows = sync issue or cache problem</li>
+    </ol>
+    
+    <h2>To manually check:</h2>
+    <p>Go to: Admin → Online Store → Themes → Actions → Edit code</p>
+    <p>Look for: sections/hero.liquid</p>
+    <p>Verify it has 714+ lines and starts with Version: 2.0 comment</p>
+</body>
+</html>
