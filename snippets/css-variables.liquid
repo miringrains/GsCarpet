@@ -95,11 +95,23 @@
     --radius-full: 9999px;
     --style-border-radius-inputs: {{ settings.input_corner_radius }}px;
     
+    /* Base 8px Grid System - Reference */
+    --space-unit: 8px;
+    
+    /* Container Padding */
+    --container-padding: var(--space-md);      /* 32px desktop */
+    --container-padding-mobile: var(--space-sm); /* 16px mobile */
+    
     /* Transitions - Smooth & Natural */
     --transition-base: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-slow: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-smooth: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --transition-spring: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    
+    /* Enhanced Spring Transitions */
+    --transition-spring-fast: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --transition-spring-subtle: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+    --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     
     /* Z-Index Scale */
     --z-dropdown: 100;
@@ -130,6 +142,13 @@
     --z-index-mobile-menu: 1002;
     --z-index-search-overlay: 1003;
     --z-index-tooltip: 2000;
+  }
+  
+  /* Responsive adjustments for very small screens */
+  @media (max-width: 480px) {
+    :root {
+      --container-padding-mobile: var(--space-xs); /* 8px on very small screens */
+    }
   }
   
   /* Dark Mode Variables (if enabled) */

@@ -229,7 +229,7 @@
   border: 3px solid var(--color-border);
   border-top-color: var(--color-accent);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spring-pulse 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
 
 /* Product Grid - Ernesta Style */
@@ -365,7 +365,7 @@
   border-radius: 50%;
   border: 1px solid rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: var(--transition-spring-subtle);
 }
 
 .product-card__swatch:hover {
@@ -395,7 +395,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--transition-spring-subtle);
   z-index: 2;
 }
 
@@ -587,6 +587,13 @@
   line-height: 1.4;
 }
 
+@media (max-width: 768px) {
+  .filter-checkbox {
+    padding: 8px 0;
+    min-height: 44px;
+  }
+}
+
 .filter-checkbox:hover {
   color: var(--color-text-secondary);
 }
@@ -621,6 +628,13 @@
   justify-content: center;
 }
 
+@media (max-width: 768px) {
+  .filter-color {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
 .filter-color input[type="checkbox"] {
   position: absolute;
   opacity: 0;
@@ -637,6 +651,13 @@
   position: relative;
   overflow: hidden;
   transition: var(--transition-base);
+}
+
+@media (max-width: 768px) {
+  .filter-color__swatch {
+    width: 28px;
+    height: 28px;
+  }
 }
 
 .filter-color:hover .filter-color__swatch {
@@ -815,4 +836,9 @@
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+@keyframes spring-pulse {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+  50% { transform: scale(1.05) rotate(180deg); opacity: 1; }
 }

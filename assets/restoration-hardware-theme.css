@@ -205,8 +205,12 @@ body {
   background: transparent;
   font-weight: 400;
   color: var(--color-primary);
-  transition: var(--transition-elegant);
+  transition: var(--transition-spring-subtle);
   border-radius: 0;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
 }
 
 .btn--primary {

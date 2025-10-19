@@ -121,19 +121,19 @@
     </div>
   </div>
 
-      <!-- Mobile Menu -->
-      <div 
-        class="header__mobile-menu lg:hidden"
-        x-show="mobileMenuOpen"
-        x-cloak
-        x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="-translate-x-full"
-        x-transition:enter-end="translate-x-0"
-        x-transition:leave="transition ease-in duration-200"
-        x-transition:leave-start="translate-x-0"
-        x-transition:leave-end="-translate-x-full"
-        @click.away="mobileMenuOpen = false"
-      >
+  <!-- Mobile Menu -->
+  <div 
+    class="header__mobile-menu lg:hidden"
+    x-show="mobileMenuOpen"
+    x-cloak
+    x-transition:enter="transition-all duration-[400ms] ease-[cubic-bezier(0.215,0.61,0.355,1)]"
+    x-transition:enter-start="-translate-x-full"
+    x-transition:enter-end="translate-x-0"
+    x-transition:leave="transition-all duration-[300ms] ease-[cubic-bezier(0.215,0.61,0.355,1)]"
+    x-transition:leave-start="translate-x-0"
+    x-transition:leave-end="-translate-x-full"
+    @click.away="mobileMenuOpen = false"
+  >
     <div class="header__mobile-menu-header">
       <h3 class="header__mobile-menu-title">Menu</h3>
       <button @click="mobileMenuOpen = false" class="header__mobile-menu-close">
@@ -339,6 +339,13 @@
     justify-content: space-between;
     height: 5rem;
     gap: var(--space-lg);
+    padding: 0 var(--container-padding);
+  }
+  
+  @media (max-width: 768px) {
+    .header__container {
+      padding: 0 var(--container-padding-mobile);
+    }
   }
 
   /* Mobile Toggle */
@@ -513,6 +520,15 @@
     cursor: pointer;
     color: var(--color-text-primary);
     transition: var(--transition-base);
+  }
+  
+  @media (max-width: 768px) {
+    .header__action-btn {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
+    }
   }
 
   .header__action-btn:hover {
