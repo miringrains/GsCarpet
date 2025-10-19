@@ -325,7 +325,7 @@
   }
 
   .header__wrapper {
-    border-bottom: 1px solid var(--color-border);
+    /* border-bottom: 1px solid var(--color-border); Removed per request */
     transition: var(--transition-base);
   }
 
@@ -380,6 +380,8 @@
     display: block;
     text-decoration: none;
     color: var(--color-text-primary);
+    /* Compensate for 'g' loop visual effect */
+    transform: translateY(2px);
   }
 
   .header__logo-text {

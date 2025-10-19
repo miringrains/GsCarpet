@@ -1,0 +1,714 @@
+{% comment %}
+  Perfect Hero Section
+  Fully customizable hero with comprehensive settings
+{% endcomment %}
+
+<section class="hero-perfect" id="shopify-section-{{ section.id }}">
+  {% if section.settings.background_image %}
+    <div class="hero-perfect__background">
+      {% render 'image',
+        image: section.settings.background_image,
+        width: 1920,
+        height: 1080,
+        loading: 'eager',
+        fetchpriority: 'high',
+        alt: section.settings.title,
+        class: 'hero-perfect__bg-image'
+      %}
+      {% if section.settings.enable_overlay %}
+        <div class="hero-perfect__overlay"></div>
+      {% endif %}
+    </div>
+  {% endif %}
+  
+  <div class="hero-perfect__content">
+    <div class="container">
+      <div class="hero-perfect__inner">
+        {% if section.settings.subtitle %}
+          <span class="hero-perfect__subtitle">
+            {{ section.settings.subtitle }}
+          </span>
+        {% endif %}
+        
+        {% if section.settings.title %}
+          <h1 class="hero-perfect__title">
+            {{ section.settings.title }}
+          </h1>
+        {% endif %}
+        
+        {% if section.settings.text %}
+          <div class="hero-perfect__text">
+            {{ section.settings.text }}
+          </div>
+        {% endif %}
+        
+        {% if section.settings.button_text %}
+          <div class="hero-perfect__actions">
+            <a 
+              href="{{ section.settings.button_link }}" 
+              class="btn btn--primary btn--large"
+              {% if section.settings.button_style == 'outline' %}
+                style="background: transparent; border: 2px solid currentColor;"
+              {% endif %}
+            >
+              {{ section.settings.button_text }}
+            </a>
+            
+            {% if section.settings.secondary_button_text %}
+              <a 
+                href="{{ section.settings.secondary_button_link }}" 
+                class="btn btn--secondary btn--large"
+              >
+                {{ section.settings.secondary_button_text }}
+              </a>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  
+  {% if section.settings.show_scroll_indicator %}
+    <div class="hero-perfect__scroll">
+      <span class="hero-perfect__scroll-text">{{ section.settings.scroll_text }}</span>
+      <div class="hero-perfect__scroll-line"></div>
+    </div>
+  {% endif %}
+</section>
+
+<style>
+  #shopify-section-{{ section.id }} {
+    /* Dynamic Height */
+    --hero-height: {{ section.settings.height }}vh;
+    --hero-height-mobile: {{ section.settings.height_mobile }}vh;
+    
+    /* Border Radius */
+    --hero-border-radius: {{ section.settings.border_radius }}px;
+    
+    /* Overlay */
+    --hero-overlay-color: {{ section.settings.overlay_color }};
+    --hero-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    
+    /* Content Alignment */
+    --hero-text-align: {{ section.settings.text_alignment }};
+    --hero-content-vertical: {{ section.settings.vertical_alignment }};
+    
+    /* Spacing */
+    --hero-padding-top: {{ section.settings.padding_top }}px;
+    --hero-padding-bottom: {{ section.settings.padding_bottom }}px;
+    
+    /* Typography */
+    --hero-title-size: {{ section.settings.title_size }}rem;
+    --hero-title-size-mobile: {{ section.settings.title_size | times: 0.7 }}rem;
+    --hero-subtitle-size: {{ section.settings.subtitle_size }}rem;
+    --hero-text-size: {{ section.settings.text_size }}rem;
+    
+    /* Colors */
+    {% if section.settings.custom_colors %}
+      --hero-bg-color: {{ section.settings.bg_color }};
+      --hero-text-color: {{ section.settings.text_color }};
+      --hero-title-color: {{ section.settings.title_color | default: section.settings.text_color }};
+      --hero-subtitle-color: {{ section.settings.subtitle_color | default: section.settings.text_color }};
+    {% else %}
+      --hero-bg-color: var(--color-background);
+      --hero-text-color: var(--color-text-primary);
+      --hero-title-color: var(--color-text-primary);
+      --hero-subtitle-color: var(--color-text-secondary);
+    {% endif %}
+  }
+  
+  .hero-perfect {
+    position: relative;
+    min-height: var(--hero-height);
+    display: flex;
+    align-items: var(--hero-content-vertical);
+    justify-content: center;
+    overflow: hidden;
+    background-color: var(--hero-bg-color);
+    {% if section.settings.contained %}
+      max-width: var(--container-max-width);
+      margin: 0 auto;
+      border-radius: var(--hero-border-radius);
+    {% endif %}
+  }
+  
+  /* Background */
+  .hero-perfect__background {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  
+  .hero-perfect__bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    {% if section.settings.contained %}
+      border-radius: var(--hero-border-radius);
+    {% endif %}
+  }
+  
+  .hero-perfect__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: var(--hero-overlay-color);
+    opacity: var(--hero-overlay-opacity);
+    {% if section.settings.gradient_overlay %}
+      background: linear-gradient(
+        180deg,
+        transparent 0%,
+        var(--hero-overlay-color) 100%
+      );
+    {% endif %}
+  }
+  
+  /* Content */
+  .hero-perfect__content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: var(--hero-padding-top) 0 var(--hero-padding-bottom);
+  }
+  
+  .hero-perfect__inner {
+    max-width: {{ section.settings.content_width }}px;
+    margin: 0 auto;
+    text-align: var(--hero-text-align);
+  }
+  
+  .hero-perfect__subtitle {
+    display: inline-block;
+    margin-bottom: var(--space-sm);
+    font-size: var(--hero-subtitle-size);
+    font-weight: {{ section.settings.subtitle_weight }};
+    letter-spacing: {{ section.settings.subtitle_letter_spacing }}em;
+    {% if section.settings.subtitle_uppercase %}
+      text-transform: uppercase;
+    {% endif %}
+    color: var(--hero-subtitle-color);
+    {% if section.settings.background_image %}
+      color: var(--color-text-inverse);
+    {% endif %}
+  }
+  
+  .hero-perfect__title {
+    margin-bottom: var(--space-md);
+    font-size: var(--hero-title-size);
+    font-weight: {{ section.settings.title_weight }};
+    line-height: {{ section.settings.title_line_height }};
+    letter-spacing: {{ section.settings.title_letter_spacing }}em;
+    color: var(--hero-title-color);
+    {% if section.settings.background_image %}
+      color: var(--color-text-inverse);
+    {% endif %}
+  }
+  
+  .hero-perfect__text {
+    max-width: {{ section.settings.text_max_width }}px;
+    margin: 0 auto var(--space-lg);
+    font-size: var(--hero-text-size);
+    line-height: 1.6;
+    color: var(--hero-text-color);
+    {% if section.settings.background_image %}
+      color: var(--color-text-inverse);
+    {% endif %}
+    
+    {% if section.settings.text_alignment == 'center' %}
+      margin-left: auto;
+      margin-right: auto;
+    {% elsif section.settings.text_alignment == 'right' %}
+      margin-left: auto;
+    {% endif %}
+  }
+  
+  .hero-perfect__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    justify-content: {{ section.settings.text_alignment }};
+  }
+  
+  /* Scroll Indicator */
+  .hero-perfect__scroll {
+    position: absolute;
+    bottom: var(--space-lg);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    z-index: 2;
+  }
+  
+  .hero-perfect__scroll-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--hero-text-color);
+    {% if section.settings.background_image %}
+      color: rgba(255, 255, 255, 0.8);
+    {% endif %}
+  }
+  
+  .hero-perfect__scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(
+      to bottom,
+      var(--hero-text-color) 0%,
+      transparent 100%
+    );
+    animation: scroll-line 2s ease-in-out infinite;
+  }
+  
+  {% if section.settings.background_image %}
+    .hero-perfect__scroll-line {
+      background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.8) 0%,
+        transparent 100%
+      );
+    }
+  {% endif %}
+  
+  @keyframes scroll-line {
+    0%, 100% {
+      transform: scaleY(0.5);
+      transform-origin: top;
+    }
+    50% {
+      transform: scaleY(1);
+      transform-origin: top;
+    }
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero-perfect {
+      min-height: var(--hero-height-mobile);
+    }
+    
+    .hero-perfect__title {
+      font-size: var(--hero-title-size-mobile);
+    }
+    
+    .hero-perfect__actions {
+      flex-direction: column;
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+    
+    .hero-perfect__actions .btn {
+      width: 100%;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Hero - Perfect",
+  "tag": "section",
+  "class": "section-hero-perfect",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Premium Collection"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Handcrafted Rugs for Modern Living"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Discover our curated collection of premium rugs, crafted with care and designed to transform your space.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop Collection"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "options": [
+        {
+          "value": "solid",
+          "label": "Solid"
+        },
+        {
+          "value": "outline",
+          "label": "Outline"
+        }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_text",
+      "label": "Secondary button text"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "contained",
+      "label": "Contained width",
+      "default": false,
+      "info": "Constrains hero to container width with border radius"
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Height (desktop)",
+      "default": 90
+    },
+    {
+      "type": "range",
+      "id": "height_mobile",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Height (mobile)",
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 12,
+      "info": "Only applies when contained is enabled"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment",
+      "label": "Vertical alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "min": 600,
+      "max": 1200,
+      "step": 100,
+      "unit": "px",
+      "label": "Content max width",
+      "default": 900
+    },
+    {
+      "type": "range",
+      "id": "text_max_width",
+      "min": 400,
+      "max": 800,
+      "step": 50,
+      "unit": "px",
+      "label": "Text max width",
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 2,
+      "max": 6,
+      "step": 0.25,
+      "unit": "rem",
+      "label": "Title size",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Regular"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "300"
+    },
+    {
+      "type": "range",
+      "id": "title_line_height",
+      "min": 1,
+      "max": 1.5,
+      "step": 0.1,
+      "label": "Title line height",
+      "default": 1.1
+    },
+    {
+      "type": "range",
+      "id": "title_letter_spacing",
+      "min": -0.05,
+      "max": 0.15,
+      "step": 0.01,
+      "unit": "em",
+      "label": "Title letter spacing",
+      "default": -0.02
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 0.75,
+      "max": 2,
+      "step": 0.125,
+      "unit": "rem",
+      "label": "Subtitle size",
+      "default": 0.875
+    },
+    {
+      "type": "select",
+      "id": "subtitle_weight",
+      "label": "Subtitle weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Regular"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_letter_spacing",
+      "min": 0,
+      "max": 0.3,
+      "step": 0.02,
+      "unit": "em",
+      "label": "Subtitle letter spacing",
+      "default": 0.1
+    },
+    {
+      "type": "checkbox",
+      "id": "subtitle_uppercase",
+      "label": "Uppercase subtitle",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 0.875,
+      "max": 2,
+      "step": 0.125,
+      "unit": "rem",
+      "label": "Text size",
+      "default": 1.25
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_colors",
+      "label": "Use custom colors",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#2B2C25"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "info": "Leave blank to use text color"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "info": "Leave blank to use text color"
+    },
+    {
+      "type": "header",
+      "content": "Background Image Overlay"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_overlay",
+      "label": "Enable overlay",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 30
+    },
+    {
+      "type": "checkbox",
+      "id": "gradient_overlay",
+      "label": "Use gradient overlay",
+      "default": false,
+      "info": "Creates a gradient from transparent to overlay color"
+    },
+    {
+      "type": "header",
+      "content": "Scroll Indicator"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_indicator",
+      "label": "Show scroll indicator",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "scroll_text",
+      "label": "Scroll text",
+      "default": "Scroll"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero - Perfect",
+      "category": "Hero"
+    }
+  ]
+}
+{% endschema %}
