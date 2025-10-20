@@ -77,7 +77,7 @@
     
     <div class="hero-banner__content">
       <div class="container">
-        <div class="hero-banner__text hero-banner__text--{{ section.settings.text_alignment }}">
+        <div class="hero-banner__text hero-banner__text--{{ section.settings.text_alignment }}" x-data x-init="$el.classList.add('hero-banner__text--visible')">
           {% if section.settings.subtitle %}
             <span class="hero-banner__subtitle">{{ section.settings.subtitle }}</span>
           {% endif %}
@@ -91,13 +91,25 @@
           {% endif %}
           
           {% if section.settings.button_label %}
-            <div class="hero-banner__buttons">
-              <a href="{{ section.settings.button_link }}" class="btn btn--primary btn--large">
-                {{ section.settings.button_label }}
+            <div class="hero-banner__buttons" x-data="{ hover1: false, hover2: false }">
+              <a 
+                href="{{ section.settings.button_link }}" 
+                class="btn btn--primary btn--large"
+                @mouseenter="hover1 = true"
+                @mouseleave="hover1 = false"
+                :style="hover1 && 'transform: translateY(-2px) scale(1.02); box-shadow: 0 4px 12px rgba(0,0,0,0.15)'"
+              >
+                <span class="btn__text">{{ section.settings.button_label }}</span>
               </a>
               {% if section.settings.button_2_label %}
-                <a href="{{ section.settings.button_2_link }}" class="btn btn--secondary btn--large">
-                  {{ section.settings.button_2_label }}
+                <a 
+                  href="{{ section.settings.button_2_link }}" 
+                  class="btn btn--secondary btn--large"
+                  @mouseenter="hover2 = true"
+                  @mouseleave="hover2 = false"
+                  :style="hover2 && 'transform: translateY(-2px) scale(1.02); box-shadow: 0 4px 12px rgba(0,0,0,0.1)'"
+                >
+                  <span class="btn__text">{{ section.settings.button_2_label }}</span>
                 </a>
               {% endif %}
             </div>

@@ -65,6 +65,40 @@
   text-align: var(--hero-text-align, center);
 }
 
+/* Text entrance animations */
+.hero-banner__subtitle,
+.hero-banner__heading,
+.hero-banner__subheading,
+.hero-banner__buttons {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.hero-banner__text--visible .hero-banner__subtitle {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.1s;
+}
+
+.hero-banner__text--visible .hero-banner__heading {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.2s;
+}
+
+.hero-banner__text--visible .hero-banner__subheading {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.3s;
+}
+
+.hero-banner__text--visible .hero-banner__buttons {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.4s;
+}
+
 /* Typography */
 .hero-banner__subtitle {
   display: inline-block;
@@ -120,6 +154,32 @@
 }
 
 /* Hero Button Styles */
+.hero-banner__buttons .btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.hero-banner__buttons .btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease-out, height 0.6s ease-out;
+}
+
+.hero-banner__buttons .btn:hover::before {
+  width: 300%;
+  height: 300%;
+}
+
 .hero-banner__buttons .btn--primary {
   background-color: var(--hero-button-primary-bg, var(--color-primary));
   color: var(--hero-button-primary-text, var(--color-text-inverse));
@@ -141,6 +201,11 @@
   background-color: var(--hero-button-secondary-bg-hover, var(--color-primary));
   color: var(--hero-button-secondary-text-hover, var(--color-text-inverse));
   border-color: var(--hero-button-secondary-border-hover, var(--color-primary));
+}
+
+.hero-banner__buttons .btn__text {
+  position: relative;
+  z-index: 1;
 }
 
 /* Text Alignment Variations */
