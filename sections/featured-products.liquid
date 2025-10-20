@@ -1,0 +1,243 @@
+{% comment %}
+  Featured Products - Clean product grid
+  Display selected products or collection
+{% endcomment %}
+
+<section class="featured-products section-{{ section.id }}" id="shopify-section-{{ section.id }}">
+  <div class="container">
+    {% if section.settings.title != blank or section.settings.subtitle != blank %}
+      <div class="featured-products__header">
+        {% if section.settings.subtitle != blank %}
+          <span class="featured-products__subtitle">{{ section.settings.subtitle }}</span>
+        {% endif %}
+        {% if section.settings.title != blank %}
+          <h2 class="featured-products__title">{{ section.settings.title }}</h2>
+        {% endif %}
+      </div>
+    {% endif %}
+    
+    <div class="featured-products__grid featured-products__grid--{{ section.settings.columns_desktop }}">
+      {% if section.settings.collection %}
+        {% for product in collections[section.settings.collection].products limit: section.settings.product_limit %}
+          {% render 'product-card', product: product, show_vendor: section.settings.show_vendor %}
+        {% endfor %}
+      {% else %}
+        {% for block in section.blocks %}
+          {% if block.settings.product %}
+            {% render 'product-card', product: block.settings.product, show_vendor: section.settings.show_vendor %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </div>
+    
+    {% if section.settings.show_view_all and section.settings.collection %}
+      <div class="featured-products__footer">
+        <a href="{{ collections[section.settings.collection].url }}" class="btn btn--secondary">
+          View All
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  #shopify-section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    background-color: {{ section.settings.background_color }};
+  }
+  
+  .featured-products__header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  .featured-products__subtitle {
+    display: inline-block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.5rem;
+  }
+  
+  .featured-products__title {
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin: 0;
+  }
+  
+  .featured-products__grid {
+    display: grid;
+    gap: 2rem;
+  }
+  
+  .featured-products__grid--2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .featured-products__grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .featured-products__grid--4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .featured-products__footer {
+    text-align: center;
+    margin-top: 3rem;
+  }
+  
+  @media (max-width: 1024px) {
+    .featured-products__grid--3,
+    .featured-products__grid--4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .featured-products__title {
+      font-size: 2rem;
+    }
+    
+    .featured-products__grid {
+      grid-template-columns: repeat({{ section.settings.columns_mobile }}, 1fr);
+      gap: 1rem;
+    }
+    
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top | times: 0.75 }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.75 }}px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Featured Products",
+  "tag": "section",
+  "class": "section-featured-products",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Featured Products"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "product_limit",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "label": "Maximum products to show",
+      "default": 4,
+      "info": "Only applies when collection is selected"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Number of columns on desktop",
+      "options": [
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Number of columns on mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show 'View all' button",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Products"
+    }
+  ]
+}
+{% endschema %}
