@@ -16,21 +16,21 @@
     </header>
 
     <!-- Empty Cart State -->
-    <div class="cart-empty" x-show="items.length === 0" x-cloak>
+    <div class="cart-empty" x-show="items.length === 0" x-cloak x-transition.opacity.scale.origin.top.duration.400ms>
       <div class="cart-empty__content">
         <svg class="cart-empty__icon" width="80" height="80" viewBox="0 0 24 24" fill="none">
           <path d="M3 3H5L5.4 5M7 13H17L21 5H5.4M7 13L5.4 5M7 13L4.707 15.293C4.077 15.923 4.523 17 5.414 17H17M17 13V17M9 19C9 20.105 8.105 21 7 21C5.895 21 5 20.105 5 19C5 17.895 5.895 17 7 17C8.105 17 9 17.895 9 19ZM19 19C19 20.105 18.105 21 17 21C15.895 21 15 20.105 15 19C15 17.895 15.895 17 17 17C18.105 17 19 17.895 19 19Z" stroke="currentColor" stroke-width="1.5"/>
         </svg>
         <h2 class="cart-empty__title">Your cart is empty</h2>
         <p class="cart-empty__text">Looks like you haven't added anything to your cart yet.</p>
-        <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary btn--large">
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary btn--large hover-lift">
           Start Shopping
         </a>
       </div>
     </div>
 
     <!-- Cart Items -->
-    <div class="cart-content" x-show="items.length > 0" x-cloak>
+    <div class="cart-content" x-show="items.length > 0" x-cloak x-transition.opacity.duration.400ms>
       <div class="cart-items">
         <template x-for="(item, index) in items" :key="item.key">
           <div class="cart-item">
@@ -143,8 +143,8 @@
     </div>
 
     <!-- Loading Overlay -->
-    <div class="cart-loading" x-show="loading" x-cloak>
-      <div class="cart-loading__spinner"></div>
+    <div class="cart-loading" x-show="loading" x-cloak x-transition.opacity.duration.300ms>
+      <div class="cart-loading__spinner spring-spinner"></div>
     </div>
   </div>
 </section>

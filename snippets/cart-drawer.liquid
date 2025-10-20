@@ -16,23 +16,18 @@
   <div 
     class="cart-drawer__overlay"
     x-show="$store.cart.isOpen"
-    x-transition:enter="transition ease-out duration-300"
-    x-transition:enter-start="opacity-0"
-    x-transition:enter-end="opacity-1"
-    x-transition:leave="transition ease-in duration-200"
-    x-transition:leave-start="opacity-1"
-    x-transition:leave-end="opacity-0"
+    x-transition.opacity.duration.300ms
     @click="$store.cart.close()"
   ></div>
   
   <!-- Drawer -->
   <div 
-    class="cart-drawer__content"
+    class="cart-drawer__content animate-spring"
     x-show="$store.cart.isOpen"
-    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter="transform transition-all duration-[400ms] ease-[cubic-bezier(0.215,0.61,0.355,1)]"
     x-transition:enter-start="translate-x-full"
     x-transition:enter-end="translate-x-0"
-    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave="transform transition-all duration-[300ms] ease-[cubic-bezier(0.215,0.61,0.355,1)]"
     x-transition:leave-start="translate-x-0"
     x-transition:leave-end="translate-x-full"
     @click.away="$store.cart.close()"

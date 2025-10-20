@@ -1,0 +1,288 @@
+/* Unified Animation System - Spring & Smooth Transitions */
+
+/* Button Animations */
+.btn,
+.product-card__sample,
+.filter-checkbox,
+.filter-color,
+.collection-toolbar__filter-btn,
+.header__action-btn,
+.cart-item__quantity-btn,
+.product-gallery__thumb {
+  transition: var(--transition-spring-subtle) !important;
+}
+
+/* Hover States */
+.btn:hover,
+.product-card__sample:hover,
+.collection-toolbar__filter-btn:hover,
+.header__action-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Active/Pressed States */
+.btn:active,
+.product-card__sample:active,
+.collection-toolbar__filter-btn:active,
+.header__action-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Product Card Animations */
+.product-card {
+  transition: var(--transition-spring-subtle);
+}
+
+.product-card__img {
+  transition: opacity var(--transition-spring-subtle);
+}
+
+.product-card__swatch {
+  transition: var(--transition-spring-subtle);
+}
+
+.product-card__swatch:hover {
+  transform: scale(1.15);
+}
+
+/* Form Elements */
+.form-input,
+.form-select,
+.form-textarea {
+  transition: var(--transition-base);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  transform: scale(1.01);
+}
+
+/* Loading Spinners */
+.spring-spinner {
+  animation: springRotate 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite;
+}
+
+@keyframes springRotate {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+/* Tab Transitions */
+.product-tabs__btn {
+  transition: var(--transition-spring-subtle);
+}
+
+.product-tabs__btn:hover {
+  transform: translateY(-1px);
+}
+
+.product-tabs__btn--active::after {
+  animation: slideInSpring 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes slideInSpring {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Filter Animations */
+.filter-group__content {
+  transition: max-height var(--transition-spring-subtle), opacity var(--transition-spring-subtle);
+}
+
+.filter-group__arrow {
+  transition: transform var(--transition-spring-subtle);
+}
+
+/* Gallery Thumbnails */
+.product-gallery__thumb {
+  transition: var(--transition-spring-subtle);
+}
+
+.product-gallery__thumb:hover {
+  transform: scale(1.05);
+}
+
+.product-gallery__thumb--active {
+  transform: scale(1.08);
+}
+
+/* Quick View & Modal Animations */
+.quick-view-modal__content,
+.header__search-modal,
+.cart-drawer__content {
+  animation: scaleInSpring 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes scaleInSpring {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Badge Animations */
+.product-card__badge,
+.collection-toolbar__filter-count {
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Collection Toolbar Sticky Animation */
+.collection-toolbar-section {
+  transition: transform var(--transition-spring-subtle), box-shadow var(--transition-spring-subtle);
+}
+
+.collection-toolbar-section--sticky {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Cart Item Animations */
+.cart-item {
+  transition: var(--transition-spring-subtle);
+}
+
+.cart-item:hover {
+  transform: translateX(2px);
+}
+
+/* Smooth Fade Animations */
+[x-cloak] {
+  display: none !important;
+}
+
+/* Alpine.js Enhancement Classes */
+.animate-fade-in {
+  animation: fadeInSpring 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.animate-slide-up {
+  animation: slideUpSpring 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+}
+
+.animate-scale-in {
+  animation: scaleInSpring 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes fadeInSpring {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpSpring {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Entrance Animations for Hero Text */
+.hero-banner__text--visible .hero-banner__subtitle {
+  animation: slideUpSpring 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+  animation-delay: 0.1s;
+  opacity: 0;
+}
+
+.hero-banner__text--visible .hero-banner__heading {
+  animation: slideUpSpring 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+
+.hero-banner__text--visible .hero-banner__subheading {
+  animation: slideUpSpring 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+  animation-delay: 0.3s;
+  opacity: 0;
+}
+
+.hero-banner__text--visible .hero-banner__buttons {
+  animation: slideUpSpring 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+  animation-delay: 0.4s;
+  opacity: 0;
+}
+
+/* Smooth Link Transitions */
+a:not(.btn) {
+  transition: color var(--transition-base), opacity var(--transition-base);
+}
+
+/* Icon Animations */
+svg {
+  transition: transform var(--transition-spring-subtle);
+}
+
+button:hover svg {
+  transform: scale(1.1);
+}
+
+/* Dropdown Arrow Animations */
+.header__nav-arrow,
+.collection-toolbar__sort select {
+  transition: transform var(--transition-spring-subtle);
+}
+
+/* Focus States with Spring */
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  transition: outline var(--transition-spring-subtle), transform var(--transition-spring-subtle);
+}
+
+/* Disabled States */
+:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Ensure All Interactive Elements Have Smooth Transitions */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent Animation on Page Load */
+.preload * {
+  animation-duration: 0s !important;
+  transition: none !important;
+}
+
+/* Remove preload class after page loads - handled in theme.liquid */

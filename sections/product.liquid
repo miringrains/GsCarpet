@@ -14,9 +14,7 @@
               <div 
                 class="product-gallery__slide"
                 x-show="currentImage === {{ forloop.index0 }}"
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0"
-                x-transition:enter-end="opacity-1"
+                x-transition.opacity.duration.400ms
               >
                 {% render 'image',
                   image: image,
@@ -205,13 +203,13 @@
           </div>
           
           <div class="product-tabs__content">
-            <div x-show="activeTab === 'description'" x-transition>
+            <div x-show="activeTab === 'description'" x-transition.opacity.scale.origin.top.duration.300ms>
               <div class="rte">
                 {{ product.description }}
               </div>
             </div>
             
-            <div x-show="activeTab === 'details'" x-transition>
+            <div x-show="activeTab === 'details'" x-transition.opacity.scale.origin.top.duration.300ms>
               {% if product.metafields.custom.care_instructions %}
                 <div class="rte">
                   {{ product.metafields.custom.care_instructions }}
@@ -221,7 +219,7 @@
               {% endif %}
             </div>
             
-            <div x-show="activeTab === 'shipping'" x-transition>
+            <div x-show="activeTab === 'shipping'" x-transition.opacity.scale.origin.top.duration.300ms>
               <p>Free shipping on orders over $150. Custom rugs typically ship within 2-3 weeks.</p>
             </div>
           </div>

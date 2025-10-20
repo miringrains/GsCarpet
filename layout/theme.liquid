@@ -15,6 +15,9 @@
     
     {% # Mobile UX improvements %}
     {{ 'mobile-improvements.css' | asset_url | stylesheet_tag }}
+    
+    {% # Unified Animation System %}
+    {{ 'unified-animations.css' | asset_url | stylesheet_tag }}
 
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}
@@ -22,7 +25,7 @@
     {{ content_for_header }}
   </head>
 
-  <body>
+  <body class="preload">
     {% sections 'header-group' %}
 
     {{ content_for_layout }}
@@ -80,6 +83,7 @@
     
     {{ 'alpine-collapse.min.js' | asset_url | script_tag }}
     {{ 'alpine.min.js' | asset_url | script_tag }}
+    {{ 'alpine-animations.js' | asset_url | script_tag }}
     
     <script>
       // Ensure Alpine starts with stores properly initialized
@@ -262,6 +266,13 @@
     </script>
     <script src="{{ 'animations.js' | asset_url }}" defer></script>
     <script src="{{ 'custom-calculator.js' | asset_url }}" defer></script>
+    
+    <!-- Remove preload class after load to enable animations -->
+    <script>
+      window.addEventListener('load', () => {
+        document.body.classList.remove('preload');
+      });
+    </script>
     
     {% # Quick View Modal %}
     {% render 'quick-view-modal' %}
