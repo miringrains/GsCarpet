@@ -101,7 +101,7 @@
             </div>
             
             <div class="cart-item__price">
-              <span x-text="formatMoney(item.line_price)"></span>
+              <span x-text="window.formatMoney(item.line_price)"></span>
               <button 
                 class="cart-item__remove"
                 @click="removeItem(item.key)"
@@ -120,7 +120,7 @@
     <div class="cart-drawer__footer" x-show="$store.cart.items.length > 0">
       <div class="cart-drawer__subtotal">
         <span>Subtotal</span>
-        <span x-text="formatMoney($store.cart.total_price)"></span>
+        <span x-text="window.formatMoney($store.cart.total_price)"></span>
       </div>
       
       <p class="cart-drawer__note">Shipping & taxes calculated at checkout</p>
@@ -343,41 +343,3 @@
     }
   }
 </style>
-
-<script>
-  Alpine.data('cartDrawer', () => ({
-    updating: false,
-    
-    formatMoney(cents) {
-      return `$${(cents / 100).toFixed(2)}`;
-    },
-    
-    async updateQuantity(key, quantity) {
-      if (quantity < 1) quantity = 1;
-      this.updating = true;
-      
-      try {
-        const response = await fetch('/cart/change.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: key, quantity: parseInt(quantity) })
-        });
-        
-        const cart = await response.json();
-        this.$store.cart.updateCart(cart);
-      } catch (error) {
-        console.error('Error updating quantity:', error);
-      } finally {
-        this.updating = false;
-      }
-    },
-    
-    async removeItem(key) {
-      await this.updateQuantity(key, 0);
-    },
-    
-    checkout() {
-      window.location.href = '/checkout';
-    }
-  }));
-</script>

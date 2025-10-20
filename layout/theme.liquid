@@ -30,8 +30,57 @@
     {% sections 'footer-group' %}
     
     {% # JavaScript files %}
+    <script>
+      // Pre-initialize Alpine data to ensure it's available when components load
+      window.Alpine = window.Alpine || { data: {}, store: {} };
+      
+      // Global helper functions
+      window.formatMoney = function(cents) {
+        return `$${(cents / 100).toFixed(2)}`;
+      };
+      
+      // Define cartDrawer component
+      window.Alpine.data = window.Alpine.data || {};
+      window.Alpine.data.cartDrawer = () => ({
+        updating: false,
+        
+        formatMoney(cents) {
+          return window.formatMoney(cents);
+        },
+        
+        async updateQuantity(key, quantity) {
+          if (quantity < 1) quantity = 1;
+          this.updating = true;
+          
+          try {
+            const response = await fetch('/cart/change.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: key, quantity: parseInt(quantity) })
+            });
+            
+            const cart = await response.json();
+            this.$store.cart.updateCart(cart);
+          } catch (error) {
+            console.error('Error updating quantity:', error);
+          } finally {
+            this.updating = false;
+          }
+        },
+        
+        async removeItem(key) {
+          await this.updateQuantity(key, 0);
+        },
+        
+        checkout() {
+          window.location.href = '/checkout';
+        }
+      });
+    </script>
+    
     {{ 'alpine-collapse.min.js' | asset_url | script_tag }}
     {{ 'alpine.min.js' | asset_url | script_tag }}
+    
     <script>
       // Ensure Alpine starts with stores properly initialized
       document.addEventListener('alpine:init', () => {
@@ -207,6 +256,9 @@
           }
         }))
       });
+      
+      // Start Alpine
+      Alpine.start();
     </script>
     <script src="{{ 'animations.js' | asset_url }}" defer></script>
     <script src="{{ 'custom-calculator.js' | asset_url }}" defer></script>
