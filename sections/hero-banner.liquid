@@ -36,6 +36,18 @@
     --hero-padding-top: {{ section.settings.padding_top }}px;
     --hero-padding-bottom: {{ section.settings.padding_bottom }}px;
     --hero-content-width: {{ section.settings.content_width }}px;
+    
+    /* Button Colors */
+    --hero-button-primary-bg: {{ section.settings.button_primary_bg }};
+    --hero-button-primary-text: {{ section.settings.button_primary_text }};
+    --hero-button-primary-bg-hover: {{ section.settings.button_primary_bg | color_darken: 10 }};
+    
+    --hero-button-secondary-bg: {{ section.settings.button_secondary_bg }};
+    --hero-button-secondary-text: {{ section.settings.button_secondary_text }};
+    --hero-button-secondary-border: {{ section.settings.button_secondary_border }};
+    --hero-button-secondary-bg-hover: {{ section.settings.button_secondary_border }};
+    --hero-button-secondary-text-hover: {{ section.settings.button_secondary_text_hover }};
+    --hero-button-secondary-border-hover: {{ section.settings.button_secondary_border }};
   }
 {%- endstyle -%}
 
@@ -345,6 +357,46 @@
       "id": "text_color",
       "label": "Text color",
       "default": "#2B2C25"
+    },
+    {
+      "type": "header", 
+      "content": "Button Colors"
+    },
+    {
+      "type": "color",
+      "id": "button_primary_bg",
+      "label": "Primary button background",
+      "default": "#2B2C25"
+    },
+    {
+      "type": "color",
+      "id": "button_primary_text",
+      "label": "Primary button text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "button_secondary_bg",
+      "label": "Secondary button background",
+      "default": "transparent"
+    },
+    {
+      "type": "color",
+      "id": "button_secondary_text",
+      "label": "Secondary button text",
+      "default": "#2B2C25"
+    },
+    {
+      "type": "color",
+      "id": "button_secondary_border",
+      "label": "Secondary button border",
+      "default": "#2B2C25"
+    },
+    {
+      "type": "color",
+      "id": "button_secondary_text_hover",
+      "label": "Secondary button text (hover)",
+      "default": "#FFFFFF"
     },
     {
       "type": "header",
