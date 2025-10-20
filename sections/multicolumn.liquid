@@ -1,9 +1,22 @@
+{{ 'section-multicolumn.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --section-bg-color: {{ section.settings.background_color }};
+    --section-heading-align: {{ section.settings.heading_alignment }};
+    --section-column-align: {{ section.settings.column_alignment }};
+    --columns-mobile: {{ section.settings.columns_mobile }};
+  }
+{%- endstyle -%}
+
 {% comment %}
   Multicolumn Section - Adapted from Dawn
   Perfect for features, team members, benefits, etc.
 {% endcomment %}
 
-<section class="multicolumn section-{{ section.id }}" id="shopify-section-{{ section.id }}">
+<section class="multicolumn" id="shopify-section-{{ section.id }}">
   <div class="{% unless section.settings.full_width %}container{% endunless %}">
     {% if section.settings.title != blank or section.settings.subtitle != blank %}
       <div class="multicolumn__header">
@@ -20,13 +33,13 @@
       {% for block in section.blocks %}
         <div class="multicolumn__item" {{ block.shopify_attributes }}>
           {% if block.settings.image %}
-            <div class="multicolumn__image">
+            <div class="multicolumn__image{% if section.settings.image_ratio == 'circle' %} multicolumn__image--circle{% endif %}">
               {% render 'image',
                 image: block.settings.image,
                 width: 400,
                 height: 400,
                 alt: block.settings.title,
-                class: 'multicolumn__img'
+                class: 'multicolumn__img{% if section.settings.image_width == 'half' %} multicolumn__img--half{% elsif section.settings.image_width == 'third' %} multicolumn__img--third{% endif %}'
               %}
             </div>
           {% endif %}
@@ -56,121 +69,6 @@
     </div>
   </div>
 </section>
-
-<style>
-  #shopify-section-{{ section.id }} {
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
-    background-color: {{ section.settings.background_color }};
-  }
-  
-  .multicolumn__header {
-    text-align: {{ section.settings.heading_alignment }};
-    margin-bottom: 3rem;
-  }
-  
-  .multicolumn__subtitle {
-    display: inline-block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-text-secondary);
-    margin-bottom: 0.5rem;
-  }
-  
-  .multicolumn__title {
-    font-size: 2.5rem;
-    font-weight: 300;
-    margin: 0;
-  }
-  
-  .multicolumn__grid {
-    display: grid;
-    gap: 2rem;
-  }
-  
-  .multicolumn__grid--2 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .multicolumn__grid--3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  
-  .multicolumn__grid--4 {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  
-  .multicolumn__item {
-    text-align: {{ section.settings.column_alignment }};
-  }
-  
-  .multicolumn__image {
-    margin-bottom: 1.5rem;
-    {% if section.settings.image_ratio == 'circle' %}
-      border-radius: 50%;
-      overflow: hidden;
-      aspect-ratio: 1;
-    {% endif %}
-  }
-  
-  .multicolumn__img {
-    width: 100%;
-    height: auto;
-    {% if section.settings.image_width == 'half' %}
-      max-width: 50%;
-      margin: 0 auto;
-    {% elsif section.settings.image_width == 'third' %}
-      max-width: 33%;
-      margin: 0 auto;
-    {% endif %}
-  }
-  
-  .multicolumn__item-title {
-    font-size: 1.25rem;
-    font-weight: 500;
-    margin: 0 0 0.75rem;
-  }
-  
-  .multicolumn__item-text {
-    font-size: 0.9375rem;
-    line-height: 1.6;
-    color: var(--color-text-secondary);
-    margin-bottom: 1rem;
-  }
-  
-  .multicolumn__link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-decoration: none;
-    color: var(--color-accent);
-    transition: var(--transition-base);
-  }
-  
-  .multicolumn__link:hover {
-    gap: 0.75rem;
-  }
-  
-  @media (max-width: 768px) {
-    .multicolumn__grid {
-      grid-template-columns: repeat({{ section.settings.columns_mobile }}, 1fr);
-      gap: 1.5rem;
-    }
-    
-    .multicolumn__title {
-      font-size: 2rem;
-    }
-    
-    #shopify-section-{{ section.id }} {
-      padding-top: {{ section.settings.padding_top | times: 0.75 }}px;
-      padding-bottom: {{ section.settings.padding_bottom | times: 0.75 }}px;
-    }
-  }
-</style>
 
 {% schema %}
 {

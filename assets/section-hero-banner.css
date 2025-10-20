@@ -1,0 +1,194 @@
+/* ==========================================================================
+   Section: Hero Banner
+   ========================================================================== */
+
+.hero-banner {
+  position: relative;
+  min-height: var(--hero-height, 90vh);
+  display: flex;
+  align-items: var(--hero-vertical-align, center);
+  justify-content: center;
+  overflow: hidden;
+  background-color: var(--hero-bg-color, var(--color-background));
+}
+
+.hero-banner--contained {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  border-radius: var(--hero-border-radius, 0);
+}
+
+.hero-banner__wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Image */
+.hero-banner__image {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.hero-banner__bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-banner--contained .hero-banner__bg {
+  border-radius: var(--hero-border-radius, 0);
+}
+
+.hero-banner__overlay {
+  position: absolute;
+  inset: 0;
+  background-color: var(--hero-overlay-color, #000000);
+  opacity: var(--hero-overlay-opacity, 0.3);
+  z-index: 2;
+}
+
+/* Content */
+.hero-banner__content {
+  position: relative;
+  z-index: 3;
+  padding: var(--hero-padding-top, 60px) 0 var(--hero-padding-bottom, 60px);
+  width: 100%;
+}
+
+.hero-banner__text {
+  max-width: var(--hero-content-width, 900px);
+  margin: 0 auto;
+  text-align: var(--hero-text-align, center);
+}
+
+/* Typography */
+.hero-banner__subtitle {
+  display: inline-block;
+  font-size: var(--hero-subtitle-size, 0.875rem);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  color: var(--hero-text-color, var(--color-text-primary));
+}
+
+.hero-banner--has-image .hero-banner__subtitle {
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.hero-banner__heading {
+  font-size: var(--hero-title-size, 3.5rem);
+  font-weight: var(--hero-title-weight, 300);
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  color: var(--hero-text-color, var(--color-text-primary));
+}
+
+.hero-banner--has-image .hero-banner__heading {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-banner__subheading {
+  font-size: var(--hero-text-size, 1.25rem);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  color: var(--hero-text-color, var(--color-text-primary));
+}
+
+.hero-banner--has-image .hero-banner__subheading {
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Buttons */
+.hero-banner__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: var(--hero-text-align, center);
+  flex-wrap: wrap;
+}
+
+/* Text Alignment Variations */
+.hero-banner__text--left {
+  text-align: left;
+}
+
+.hero-banner__text--left .hero-banner__buttons {
+  justify-content: flex-start;
+}
+
+.hero-banner__text--center {
+  text-align: center;
+}
+
+.hero-banner__text--center .hero-banner__buttons {
+  justify-content: center;
+}
+
+.hero-banner__text--right {
+  text-align: right;
+}
+
+.hero-banner__text--right .hero-banner__buttons {
+  justify-content: flex-end;
+}
+
+/* Vertical Alignment */
+.hero-banner--align-top {
+  align-items: flex-start;
+}
+
+.hero-banner--align-center {
+  align-items: center;
+}
+
+.hero-banner--align-bottom {
+  align-items: flex-end;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-banner {
+    min-height: var(--hero-height-mobile, 70vh);
+  }
+  
+  .hero-banner__heading {
+    font-size: calc(var(--hero-title-size, 3.5rem) * 0.7);
+  }
+  
+  .hero-banner__subheading {
+    font-size: calc(var(--hero-text-size, 1.25rem) * 0.9);
+  }
+  
+  .hero-banner__subtitle {
+    font-size: calc(var(--hero-subtitle-size, 0.875rem) * 0.9);
+  }
+  
+  .hero-banner__buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .hero-banner__buttons .btn {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .hero-banner__content {
+    padding-top: calc(var(--hero-padding-top, 60px) * 0.75);
+    padding-bottom: calc(var(--hero-padding-bottom, 60px) * 0.75);
+  }
+  
+  /* Force center alignment on mobile */
+  .hero-banner__text {
+    text-align: center;
+  }
+  
+  .hero-banner__buttons {
+    justify-content: center;
+  }
+}

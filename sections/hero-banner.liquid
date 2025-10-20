@@ -1,9 +1,50 @@
+{{ 'section-hero-banner.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    /* Height */
+    --hero-height: {{ section.settings.height }}vh;
+    --hero-height-mobile: {{ section.settings.height_mobile }}vh;
+    
+    /* Border Radius */
+    --hero-border-radius: {{ section.settings.border_radius }}px;
+    
+    /* Text Position */
+    --hero-text-align: {{ section.settings.text_alignment }};
+    --hero-vertical-align: {{ section.settings.vertical_alignment }};
+    
+    /* Overlay */
+    --hero-overlay-color: {{ section.settings.overlay_color }};
+    --hero-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    
+    /* Typography */
+    --hero-title-size: {{ section.settings.title_size }}rem;
+    --hero-subtitle-size: {{ section.settings.subtitle_size }}rem;
+    --hero-text-size: {{ section.settings.text_size }}rem;
+    --hero-title-weight: {{ section.settings.title_weight }};
+    
+    /* Colors */
+    {%- if section.settings.custom_colors -%}
+      --hero-bg-color: {{ section.settings.bg_color }};
+      --hero-text-color: {{ section.settings.text_color }};
+    {%- else -%}
+      --hero-bg-color: var(--color-background);
+      --hero-text-color: var(--color-text-primary);
+    {%- endif -%}
+    
+    /* Spacing */
+    --hero-padding-top: {{ section.settings.padding_top }}px;
+    --hero-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --hero-content-width: {{ section.settings.content_width }}px;
+  }
+{%- endstyle -%}
+
 {% comment %}
   Hero Banner Section
   Clean hero with full customization controls
 {% endcomment %}
 
-<section class="hero-banner" id="shopify-section-{{ section.id }}">
+<section class="hero-banner hero-banner--align-{{ section.settings.vertical_alignment }}{% if section.settings.contained %} hero-banner--contained{% endif %}{% if section.settings.image %} hero-banner--has-image{% endif %}" id="shopify-section-{{ section.id }}">
   <div class="hero-banner__wrapper">
     {% if section.settings.image %}
       <div class="hero-banner__image">
@@ -24,7 +65,7 @@
     
     <div class="hero-banner__content">
       <div class="container">
-        <div class="hero-banner__text">
+        <div class="hero-banner__text hero-banner__text--{{ section.settings.text_alignment }}">
           {% if section.settings.subtitle %}
             <span class="hero-banner__subtitle">{{ section.settings.subtitle }}</span>
           {% endif %}
@@ -54,162 +95,6 @@
     </div>
   </div>
 </section>
-
-<style>
-  #shopify-section-{{ section.id }} {
-    /* Height */
-    --hero-height: {{ section.settings.height }}vh;
-    --hero-height-mobile: {{ section.settings.height_mobile }}vh;
-    
-    /* Border Radius */
-    --hero-border-radius: {{ section.settings.border_radius }}px;
-    
-    /* Text Position */
-    --hero-text-align: {{ section.settings.text_alignment }};
-    --hero-vertical-align: {{ section.settings.vertical_alignment }};
-    
-    /* Overlay */
-    --hero-overlay-color: {{ section.settings.overlay_color }};
-    --hero-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
-    
-    /* Typography */
-    --hero-title-size: {{ section.settings.title_size }}rem;
-    --hero-subtitle-size: {{ section.settings.subtitle_size }}rem;
-    --hero-text-size: {{ section.settings.text_size }}rem;
-    
-    /* Colors */
-    {% if section.settings.custom_colors %}
-      --hero-bg-color: {{ section.settings.bg_color }};
-      --hero-text-color: {{ section.settings.text_color }};
-    {% else %}
-      --hero-bg-color: var(--color-background);
-      --hero-text-color: var(--color-text-primary);
-    {% endif %}
-    
-    /* Spacing */
-    --hero-padding-top: {{ section.settings.padding_top }}px;
-    --hero-padding-bottom: {{ section.settings.padding_bottom }}px;
-  }
-  
-  .hero-banner {
-    position: relative;
-    min-height: var(--hero-height);
-    display: flex;
-    align-items: var(--hero-vertical-align);
-    justify-content: center;
-    overflow: hidden;
-    background-color: var(--hero-bg-color);
-    {% if section.settings.contained %}
-      max-width: var(--container-max-width);
-      margin: 0 auto;
-      border-radius: var(--hero-border-radius);
-    {% endif %}
-  }
-  
-  .hero-banner__wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .hero-banner__image {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-  }
-  
-  .hero-banner__bg {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    {% if section.settings.contained %}
-      border-radius: var(--hero-border-radius);
-    {% endif %}
-  }
-  
-  .hero-banner__overlay {
-    position: absolute;
-    inset: 0;
-    background-color: var(--hero-overlay-color);
-    opacity: var(--hero-overlay-opacity);
-  }
-  
-  .hero-banner__content {
-    position: relative;
-    z-index: 2;
-    padding: var(--hero-padding-top) 0 var(--hero-padding-bottom);
-    width: 100%;
-  }
-  
-  .hero-banner__text {
-    max-width: {{ section.settings.content_width }}px;
-    margin: 0 auto;
-    text-align: var(--hero-text-align);
-  }
-  
-  .hero-banner__subtitle {
-    display: inline-block;
-    font-size: var(--hero-subtitle-size);
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-    color: var(--hero-text-color);
-    {% if section.settings.image %}
-      color: white;
-    {% endif %}
-  }
-  
-  .hero-banner__heading {
-    font-size: var(--hero-title-size);
-    font-weight: {{ section.settings.title_weight }};
-    line-height: 1.1;
-    margin-bottom: 1rem;
-    color: var(--hero-text-color);
-    {% if section.settings.image %}
-      color: white;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    {% endif %}
-  }
-  
-  .hero-banner__subheading {
-    font-size: var(--hero-text-size);
-    line-height: 1.6;
-    margin-bottom: 2rem;
-    color: var(--hero-text-color);
-    {% if section.settings.image %}
-      color: white;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    {% endif %}
-  }
-  
-  .hero-banner__buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: var(--hero-text-align);
-    flex-wrap: wrap;
-  }
-  
-  @media (max-width: 768px) {
-    .hero-banner {
-      min-height: var(--hero-height-mobile);
-    }
-    
-    .hero-banner__heading {
-      font-size: calc(var(--hero-title-size) * 0.7);
-    }
-    
-    .hero-banner__buttons {
-      flex-direction: column;
-      align-items: center;
-    }
-    
-    .hero-banner__buttons .btn {
-      width: 100%;
-      max-width: 300px;
-    }
-  }
-</style>
 
 {% schema %}
 {
