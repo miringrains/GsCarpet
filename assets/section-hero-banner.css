@@ -7,7 +7,7 @@
   position: relative;
   min-height: var(--hero-height, 90vh);
   display: flex;
-  align-items: var(--hero-vertical-align, center);
+  align-items: center;
   justify-content: center;
   overflow: hidden;
   background-color: var(--hero-bg-color, var(--color-background));
@@ -23,6 +23,9 @@
   position: relative;
   width: 100%;
   height: 100%;
+  display: flex;
+  align-items: inherit;
+  justify-content: inherit;
 }
 
 /* Image */
@@ -30,16 +33,14 @@
   position: absolute;
   inset: 0;
   z-index: 1;
+  border-radius: var(--hero-border-radius, 0);
+  overflow: hidden;
 }
 
 .hero-banner__bg {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.hero-banner--contained .hero-banner__bg {
-  border-radius: var(--hero-border-radius, 0);
 }
 
 .hero-banner__overlay {
@@ -139,7 +140,7 @@
 }
 
 /* Vertical Alignment */
-.hero-banner--align-top {
+.hero-banner--align-flex-start {
   align-items: flex-start;
 }
 
@@ -147,7 +148,7 @@
   align-items: center;
 }
 
-.hero-banner--align-bottom {
+.hero-banner--align-flex-end {
   align-items: flex-end;
 }
 
