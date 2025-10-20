@@ -1,9 +1,21 @@
+{{ 'section-rich-text.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --section-bg-color: {{ section.settings.background_color }};
+    --section-text-align: {{ section.settings.alignment }};
+    --section-content-width: {{ section.settings.content_width }}px;
+  }
+{%- endstyle -%}
+
 {% comment %}
   Rich Text Section - Simplified from Dawn
   A clean content section for headings, text, and buttons
 {% endcomment %}
 
-<section class="rich-text-section section-{{ section.id }}" id="shopify-section-{{ section.id }}">
+<section class="rich-text" id="shopify-section-{{ section.id }}">
   <div class="{% unless section.settings.full_width %}container{% endunless %}">
     <div class="rich-text__wrapper rich-text__wrapper--{{ section.settings.alignment }}">
       <div class="rich-text__content">
@@ -33,74 +45,6 @@
     </div>
   </div>
 </section>
-
-<style>
-  #shopify-section-{{ section.id }} {
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
-    background-color: {{ section.settings.background_color }};
-  }
-  
-  .rich-text__wrapper {
-    max-width: {{ section.settings.content_width }}px;
-    margin: 0 auto;
-  }
-  
-  .rich-text__wrapper--left {
-    text-align: left;
-  }
-  
-  .rich-text__wrapper--center {
-    text-align: center;
-  }
-  
-  .rich-text__wrapper--right {
-    text-align: right;
-  }
-  
-  .rich-text__heading {
-    margin-bottom: 1.5rem;
-  }
-  
-  .rich-text__heading.h1 {
-    font-size: 2.5rem;
-    font-weight: 300;
-  }
-  
-  .rich-text__heading.h2 {
-    font-size: 2rem;
-    font-weight: 400;
-  }
-  
-  .rich-text__heading.h3 {
-    font-size: 1.5rem;
-    font-weight: 500;
-  }
-  
-  .rich-text__text {
-    margin-bottom: 2rem;
-    line-height: 1.6;
-  }
-  
-  .rich-text__buttons {
-    margin-top: 2rem;
-  }
-  
-  @media (max-width: 768px) {
-    #shopify-section-{{ section.id }} {
-      padding-top: {{ section.settings.padding_top | times: 0.75 }}px;
-      padding-bottom: {{ section.settings.padding_bottom | times: 0.75 }}px;
-    }
-    
-    .rich-text__heading.h1 {
-      font-size: 2rem;
-    }
-    
-    .rich-text__heading.h2 {
-      font-size: 1.5rem;
-    }
-  }
-</style>
 
 {% schema %}
 {
