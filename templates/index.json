@@ -20,7 +20,7 @@
         "button_link": "/collections/all",
         "button_2_label": "",
         "button_2_link": "",
-        "contained": true,
+        "contained": false,
         "height": 80,
         "height_mobile": 70,
         "border_radius": 8,
