@@ -40,7 +40,9 @@
           Alpine.store('cart', {
             isOpen: false,
             updating: false,
+            items: {{ cart.items | json }},
             itemCount: {{ cart.item_count | default: 0 }},
+            total_price: {{ cart.total_price | default: 0 }},
             
             openDrawer() {
               this.isOpen = true;
@@ -58,6 +60,12 @@
             
             close() {
               this.closeDrawer();
+            },
+            
+            updateCart(cart) {
+              this.items = cart.items || [];
+              this.itemCount = cart.item_count || 0;
+              this.total_price = cart.total_price || 0;
             }
           });
         }
@@ -84,56 +92,6 @@
           });
         }
 
-        // Define cartDrawer component
-        Alpine.data('cartDrawer', () => ({
-          items: [],
-          
-          async init() {
-            // Load cart data when drawer opens
-            this.$watch('$store.cart.isOpen', async (open) => {
-              if (open) {
-                await this.loadCart();
-              }
-            });
-          },
-          
-          async loadCart() {
-            try {
-              const response = await fetch('/cart.js');
-              const cart = await response.json();
-              this.items = cart.items || [];
-              this.$store.cart.itemCount = cart.item_count || 0;
-            } catch (error) {
-              console.error('Error loading cart:', error);
-            }
-          },
-          
-          async updateQuantity(lineIndex, quantity) {
-            this.$store.cart.updating = true;
-            try {
-              const response = await fetch('/cart/change.js', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  line: lineIndex,
-                  quantity: quantity
-                })
-              });
-              await this.loadCart();
-            } catch (error) {
-              console.error('Error updating cart:', error);
-            } finally {
-              this.$store.cart.updating = false;
-            }
-          },
-          
-          async removeItem(lineIndex) {
-            await this.updateQuantity(lineIndex, 0);
-          }
-        }));
-        
         // Define quickViewModal component
         Alpine.data('quickViewModal', () => ({
           product: null,
