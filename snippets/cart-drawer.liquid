@@ -3,6 +3,8 @@
   Includes item management and checkout features
 {% endcomment %}
 
+{{ 'section-cart-drawer.css' | asset_url | stylesheet_tag }}
+
 <div 
   class="cart-drawer"
   x-data="cartDrawer()"

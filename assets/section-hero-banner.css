@@ -114,6 +114,35 @@
   flex-wrap: wrap;
 }
 
+/* Single button - always centered */
+.hero-banner__buttons:has(.btn:only-child) {
+  justify-content: center;
+}
+
+/* Hero Button Styles */
+.hero-banner__buttons .btn--primary {
+  background-color: var(--hero-button-primary-bg, var(--color-primary));
+  color: var(--hero-button-primary-text, var(--color-text-inverse));
+  border-color: var(--hero-button-primary-bg, var(--color-primary));
+}
+
+.hero-banner__buttons .btn--primary:hover {
+  background-color: var(--hero-button-primary-bg-hover, var(--color-primary-dark));
+  border-color: var(--hero-button-primary-bg-hover, var(--color-primary-dark));
+}
+
+.hero-banner__buttons .btn--secondary {
+  background-color: var(--hero-button-secondary-bg, transparent);
+  color: var(--hero-button-secondary-text, var(--color-primary));
+  border-color: var(--hero-button-secondary-border, var(--color-primary));
+}
+
+.hero-banner__buttons .btn--secondary:hover {
+  background-color: var(--hero-button-secondary-bg-hover, var(--color-primary));
+  color: var(--hero-button-secondary-text-hover, var(--color-text-inverse));
+  border-color: var(--hero-button-secondary-border-hover, var(--color-primary));
+}
+
 /* Text Alignment Variations */
 .hero-banner__text--left {
   text-align: left;
