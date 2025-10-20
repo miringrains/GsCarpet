@@ -1,0 +1,186 @@
+{% comment %}
+  Mega Menu Navigation - Adapted from Dawn
+  Modern dropdown navigation with multi-column support
+{% endcomment %}
+
+<nav class="header__nav">
+  <ul class="header__menu list-unstyled" role="list">
+    {%- for link in linklists[section.settings.menu].links -%}
+      <li class="header__menu-item">
+        {%- if link.links != blank -%}
+          <details class="header__menu-dropdown">
+            <summary class="header__menu-link header__menu-link--dropdown">
+              <span>{{ link.title | escape }}</span>
+              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" class="header__menu-arrow">
+                <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+            </summary>
+            <div class="header__dropdown">
+              <div class="header__dropdown-inner">
+                {%- if link.links.size > 6 -%}
+                  {% comment %} Multi-column layout for large menus {% endcomment %}
+                  <div class="header__dropdown-grid">
+                    {%- for childlink in link.links -%}
+                      <div class="header__dropdown-column">
+                        {%- if childlink.links != blank -%}
+                          <h3 class="header__dropdown-title">{{ childlink.title | escape }}</h3>
+                          <ul class="header__dropdown-list" role="list">
+                            {%- for grandchildlink in childlink.links -%}
+                              <li>
+                                <a href="{{ grandchildlink.url }}" class="header__dropdown-link">
+                                  {{ grandchildlink.title | escape }}
+                                </a>
+                              </li>
+                            {%- endfor -%}
+                          </ul>
+                        {%- else -%}
+                          <a href="{{ childlink.url }}" class="header__dropdown-link header__dropdown-link--main">
+                            {{ childlink.title | escape }}
+                          </a>
+                        {%- endif -%}
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                {%- else -%}
+                  {% comment %} Simple list for small menus {% endcomment %}
+                  <ul class="header__dropdown-list" role="list">
+                    {%- for childlink in link.links -%}
+                      <li>
+                        <a href="{{ childlink.url }}" class="header__dropdown-link">
+                          {{ childlink.title | escape }}
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </div>
+            </div>
+          </details>
+        {%- else -%}
+          <a href="{{ link.url }}" class="header__menu-link">
+            {{ link.title | escape }}
+          </a>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+</nav>
+
+<style>
+  .header__nav {
+    display: none;
+  }
+  
+  @media (min-width: 1024px) {
+    .header__nav {
+      display: block;
+    }
+  }
+  
+  .header__menu {
+    display: flex;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .header__menu-item {
+    position: relative;
+  }
+  
+  .header__menu-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 0;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--color-text-primary);
+    transition: var(--transition-base);
+  }
+  
+  .header__menu-link:hover {
+    color: var(--color-accent);
+  }
+  
+  .header__menu-dropdown summary {
+    cursor: pointer;
+    list-style: none;
+  }
+  
+  .header__menu-dropdown summary::-webkit-details-marker {
+    display: none;
+  }
+  
+  .header__menu-arrow {
+    transition: transform 0.2s ease;
+  }
+  
+  .header__menu-dropdown[open] .header__menu-arrow {
+    transform: rotate(180deg);
+  }
+  
+  .header__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 200px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+  }
+  
+  .header__menu-dropdown[open] .header__dropdown {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .header__dropdown-inner {
+    padding: 1.5rem;
+  }
+  
+  .header__dropdown-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 2rem;
+    min-width: 600px;
+  }
+  
+  .header__dropdown-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+  }
+  
+  .header__dropdown-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .header__dropdown-link {
+    display: block;
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+    text-decoration: none;
+    color: var(--color-text-secondary);
+    transition: var(--transition-base);
+  }
+  
+  .header__dropdown-link:hover {
+    color: var(--color-text-primary);
+  }
+  
+  .header__dropdown-link--main {
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+</style>
