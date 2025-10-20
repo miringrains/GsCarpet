@@ -1,33 +1,212 @@
 {% comment %}
-  This section is used in the cart template to render /cart page with an
-  overview of the items in customer's cart.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/cart
+  Cart Page Section
+  Modern cart page with Alpine.js integration
 {% endcomment %}
 
-<h1>{{ 'cart.title' | t }}</h1>
+{{ 'section-cart.css' | asset_url | stylesheet_tag }}
 
-<form action="{{ routes.cart_url }}" method="post">
-  <table>
-    {% for item in cart.items %}
-      <tr>
-        <td>
-          {% render 'image', image: item.image, url: item.url %}
-        </td>
-        <td>
-          <p>{{ item.product.title }}</p>
-          {{ 'cart.remove' | t | link_to: item.url_to_remove }}
-        </td>
-        <td>
-          <input type="text" name="updates[]" value="{{ item.quantity }}">
-          <input type="submit" value="{{ 'cart.update' | t }}">
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
+<section class="cart-page section" x-data="cartPage()">
+  <div class="container">
+    <!-- Page Header -->
+    <header class="cart-page__header">
+      <h1 class="cart-page__title">Your Cart</h1>
+      <a href="{{ routes.all_products_collection_url }}" class="cart-page__continue">
+        ← Continue Shopping
+      </a>
+    </header>
 
-  <input type="submit" name="checkout" value="{{ 'cart.checkout' | t }}">
-</form>
+    <!-- Empty Cart State -->
+    <div class="cart-empty" x-show="items.length === 0" x-cloak>
+      <div class="cart-empty__content">
+        <svg class="cart-empty__icon" width="80" height="80" viewBox="0 0 24 24" fill="none">
+          <path d="M3 3H5L5.4 5M7 13H17L21 5H5.4M7 13L5.4 5M7 13L4.707 15.293C4.077 15.923 4.523 17 5.414 17H17M17 13V17M9 19C9 20.105 8.105 21 7 21C5.895 21 5 20.105 5 19C5 17.895 5.895 17 7 17C8.105 17 9 17.895 9 19ZM19 19C19 20.105 18.105 21 17 21C15.895 21 15 20.105 15 19C15 17.895 15.895 17 17 17C18.105 17 19 17.895 19 19Z" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <h2 class="cart-empty__title">Your cart is empty</h2>
+        <p class="cart-empty__text">Looks like you haven't added anything to your cart yet.</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary btn--large">
+          Start Shopping
+        </a>
+      </div>
+    </div>
+
+    <!-- Cart Items -->
+    <div class="cart-content" x-show="items.length > 0" x-cloak>
+      <div class="cart-items">
+        <template x-for="(item, index) in items" :key="item.key">
+          <div class="cart-item">
+            <!-- Item Image -->
+            <div class="cart-item__image">
+              <a :href="item.url">
+                <img :src="item.image" :alt="item.product_title" loading="lazy">
+              </a>
+            </div>
+
+            <!-- Item Details -->
+            <div class="cart-item__details">
+              <h3 class="cart-item__title">
+                <a :href="item.url" x-text="item.product_title"></a>
+              </h3>
+              <p class="cart-item__variant" x-show="item.variant_title" x-text="item.variant_title"></p>
+              <p class="cart-item__price" x-text="formatMoney(item.price)"></p>
+            </div>
+
+            <!-- Quantity Controls -->
+            <div class="cart-item__quantity">
+              <button 
+                class="cart-item__quantity-btn"
+                @click="updateQuantity(index + 1, item.quantity - 1)"
+                :disabled="item.quantity <= 1 || loading"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M4 8H12" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+              </button>
+              <input 
+                type="number" 
+                class="cart-item__quantity-input"
+                :value="item.quantity"
+                @change="updateQuantity(index + 1, parseInt($event.target.value))"
+                :disabled="loading"
+                min="1"
+              >
+              <button 
+                class="cart-item__quantity-btn"
+                @click="updateQuantity(index + 1, item.quantity + 1)"
+                :disabled="loading"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 4V12M4 8H12" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Line Total -->
+            <div class="cart-item__total">
+              <p class="cart-item__total-price" x-text="formatMoney(item.line_price)"></p>
+            </div>
+
+            <!-- Remove Button -->
+            <button 
+              class="cart-item__remove"
+              @click="removeItem(index + 1)"
+              :disabled="loading"
+              aria-label="Remove item"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+            </button>
+          </div>
+        </template>
+      </div>
+
+      <!-- Cart Summary -->
+      <div class="cart-summary">
+        <div class="cart-summary__content">
+          <h2 class="cart-summary__title">Order Summary</h2>
+          
+          <!-- Subtotal -->
+          <div class="cart-summary__row">
+            <span>Subtotal</span>
+            <span x-text="formatMoney(total_price)"></span>
+          </div>
+
+          <!-- Note -->
+          <div class="cart-summary__note">
+            <label for="cart-note">Order notes (optional)</label>
+            <textarea 
+              id="cart-note" 
+              name="note" 
+              class="cart-summary__note-input"
+              x-model="note"
+              @change="updateNote()"
+              placeholder="Add a note to your order..."
+            ></textarea>
+          </div>
+
+          <!-- Shipping Notice -->
+          <p class="cart-summary__shipping">
+            Shipping & taxes calculated at checkout
+          </p>
+
+          <!-- Checkout Button -->
+          <button 
+            class="btn btn--primary btn--large cart-summary__checkout"
+            @click="checkout()"
+            :disabled="loading"
+          >
+            <span x-show="!loading">Proceed to Checkout</span>
+            <span x-show="loading">Updating...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="cart-loading" x-show="loading" x-cloak>
+      <div class="cart-loading__spinner"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  Alpine.data('cartPage', () => ({
+    items: {{ cart.items | json }},
+    total_price: {{ cart.total_price | default: 0 }},
+    note: {{ cart.note | json }},
+    loading: false,
+
+    formatMoney(cents) {
+      return `$${(cents / 100).toFixed(2)}`;
+    },
+
+    async updateQuantity(line, quantity) {
+      if (quantity < 1) return;
+      this.loading = true;
+
+      try {
+        const response = await fetch('/cart/change.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ line, quantity })
+        });
+
+        const cart = await response.json();
+        this.items = cart.items;
+        this.total_price = cart.total_price;
+        
+        // Update global cart store
+        if (Alpine.store('cart')) {
+          Alpine.store('cart').updateCart(cart);
+        }
+      } catch (error) {
+        console.error('Error updating cart:', error);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async removeItem(line) {
+      await this.updateQuantity(line, 0);
+    },
+
+    async updateNote() {
+      try {
+        await fetch('/cart/update.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ note: this.note })
+        });
+      } catch (error) {
+        console.error('Error updating note:', error);
+      }
+    },
+
+    checkout() {
+      window.location.href = '/checkout';
+    }
+  }));
+</script>
 
 {% schema %}
 {
