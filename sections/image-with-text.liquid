@@ -1,9 +1,20 @@
+{{ 'section-image-with-text.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  #image-text-{{ section.id }} {
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --section-bg-color: {{ section.settings.background_color }};
+    --image-border-radius: {{ section.settings.image_radius }}px;
+  }
+{%- endstyle -%}
+
 {% comment %}
   Image with Text - Adapted from Dawn
   Flexible content section with image and text side by side
 {% endcomment %}
 
-<section class="image-with-text section-{{ section.id }}" id="shopify-section-{{ section.id }}">
+<section class="image-with-text" id="image-text-{{ section.id }}">
   <div class="{% unless section.settings.full_width %}container{% endunless %}">
     <div class="image-with-text__grid image-with-text__grid--{{ section.settings.layout }}">
       <div class="image-with-text__media">
@@ -54,119 +65,6 @@
     </div>
   </div>
 </section>
-
-<style>
-  #shopify-section-{{ section.id }} {
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
-    background-color: {{ section.settings.background_color }};
-  }
-  
-  .image-with-text__grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    align-items: center;
-  }
-  
-  .image-with-text__grid--image-right {
-    direction: rtl;
-  }
-  
-  .image-with-text__grid--image-right > * {
-    direction: ltr;
-  }
-  
-  .image-with-text__media {
-    position: relative;
-    overflow: hidden;
-    border-radius: {{ section.settings.image_radius }}px;
-  }
-  
-  .image-with-text__img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .image-with-text__placeholder {
-    aspect-ratio: 1;
-    background: var(--color-background-subtle);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .image-with-text__placeholder svg {
-    width: 40%;
-    height: 40%;
-    opacity: 0.3;
-  }
-  
-  .image-with-text__inner {
-    max-width: 500px;
-  }
-  
-  .image-with-text__subtitle {
-    display: inline-block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-text-secondary);
-    margin-bottom: 0.75rem;
-  }
-  
-  .image-with-text__heading {
-    margin: 0 0 1.5rem;
-  }
-  
-  .image-with-text__heading.h1 {
-    font-size: 2.5rem;
-    font-weight: 300;
-  }
-  
-  .image-with-text__heading.h2 {
-    font-size: 2rem;
-    font-weight: 400;
-  }
-  
-  .image-with-text__heading.h3 {
-    font-size: 1.5rem;
-    font-weight: 500;
-  }
-  
-  .image-with-text__text {
-    font-size: 1rem;
-    line-height: 1.7;
-    color: var(--color-text-secondary);
-    margin-bottom: 2rem;
-  }
-  
-  @media (max-width: 768px) {
-    .image-with-text__grid {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-    
-    .image-with-text__grid--image-right {
-      direction: ltr;
-    }
-    
-    .image-with-text__heading.h1 {
-      font-size: 2rem;
-    }
-    
-    .image-with-text__heading.h2 {
-      font-size: 1.5rem;
-    }
-    
-    #shopify-section-{{ section.id }} {
-      padding-top: {{ section.settings.padding_top | times: 0.75 }}px;
-      padding-bottom: {{ section.settings.padding_bottom | times: 0.75 }}px;
-    }
-  }
-</style>
 
 {% schema %}
 {

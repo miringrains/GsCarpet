@@ -1,7 +1,7 @@
 {{ 'section-hero-banner.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
-  #shopify-section-{{ section.id }} {
+  #hero-{{ section.id }} {
     /* Height */
     --hero-height: {{ section.settings.height }}vh;
     --hero-height-mobile: {{ section.settings.height_mobile }}vh;
@@ -44,7 +44,7 @@
   Clean hero with full customization controls
 {% endcomment %}
 
-<section class="hero-banner hero-banner--align-{{ section.settings.vertical_alignment }}{% if section.settings.contained %} hero-banner--contained{% endif %}{% if section.settings.image %} hero-banner--has-image{% endif %}" id="shopify-section-{{ section.id }}">
+<section class="hero-banner hero-banner--align-{{ section.settings.vertical_alignment }}{% if section.settings.contained %} hero-banner--contained{% endif %}{% if section.settings.image %} hero-banner--has-image{% endif %}" id="hero-{{ section.id }}">
   <div class="hero-banner__wrapper">
     {% if section.settings.image %}
       <div class="hero-banner__image">

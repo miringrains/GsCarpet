@@ -1,7 +1,7 @@
 {{ 'section-testimonials.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
-  #shopify-section-{{ section.id }} {
+  #testimonials-{{ section.id }} {
     --section-padding-top: {{ section.settings.padding_top }}px;
     --section-padding-bottom: {{ section.settings.padding_bottom }}px;
     --section-bg-color: {{ section.settings.background_color }};
@@ -14,7 +14,7 @@
   Clean testimonial carousel/grid
 {% endcomment %}
 
-<section class="testimonials" id="shopify-section-{{ section.id }}">
+<section class="testimonials" id="testimonials-{{ section.id }}">
   <div class="container">
     {% if section.settings.title != blank or section.settings.subtitle != blank %}
       <div class="testimonials__header">

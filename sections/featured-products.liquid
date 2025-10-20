@@ -1,9 +1,20 @@
+{{ 'section-featured-products.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  #featured-products-{{ section.id }} {
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --section-bg-color: {{ section.settings.background_color }};
+    --columns-mobile: {{ section.settings.columns_mobile }};
+  }
+{%- endstyle -%}
+
 {% comment %}
   Featured Products - Clean product grid
   Display selected products or collection
 {% endcomment %}
 
-<section class="featured-products section-{{ section.id }}" id="shopify-section-{{ section.id }}">
+<section class="featured-products" id="featured-products-{{ section.id }}">
   <div class="container">
     {% if section.settings.title != blank or section.settings.subtitle != blank %}
       <div class="featured-products__header">
@@ -39,80 +50,6 @@
     {% endif %}
   </div>
 </section>
-
-<style>
-  #shopify-section-{{ section.id }} {
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
-    background-color: {{ section.settings.background_color }};
-  }
-  
-  .featured-products__header {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-  
-  .featured-products__subtitle {
-    display: inline-block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-text-secondary);
-    margin-bottom: 0.5rem;
-  }
-  
-  .featured-products__title {
-    font-size: 2.5rem;
-    font-weight: 300;
-    margin: 0;
-  }
-  
-  .featured-products__grid {
-    display: grid;
-    gap: 2rem;
-  }
-  
-  .featured-products__grid--2 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .featured-products__grid--3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  
-  .featured-products__grid--4 {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  
-  .featured-products__footer {
-    text-align: center;
-    margin-top: 3rem;
-  }
-  
-  @media (max-width: 1024px) {
-    .featured-products__grid--3,
-    .featured-products__grid--4 {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-  
-  @media (max-width: 640px) {
-    .featured-products__title {
-      font-size: 2rem;
-    }
-    
-    .featured-products__grid {
-      grid-template-columns: repeat({{ section.settings.columns_mobile }}, 1fr);
-      gap: 1rem;
-    }
-    
-    #shopify-section-{{ section.id }} {
-      padding-top: {{ section.settings.padding_top | times: 0.75 }}px;
-      padding-bottom: {{ section.settings.padding_bottom | times: 0.75 }}px;
-    }
-  }
-</style>
 
 {% schema %}
 {

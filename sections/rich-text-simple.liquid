@@ -1,7 +1,7 @@
 {{ 'section-rich-text.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
-  #shopify-section-{{ section.id }} {
+  #rich-text-{{ section.id }} {
     --section-padding-top: {{ section.settings.padding_top }}px;
     --section-padding-bottom: {{ section.settings.padding_bottom }}px;
     --section-bg-color: {{ section.settings.background_color }};
@@ -15,7 +15,7 @@
   A clean content section for headings, text, and buttons
 {% endcomment %}
 
-<section class="rich-text" id="shopify-section-{{ section.id }}">
+<section class="rich-text" id="rich-text-{{ section.id }}">
   <div class="{% unless section.settings.full_width %}container{% endunless %}">
     <div class="rich-text__wrapper rich-text__wrapper--{{ section.settings.alignment }}">
       <div class="rich-text__content">

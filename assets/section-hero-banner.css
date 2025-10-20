@@ -2,6 +2,7 @@
    Section: Hero Banner
    ========================================================================== */
 
+/* Note: Section uses #hero-{{ section.id }} for scoped styles */
 .hero-banner {
   position: relative;
   min-height: var(--hero-height, 90vh);
