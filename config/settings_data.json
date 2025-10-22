@@ -12,6 +12,7 @@
     "type_primary_font": "dm_sans_n3",
     "type_display_font": "dm_serif_text_n4",
     "max_page_width": "110rem",
+    "enable_dark_mode": true,
     "content_for_index": []
   }
 }
