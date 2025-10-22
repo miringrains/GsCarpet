@@ -7,6 +7,10 @@
     {% # Load and preload the critical CSS %}
     {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
     
+    {% # Design System Foundation %}
+    {{ 'design-tokens.css' | asset_url | stylesheet_tag }}
+    {{ 'grid-system.css' | asset_url | stylesheet_tag }}
+    
     {% # Load theme base styles %}
     {{ 'theme-base.css' | asset_url | stylesheet_tag }}
     
@@ -18,6 +22,7 @@
     
     {% # Unified Animation System %}
     {{ 'unified-animations.css' | asset_url | stylesheet_tag }}
+    {{ 'spring-animations.css' | asset_url | stylesheet_tag }}
 
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}
@@ -268,6 +273,7 @@
       Alpine.start();
     </script>
     <script src="{{ 'animations.js' | asset_url }}" defer></script>
+    <script src="{{ 'spring-animations.js' | asset_url }}" defer></script>
     <script src="{{ 'custom-calculator.js' | asset_url }}" defer></script>
     
     <!-- Remove preload class after load to enable animations -->

@@ -1,0 +1,213 @@
+{{ 'section-material-showcase.css' | asset_url | stylesheet_tag }}
+
+<section class="material-showcase" data-section-id="{{ section.id }}">
+  <div class="grid-container">
+    <div class="material-showcase__header grid-col-{{ section.settings.header_width }}" style="grid-column-start: {{ section.settings.header_position }}">
+      {% if section.settings.subtitle %}
+        <p class="material-showcase__subtitle text-sm" data-scroll-animate="text">
+          {{ section.settings.subtitle }}
+        </p>
+      {% endif %}
+      
+      {% if section.settings.title %}
+        <h2 class="material-showcase__title text-{{ section.settings.title_size }}" data-scroll-animate="text">
+          {{ section.settings.title }}
+        </h2>
+      {% endif %}
+      
+      {% if section.settings.description %}
+        <p class="material-showcase__description text-lg" data-scroll-animate="text">
+          {{ section.settings.description }}
+        </p>
+      {% endif %}
+    </div>
+    
+    <div class="material-showcase__grid grid-col-12">
+      {% for block in section.blocks %}
+        <div class="material-item" data-scroll-animate {{ block.shopify_attributes }}>
+          <a href="{{ block.settings.link | default: '#' }}" class="material-item__link">
+            <div class="material-item__image">
+              {% if block.settings.texture_image %}
+                {% render 'image',
+                  image: block.settings.texture_image,
+                  width: 600,
+                  height: 600,
+                  loading: 'lazy',
+                  class: 'material-item__img',
+                  alt: block.settings.material_name
+                %}
+              {% else %}
+                <div class="material-item__placeholder">
+                  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                    <rect width="48" height="48" fill="var(--color-surface)"/>
+                    <path d="M16 20L24 28L32 20" stroke="var(--color-border)" stroke-width="2"/>
+                  </svg>
+                </div>
+              {% endif %}
+            </div>
+            
+            <div class="material-item__info">
+              <h3 class="material-item__name">{{ block.settings.material_name }}</h3>
+              {% if block.settings.properties %}
+                <p class="material-item__properties">{{ block.settings.properties }}</p>
+              {% endif %}
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+    
+    {% if section.settings.show_link %}
+      <div class="material-showcase__footer grid-col-12">
+        <a href="{{ section.settings.link_url }}" class="btn-refined">
+          {{ section.settings.link_text }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Material Showcase",
+  "tag": "section",
+  "class": "section-material-showcase",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Premium Materials"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Crafted from the Finest Materials"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "select",
+      "id": "title_size",
+      "label": "Title Size",
+      "options": [
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "Extra Large" },
+        { "value": "2xl", "label": "Display" }
+      ],
+      "default": "xl"
+    },
+    {
+      "type": "range",
+      "id": "header_width",
+      "label": "Header Width",
+      "min": 4,
+      "max": 12,
+      "step": 2,
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "header_position",
+      "label": "Header Position",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_link",
+      "label": "Show Link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link Text",
+      "default": "Explore All Materials"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "material",
+      "name": "Material",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "texture_image",
+          "label": "Texture Image",
+          "info": "Square image recommended"
+        },
+        {
+          "type": "text",
+          "id": "material_name",
+          "label": "Material Name",
+          "default": "100% Wool"
+        },
+        {
+          "type": "text",
+          "id": "properties",
+          "label": "Properties",
+          "default": "Durable, Soft, Stain-Resistant"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Links to filtered collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Material Showcase",
+      "blocks": [
+        {
+          "type": "material",
+          "settings": {
+            "material_name": "New Zealand Wool",
+            "properties": "Luxurious, Durable, Natural"
+          }
+        },
+        {
+          "type": "material",
+          "settings": {
+            "material_name": "Organic Cotton",
+            "properties": "Soft, Breathable, Eco-Friendly"
+          }
+        },
+        {
+          "type": "material",
+          "settings": {
+            "material_name": "Natural Jute",
+            "properties": "Sustainable, Textured, Versatile"
+          }
+        },
+        {
+          "type": "material",
+          "settings": {
+            "material_name": "Bamboo Silk",
+            "properties": "Lustrous, Hypoallergenic, Renewable"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

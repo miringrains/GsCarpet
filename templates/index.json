@@ -10,7 +10,7 @@
 {
   "sections": {
     "hero": {
-      "type": "hero-banner",
+      "type": "hero-refined",
       "settings": {
         "image": "shopify://shop_images/AdobeStock_1369793718.webp",
         "subtitle": "Premium Collection",
@@ -138,10 +138,61 @@
         "autoplay": true,
         "autoplay_speed": 5
       }
+    },
+    "materials": {
+      "type": "material-showcase",
+      "blocks": {
+        "material_1": {
+          "type": "material",
+          "settings": {
+            "material_name": "New Zealand Wool",
+            "properties": "Luxurious, Durable, Natural"
+          }
+        },
+        "material_2": {
+          "type": "material",
+          "settings": {
+            "material_name": "Organic Cotton", 
+            "properties": "Soft, Breathable, Eco-Friendly"
+          }
+        },
+        "material_3": {
+          "type": "material",
+          "settings": {
+            "material_name": "Natural Jute",
+            "properties": "Sustainable, Textured, Versatile"
+          }
+        },
+        "material_4": {
+          "type": "material",
+          "settings": {
+            "material_name": "Bamboo Silk",
+            "properties": "Lustrous, Hypoallergenic, Renewable"
+          }
+        }
+      },
+      "block_order": [
+        "material_1",
+        "material_2", 
+        "material_3",
+        "material_4"
+      ],
+      "settings": {
+        "subtitle": "Premium Materials",
+        "title": "Crafted from the Finest Materials",
+        "description": "Each rug is carefully crafted using only the highest quality natural and sustainable materials.",
+        "title_size": "xl",
+        "header_width": 8,
+        "header_position": 3,
+        "show_link": true,
+        "link_text": "Explore All Materials",
+        "link_url": "/collections/all"
+      }
     }
   },
   "order": [
     "hero",
+    "materials",
     "featured_collections",
     "testimonials"
   ]

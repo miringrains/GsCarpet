@@ -1,0 +1,159 @@
+/* 
+ * Swiss Grid System
+ * Based on Josef Müller-Brockmann principles
+ * 12-column grid with 8px baseline
+ */
+
+/* Grid Container */
+.grid-container {
+  --grid-columns: 12;
+  --grid-margin: 64px;
+  --grid-gutter: 32px;
+  
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), 1fr);
+  gap: var(--grid-gutter);
+  margin-left: var(--grid-margin);
+  margin-right: var(--grid-margin);
+  width: calc(100% - var(--grid-margin) * 2);
+  max-width: 1440px;
+  margin-inline: auto;
+}
+
+/* Responsive Grid Margins */
+@media (max-width: 1024px) {
+  .grid-container {
+    --grid-margin: 32px;
+    --grid-gutter: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-container {
+    --grid-margin: 16px;
+    --grid-gutter: 16px;
+  }
+}
+
+/* Grid Column Spans */
+.grid-col-1 { grid-column: span 1; }
+.grid-col-2 { grid-column: span 2; }
+.grid-col-3 { grid-column: span 3; }
+.grid-col-4 { grid-column: span 4; }
+.grid-col-5 { grid-column: span 5; }
+.grid-col-6 { grid-column: span 6; }
+.grid-col-7 { grid-column: span 7; }
+.grid-col-8 { grid-column: span 8; }
+.grid-col-9 { grid-column: span 9; }
+.grid-col-10 { grid-column: span 10; }
+.grid-col-11 { grid-column: span 11; }
+.grid-col-12 { grid-column: span 12; }
+
+/* Centered Content Columns */
+.grid-col-center-8 {
+  grid-column: 3 / span 8;
+}
+
+.grid-col-center-10 {
+  grid-column: 2 / span 10;
+}
+
+/* Responsive Column Spans */
+@media (max-width: 1024px) {
+  .grid-col-md-6 { grid-column: span 6; }
+  .grid-col-md-12 { grid-column: span 12; }
+}
+
+@media (max-width: 768px) {
+  [class*="grid-col-"]:not(.grid-col-12) {
+    grid-column: span 12;
+  }
+}
+
+/* Baseline Grid Alignment */
+.baseline-grid {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 7px,
+    rgba(0, 0, 0, 0.05) 7px,
+    rgba(0, 0, 0, 0.05) 8px
+  );
+  background-size: 100% 8px;
+  position: relative;
+}
+
+/* Vertical Rhythm Utilities */
+.vr-1 { margin-bottom: 8px; }
+.vr-2 { margin-bottom: 16px; }
+.vr-3 { margin-bottom: 24px; }
+.vr-4 { margin-bottom: 32px; }
+.vr-5 { margin-bottom: 40px; }
+.vr-6 { margin-bottom: 48px; }
+.vr-8 { margin-bottom: 64px; }
+.vr-10 { margin-bottom: 80px; }
+.vr-12 { margin-bottom: 96px; }
+
+/* Subgrid Support */
+.subgrid {
+  display: grid;
+  grid-template-columns: subgrid;
+}
+
+/* Golden Ratio Positioning */
+.golden-top {
+  position: absolute;
+  top: 38.2%;
+}
+
+.golden-bottom {
+  position: absolute;
+  top: 61.8%;
+}
+
+.golden-left {
+  position: absolute;
+  left: 38.2%;
+}
+
+.golden-right {
+  position: absolute;
+  left: 61.8%;
+}
+
+/* Typography Grid Alignment */
+.type-measure {
+  max-width: 65ch;
+}
+
+.type-measure-wide {
+  max-width: 75ch;
+}
+
+/* Ensure all text aligns to baseline */
+* {
+  line-height: calc(var(--baseline) * var(--line-height-multiplier, 3));
+}
+
+h1, h2, h3, h4, h5, h6, p, ul, ol, blockquote {
+  margin-bottom: calc(var(--baseline) * var(--mb-multiplier, 3));
+}
+
+/* Debug Grid Overlay */
+.show-grid .grid-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--grid-margin);
+  right: var(--grid-margin);
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(255, 0, 0, 0.1),
+    rgba(255, 0, 0, 0.1) calc((100% - var(--grid-gutter) * 11) / 12),
+    transparent calc((100% - var(--grid-gutter) * 11) / 12),
+    transparent calc((100% - var(--grid-gutter) * 11) / 12 + var(--grid-gutter))
+  );
+  pointer-events: none;
+  z-index: 9999;
+}

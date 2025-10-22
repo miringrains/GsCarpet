@@ -1,0 +1,333 @@
+{{ 'section-collection-grid.css' | asset_url | stylesheet_tag }}
+
+<section class="collection-grid-section" data-section-id="{{ section.id }}">
+  <!-- Collection Header -->
+  {% if collection.image or section.settings.show_header %}
+    <div class="collection-header-refined">
+      {% if collection.image %}
+        <div class="collection-header-refined__media" data-parallax="0.05">
+          {% render 'image',
+            image: collection.image,
+            width: 1920,
+            height: 480,
+            loading: 'eager',
+            class: 'collection-header-refined__image',
+            alt: collection.title
+          %}
+        </div>
+      {% endif %}
+      
+      <div class="grid-container">
+        <div class="collection-header-refined__content grid-col-10">
+          <h1 class="collection-header-refined__title text-2xl">{{ collection.title }}</h1>
+          {% if collection.description %}
+            <div class="collection-header-refined__description text-lg">
+              {{ collection.description }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  
+  <!-- Filter Bar -->
+  <div class="filter-bar" x-data="collectionFilters()">
+    <div class="grid-container">
+      <div class="filter-bar__inner grid-col-12">
+        <div class="filter-bar__count">
+          {{ collection.products_count }} 
+          {%- if collection.products_count == 1 -%}product{%- else -%}products{%- endif -%}
+        </div>
+        
+        <div class="filter-bar__controls">
+          <!-- Filter Chips -->
+          <div class="filter-chips">
+            {% if section.settings.enable_size_filter %}
+              <button class="filter-chip" @click="toggleFilter('size')" :class="{ 'filter-chip--active': activeFilters.size }">
+                Size
+                <svg class="filter-chip__arrow" width="12" height="12" viewBox="0 0 12 12">
+                  <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                </svg>
+              </button>
+            {% endif %}
+            
+            {% if section.settings.enable_color_filter %}
+              <button class="filter-chip" @click="toggleFilter('color')" :class="{ 'filter-chip--active': activeFilters.color }">
+                Color
+                <svg class="filter-chip__arrow" width="12" height="12" viewBox="0 0 12 12">
+                  <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                </svg>
+              </button>
+            {% endif %}
+            
+            {% if section.settings.enable_material_filter %}
+              <button class="filter-chip" @click="toggleFilter('material')" :class="{ 'filter-chip--active': activeFilters.material }">
+                Material
+                <svg class="filter-chip__arrow" width="12" height="12" viewBox="0 0 12 12">
+                  <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                </svg>
+              </button>
+            {% endif %}
+            
+            {% if section.settings.enable_price_filter %}
+              <button class="filter-chip" @click="toggleFilter('price')" :class="{ 'filter-chip--active': activeFilters.price }">
+                Price
+                <svg class="filter-chip__arrow" width="12" height="12" viewBox="0 0 12 12">
+                  <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                </svg>
+              </button>
+            {% endif %}
+          </div>
+          
+          <!-- Sort -->
+          <div class="filter-sort">
+            <select class="filter-sort__select" @change="updateSort($event.target.value)">
+              {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
+              {% for option in collection.sort_options %}
+                <option value="{{ option.value }}" {% if option.value == sort_by %}selected{% endif %}>
+                  {{ option.name }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        
+        <!-- Active Filters -->
+        <div class="filter-active" x-show="hasActiveFilters()" x-transition>
+          <template x-for="filter in getActiveFilters()" :key="filter.id">
+            <button class="filter-active__chip" @click="removeFilter(filter)">
+              <span x-text="filter.label"></span>
+              <svg width="12" height="12" viewBox="0 0 12 12">
+                <path d="M3 3L9 9M3 9L9 3" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+            </button>
+          </template>
+          
+          <button class="filter-active__clear" @click="clearAllFilters()">
+            Clear all
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Filter Panels -->
+    <div class="filter-panels">
+      <!-- Size Filter -->
+      <div class="filter-panel" x-show="openFilter === 'size'" x-transition @click.away="openFilter = null">
+        <div class="grid-container">
+          <div class="filter-panel__options grid-col-10">
+            {% for size in section.settings.size_options %}
+              <label class="filter-option">
+                <input type="checkbox" name="size" value="{{ size }}" @change="applyFilter('size', '{{ size }}', $event.target.checked)">
+                <span>{{ size }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Color Filter -->
+      <div class="filter-panel" x-show="openFilter === 'color'" x-transition @click.away="openFilter = null">
+        <div class="grid-container">
+          <div class="filter-panel__colors grid-col-10">
+            {% for color in section.settings.color_options %}
+              {% assign color_handle = color | handleize %}
+              <label class="filter-color">
+                <input type="checkbox" name="color" value="{{ color }}" @change="applyFilter('color', '{{ color }}', $event.target.checked)">
+                <span class="filter-color__swatch" style="background-color: {{ color_handle }}"></span>
+                <span class="filter-color__name">{{ color }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Similar panels for material and price -->
+    </div>
+  </div>
+  
+  <!-- Products Grid -->
+  <div class="grid-container">
+    <div class="products-grid grid-col-12">
+      {% paginate collection.products by section.settings.products_per_page %}
+        <div class="products-grid__inner">
+          {% for product in collection.products %}
+            <article class="product-card-refined" data-scroll-animate>
+              <a href="{{ product.url }}" class="product-card-refined__link">
+                <div class="product-card-refined__media">
+                  {% if product.featured_image %}
+                    {% render 'image',
+                      image: product.featured_image,
+                      width: 600,
+                      height: 750,
+                      loading: 'lazy',
+                      class: 'product-card-refined__image',
+                      alt: product.title
+                    %}
+                  {% endif %}
+                </div>
+                
+                <div class="product-card-refined__info">
+                  <h2 class="product-card-refined__title">{{ product.title }}</h2>
+                  <p class="product-card-refined__price">
+                    {% if product.price_varies %}From {% endif %}
+                    {{ product.price | money_without_currency }}
+                  </p>
+                </div>
+              </a>
+            </article>
+          {% endfor %}
+        </div>
+        
+        {% if paginate.pages > 1 %}
+          {{ paginate | default_pagination }}
+        {% endif %}
+      {% endpaginate %}
+    </div>
+  </div>
+</section>
+
+<script>
+Alpine.data('collectionFilters', () => ({
+  openFilter: null,
+  activeFilters: {
+    size: [],
+    color: [],
+    material: [],
+    price: []
+  },
+  
+  toggleFilter(type) {
+    this.openFilter = this.openFilter === type ? null : type;
+  },
+  
+  applyFilter(type, value, checked) {
+    if (checked) {
+      this.activeFilters[type].push(value);
+    } else {
+      this.activeFilters[type] = this.activeFilters[type].filter(v => v !== value);
+    }
+    this.updateCollection();
+  },
+  
+  removeFilter(filter) {
+    this.activeFilters[filter.type] = this.activeFilters[filter.type].filter(v => v !== filter.value);
+    this.updateCollection();
+  },
+  
+  clearAllFilters() {
+    this.activeFilters = {
+      size: [],
+      color: [],
+      material: [],
+      price: []
+    };
+    this.updateCollection();
+  },
+  
+  hasActiveFilters() {
+    return Object.values(this.activeFilters).some(filters => filters.length > 0);
+  },
+  
+  getActiveFilters() {
+    const filters = [];
+    Object.entries(this.activeFilters).forEach(([type, values]) => {
+      values.forEach(value => {
+        filters.push({
+          id: `${type}-${value}`,
+          type,
+          value,
+          label: value
+        });
+      });
+    });
+    return filters;
+  },
+  
+  updateSort(value) {
+    // Update URL with sort parameter
+    const url = new URL(window.location);
+    url.searchParams.set('sort_by', value);
+    window.location = url.toString();
+  },
+  
+  updateCollection() {
+    // Build filter query and update page
+    // This would integrate with Shopify's filtering API
+  }
+}));
+</script>
+
+{% schema %}
+{
+  "name": "Collection Grid",
+  "tag": "section",
+  "class": "section-collection-grid",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Show Collection Header",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 12,
+      "max": 48,
+      "step": 12,
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Filters"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_size_filter",
+      "label": "Enable Size Filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "size_options",
+      "label": "Size Options",
+      "default": "2x3,3x5,4x6,5x7,6x9,8x10,9x12,10x14",
+      "info": "Comma-separated list"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_color_filter",
+      "label": "Enable Color Filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "color_options",
+      "label": "Color Options",
+      "default": "Beige,Black,Blue,Brown,Gray,Green,Ivory,Multi,Red,White",
+      "info": "Comma-separated list"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_material_filter",
+      "label": "Enable Material Filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "material_options",
+      "label": "Material Options",
+      "default": "Wool,Cotton,Jute,Silk,Synthetic",
+      "info": "Comma-separated list"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_price_filter",
+      "label": "Enable Price Filter",
+      "default": true
+    }
+  ]
+}
+{% endschema %}
