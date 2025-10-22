@@ -11,9 +11,9 @@
     id="gm-logo-animation"
     src="{{ 'GM Handwriting.json' | asset_url }}"
     background="transparent"
-    speed="1.2"
+    speed="1"
     style="width: {{ width | default: '120px' }}; height: {{ height | default: '40px' }};"
-    :autoplay="!played"
+    autoplay
   ></lottie-player>
   
   <!-- Fallback static logo (hidden when animation loads) -->
@@ -81,36 +81,26 @@
       this.played = sessionStorage.getItem('logoAnimationPlayed') === 'true';
       
       // Wait for Lottie player to be ready
-      const checkPlayer = setInterval(() => {
+      this.$nextTick(() => {
         const player = document.getElementById('gm-logo-animation');
-        if (player && player.getLottie) {
-          clearInterval(checkPlayer);
-          
-          // If already played, set to last frame immediately
-          if (this.played) {
-            player.addEventListener('ready', () => {
-              this.loaded = true;
-              player.seek(100);
-              player.stop();
-            });
-          } else {
-            // First time playing
-            player.addEventListener('ready', () => {
-              this.loaded = true;
-              player.play();
-            });
+        if (player) {
+          player.addEventListener('ready', () => {
+            this.loaded = true;
             
-            player.addEventListener('complete', () => {
-              // Mark as played for this session
-              sessionStorage.setItem('logoAnimationPlayed', 'true');
-              this.played = true;
-            });
-          }
+            // If already played this session, go to last frame
+            if (this.played) {
+              player.seek('100%');
+              player.pause();
+            }
+          });
+          
+          player.addEventListener('complete', () => {
+            // Mark as played for this session
+            sessionStorage.setItem('logoAnimationPlayed', 'true');
+            this.played = true;
+          });
         }
-      }, 50);
-      
-      // Cleanup interval after 5 seconds if player never loads
-      setTimeout(() => clearInterval(checkPlayer), 5000);
+      });
     }
   }));
 </script>
