@@ -1,0 +1,106 @@
+{% comment %}
+  Lottie Animated Logo
+  Renders the GM handwriting animation in place of static logo
+{% endcomment %}
+
+<div class="header__logo-lottie" 
+     x-data="lottieLogo()" 
+     x-init="init()"
+     :class="{ 'header__logo-lottie--loaded': loaded }">
+  <lottie-player
+    id="gm-logo-animation"
+    src="{{ 'GM Handwriting.json' | asset_url }}"
+    background="transparent"
+    speed="1"
+    style="width: {{ width | default: '120px' }}; height: {{ height | default: '40px' }};"
+    autoplay
+  ></lottie-player>
+  
+  <!-- Fallback static logo (hidden when animation loads) -->
+  <div class="header__logo-fallback" x-show="!loaded">
+    {% if logo %}
+      {% render 'image',
+        image: logo,
+        width: logo_width,
+        alt: shop.name,
+        class: 'header__logo-image'
+      %}
+    {% else %}
+      <span class="header__logo-text">{{ shop.name }}</span>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  .header__logo-lottie {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .header__logo-lottie lottie-player {
+    display: block;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .header__logo-lottie--loaded lottie-player {
+    opacity: 1;
+  }
+  
+  .header__logo-fallback {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease;
+  }
+  
+  .header__logo-lottie--loaded .header__logo-fallback {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  /* Adjust size for mobile */
+  @media (max-width: 768px) {
+    .header__logo-lottie lottie-player {
+      width: 90px !important;
+      height: 30px !important;
+    }
+  }
+</style>
+
+<script>
+  Alpine.data('lottieLogo', () => ({
+    loaded: false,
+    played: false,
+    
+    init() {
+      // Check if logo has already played this session
+      this.played = sessionStorage.getItem('logoAnimationPlayed') === 'true';
+      
+      // Wait for Lottie player to be ready
+      this.$nextTick(() => {
+        const player = document.getElementById('gm-logo-animation');
+        if (player) {
+          player.addEventListener('ready', () => {
+            this.loaded = true;
+            
+            // If already played this session, go to last frame
+            if (this.played) {
+              player.seek('100%');
+              player.pause();
+            }
+          });
+          
+          player.addEventListener('complete', () => {
+            // Mark as played for this session
+            sessionStorage.setItem('logoAnimationPlayed', 'true');
+            this.played = true;
+          });
+        }
+      });
+    }
+  }));
+</script>

@@ -15,17 +15,12 @@
       <!-- Logo -->
       <div class="header__logo">
         <a href="{{ routes.root_url }}" class="header__logo-link">
-          {% if section.settings.logo %}
-            {% render 'image',
-              image: section.settings.logo,
-              width: section.settings.logo_width,
-              height: section.settings.logo_width | divided_by: section.settings.logo.aspect_ratio,
-              alt: shop.name,
-              class: 'header__logo-image'
-            %}
-          {% else %}
-            <span class="header__logo-text">{{ shop.name }}</span>
-          {% endif %}
+          {% render 'lottie-logo',
+            logo: section.settings.logo,
+            logo_width: section.settings.logo_width,
+            width: '120px',
+            height: '40px'
+          %}
         </a>
       </div>
 
@@ -370,8 +365,6 @@
     display: block;
     text-decoration: none;
     color: var(--color-text-primary);
-    /* Compensate for 'g' loop visual effect */
-    transform: translateY(10px);
   }
 
   .header__logo-text {
@@ -388,10 +381,19 @@
     object-fit: contain !important;
   }
   
+  /* Lottie Logo Styles */
+  .header__logo-lottie {
+    min-width: 120px;
+  }
+  
   @media (max-width: 768px) {
     .header__logo-image {
       max-height: 32px !important;
       height: 32px !important;
+    }
+    
+    .header__logo-lottie {
+      min-width: 90px;
     }
   }
 

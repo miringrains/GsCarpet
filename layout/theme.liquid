@@ -85,6 +85,9 @@
     {{ 'alpine.min.js' | asset_url | script_tag }}
     {{ 'alpine-animations.js' | asset_url | script_tag }}
     
+    <!-- Lottie Player for animated logo -->
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    
     <script>
       // Ensure Alpine starts with stores properly initialized
       document.addEventListener('alpine:init', () => {
