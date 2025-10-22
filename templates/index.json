@@ -10,7 +10,7 @@
 {
   "sections": {
     "hero": {
-      "type": "hero-refined",
+      "type": "hero-banner",
       "settings": {
         "image": "shopify://shop_images/AdobeStock_1369793718.webp",
         "subtitle": "Premium Collection",
@@ -139,114 +139,29 @@
         "autoplay_speed": 5
       }
     },
-    "materials": {
-      "type": "material-showcase",
-      "blocks": {
-        "material_1": {
-          "type": "material",
-          "settings": {
-            "material_name": "New Zealand Wool",
-            "properties": "Luxurious, Durable, Natural"
-          }
-        },
-        "material_2": {
-          "type": "material",
-          "settings": {
-            "material_name": "Organic Cotton", 
-            "properties": "Soft, Breathable, Eco-Friendly"
-          }
-        },
-        "material_3": {
-          "type": "material",
-          "settings": {
-            "material_name": "Natural Jute",
-            "properties": "Sustainable, Textured, Versatile"
-          }
-        },
-        "material_4": {
-          "type": "material",
-          "settings": {
-            "material_name": "Bamboo Silk",
-            "properties": "Lustrous, Hypoallergenic, Renewable"
-          }
-        }
-      },
-      "block_order": [
-        "material_1",
-        "material_2", 
-        "material_3",
-        "material_4"
-      ],
+    "hero_refined_wxcEjU": {
+      "type": "hero-refined",
+      "name": "Hero Refined",
       "settings": {
-        "subtitle": "Premium Materials",
-        "title": "Crafted from the Finest Materials",
-        "description": "Each rug is carefully crafted using only the highest quality natural and sustainable materials.",
-        "title_size": "xl",
-        "header_width": 8,
-        "header_position": 3,
-        "show_link": true,
-        "link_text": "Explore All Materials",
-        "link_url": "/collections/all"
-      }
-    },
-    "size_guide": {
-      "type": "size-guide",
-      "blocks": {
-        "living": {
-          "type": "room",
-          "settings": {
-            "room_name": "Living Room",
-            "size_1": "8' x 10'",
-            "size_1_desc": "Standard for most living rooms",
-            "size_2": "9' x 12'",
-            "size_2_desc": "For larger seating areas", 
-            "size_3": "6' x 9'",
-            "size_3_desc": "For smaller spaces",
-            "tip": "All furniture legs should be on the rug for a cohesive look"
-          }
-        },
-        "bedroom": {
-          "type": "room",
-          "settings": {
-            "room_name": "Bedroom",
-            "size_1": "8' x 10'",
-            "size_1_desc": "King bed with nightstands",
-            "size_2": "6' x 9'",
-            "size_2_desc": "Queen bed setup",
-            "size_3": "5' x 8'", 
-            "size_3_desc": "Twin or full bed",
-            "tip": "Place rug perpendicular under lower 2/3 of bed"
-          }
-        },
-        "dining": {
-          "type": "room",
-          "settings": {
-            "room_name": "Dining Room",
-            "size_1": "8' x 10'",
-            "size_1_desc": "6-person table",
-            "size_2": "9' x 12'",
-            "size_2_desc": "8-person table",
-            "size_3": "10' x 14'",
-            "size_3_desc": "10+ person table",
-            "tip": "Rug should extend 24-30 inches beyond table on all sides"
-          }
-        }
-      },
-      "block_order": ["living", "bedroom", "dining"],
-      "settings": {
-        "subtitle": "Find Your Perfect Fit",
-        "title": "Rug Size Guide",
-        "title_size": "xl",
-        "header_width": 12,
-        "show_tips": true
+        "image": "shopify://shop_images/AdobeStock_1369793718.webp",
+        "subtitle": "Premium Collection",
+        "heading": "Handcrafted Rugs for Modern Living",
+        "subheading": "Discover our curated collection of premium rugs, designed to transform your space.",
+        "content_width": "6",
+        "content_position": 2,
+        "heading_size": "2xl",
+        "height": 80,
+        "button_label": "Shop Collection",
+        "button_link": "",
+        "button_2_label": "",
+        "button_2_link": ""
       }
     }
   },
   "order": [
     "hero",
-    "materials",
+    "hero_refined_wxcEjU",
     "featured_collections",
-    "size_guide",
     "testimonials"
   ]
 }
