@@ -1,0 +1,262 @@
+{{ 'section-size-guide.css' | asset_url | stylesheet_tag }}
+
+<section class="size-guide" data-section-id="{{ section.id }}">
+  <div class="grid-container">
+    <div class="size-guide__header grid-col-{{ section.settings.header_width }}">
+      {% if section.settings.subtitle %}
+        <p class="size-guide__subtitle text-sm" data-scroll-animate="text">
+          {{ section.settings.subtitle }}
+        </p>
+      {% endif %}
+      
+      {% if section.settings.title %}
+        <h2 class="size-guide__title text-{{ section.settings.title_size }}" data-scroll-animate="text">
+          {{ section.settings.title }}
+        </h2>
+      {% endif %}
+    </div>
+    
+    <div class="size-guide__content grid-col-12" x-data="{ activeRoom: 'living' }">
+      <!-- Room Tabs -->
+      <div class="size-guide__tabs">
+        {% for block in section.blocks %}
+          {% if block.type == 'room' %}
+            <button 
+              class="size-guide__tab" 
+              :class="{ 'size-guide__tab--active': activeRoom === '{{ block.id }}' }"
+              @click="activeRoom = '{{ block.id }}'"
+            >
+              {{ block.settings.room_name }}
+            </button>
+          {% endif %}
+        {% endfor %}
+      </div>
+      
+      <!-- Room Content -->
+      {% for block in section.blocks %}
+        {% if block.type == 'room' %}
+          <div 
+            class="size-guide__room" 
+            x-show="activeRoom === '{{ block.id }}'"
+            x-transition
+            {{ block.shopify_attributes }}
+          >
+            <div class="size-guide__diagram">
+              {% if block.settings.room_image %}
+                {% render 'image',
+                  image: block.settings.room_image,
+                  width: 800,
+                  height: 600,
+                  loading: 'lazy',
+                  class: 'size-guide__room-image',
+                  alt: block.settings.room_name
+                %}
+              {% endif %}
+            </div>
+            
+            <div class="size-guide__sizes">
+              <h3 class="size-guide__sizes-title">Recommended Sizes</h3>
+              
+              <div class="size-guide__size-list">
+                {% if block.settings.size_1 %}
+                  <div class="size-guide__size-item">
+                    <span class="size-guide__size">{{ block.settings.size_1 }}</span>
+                    <span class="size-guide__size-desc">{{ block.settings.size_1_desc }}</span>
+                  </div>
+                {% endif %}
+                
+                {% if block.settings.size_2 %}
+                  <div class="size-guide__size-item">
+                    <span class="size-guide__size">{{ block.settings.size_2 }}</span>
+                    <span class="size-guide__size-desc">{{ block.settings.size_2_desc }}</span>
+                  </div>
+                {% endif %}
+                
+                {% if block.settings.size_3 %}
+                  <div class="size-guide__size-item">
+                    <span class="size-guide__size">{{ block.settings.size_3 }}</span>
+                    <span class="size-guide__size-desc">{{ block.settings.size_3_desc }}</span>
+                  </div>
+                {% endif %}
+              </div>
+              
+              {% if block.settings.tip %}
+                <p class="size-guide__tip">
+                  <strong>Tip:</strong> {{ block.settings.tip }}
+                </p>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+      
+      <!-- General Tips -->
+      {% if section.settings.show_tips %}
+        <div class="size-guide__general-tips">
+          <h3>General Sizing Guidelines</h3>
+          <ul>
+            <li>Leave 18-24 inches of floor space on all sides for larger rooms</li>
+            <li>In smaller spaces, 8-10 inches of floor space is sufficient</li>
+            <li>Front legs of furniture should sit on the rug</li>
+            <li>Consider traffic patterns when choosing size</li>
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Size Guide",
+  "tag": "section",
+  "class": "section-size-guide",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Find Your Perfect Fit"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Rug Size Guide"
+    },
+    {
+      "type": "select",
+      "id": "title_size",
+      "label": "Title Size",
+      "options": [
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "Extra Large" },
+        { "value": "2xl", "label": "Display" }
+      ],
+      "default": "xl"
+    },
+    {
+      "type": "range",
+      "id": "header_width",
+      "label": "Header Width",
+      "min": 4,
+      "max": 12,
+      "step": 2,
+      "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tips",
+      "label": "Show General Tips",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "room",
+      "name": "Room Type",
+      "settings": [
+        {
+          "type": "text",
+          "id": "room_name",
+          "label": "Room Name",
+          "default": "Living Room"
+        },
+        {
+          "type": "image_picker",
+          "id": "room_image",
+          "label": "Room Diagram",
+          "info": "Show rug placement in room"
+        },
+        {
+          "type": "text",
+          "id": "size_1",
+          "label": "Size Option 1",
+          "default": "8' x 10'"
+        },
+        {
+          "type": "text",
+          "id": "size_1_desc",
+          "label": "Size 1 Description",
+          "default": "Standard for most living rooms"
+        },
+        {
+          "type": "text",
+          "id": "size_2",
+          "label": "Size Option 2",
+          "default": "9' x 12'"
+        },
+        {
+          "type": "text",
+          "id": "size_2_desc",
+          "label": "Size 2 Description",
+          "default": "For larger seating areas"
+        },
+        {
+          "type": "text",
+          "id": "size_3",
+          "label": "Size Option 3",
+          "default": "6' x 9'"
+        },
+        {
+          "type": "text",
+          "id": "size_3_desc",
+          "label": "Size 3 Description",
+          "default": "For smaller spaces"
+        },
+        {
+          "type": "textarea",
+          "id": "tip",
+          "label": "Room-Specific Tip"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Size Guide",
+      "blocks": [
+        {
+          "type": "room",
+          "settings": {
+            "room_name": "Living Room",
+            "size_1": "8' x 10'",
+            "size_1_desc": "Standard for most living rooms",
+            "size_2": "9' x 12'",
+            "size_2_desc": "For larger seating areas",
+            "size_3": "6' x 9'",
+            "size_3_desc": "For smaller spaces",
+            "tip": "All furniture legs should be on the rug for a cohesive look"
+          }
+        },
+        {
+          "type": "room",
+          "settings": {
+            "room_name": "Bedroom",
+            "size_1": "8' x 10'",
+            "size_1_desc": "King bed with nightstands",
+            "size_2": "6' x 9'",
+            "size_2_desc": "Queen bed setup",
+            "size_3": "5' x 8'",
+            "size_3_desc": "Twin or full bed",
+            "tip": "Place rug perpendicular under lower 2/3 of bed"
+          }
+        },
+        {
+          "type": "room",
+          "settings": {
+            "room_name": "Dining Room",
+            "size_1": "8' x 10'",
+            "size_1_desc": "6-person table",
+            "size_2": "9' x 12'",
+            "size_2_desc": "8-person table",
+            "size_3": "10' x 14'",
+            "size_3_desc": "10+ person table",
+            "tip": "Rug should extend 24-30 inches beyond table on all sides"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
