@@ -65,6 +65,7 @@ body {
   font-weight: 400;
   color: var(--color-text-secondary);
   padding-top: 80px; /* Compensate for fixed header */
+  background-color: #FFFFFF !important;
 }
 
 .text-body {
@@ -89,7 +90,8 @@ body {
 .site-header {
   height: 80px;
   border-bottom: 1px solid var(--color-border);
-  background: rgba(255, 255, 255, 0.98);
+  background: #FFFFFF;
+  backdrop-filter: blur(10px);
 }
 
 .header__wrapper {
@@ -444,7 +446,7 @@ body {
 .site-footer {
   border-top: 1px solid var(--color-border);
   padding: 80px 0 40px;
-  background: var(--color-surface);
+  background: #FFFFFF;
   margin-top: 0;
 }
 
@@ -703,7 +705,7 @@ body {
 
 /* Featured Collections Grid */
 .featured-collections {
-  background: var(--color-background);
+  background: #FFFFFF;
 }
 
 .collections-grid {

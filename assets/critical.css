@@ -74,8 +74,18 @@ p:empty {
 /** Theme styles below */
 body {
   font-family: var(--font-primary--family);
+  background-color: #FFFFFF;
+  color: var(--color-foreground, #2B2C25);
+}
+
+/* Ensure background is light unless dark mode is explicitly enabled */
+body:not(.dark-mode) {
+  background-color: #FFFFFF;
+}
+
+/* Dark mode only when explicitly enabled */
+body.dark-mode {
   background-color: var(--color-background);
-  color: var(--color-foreground);
 }
 
 /** Section layout utilities */
@@ -104,6 +114,12 @@ body {
   grid-template-columns: var(--content-grid);
   display: grid;
   width: 100%;
+  background-color: #FFFFFF;
+}
+
+/* Ensure all sections default to white unless explicitly styled */
+.shopify-section:not([class*="dark"]):not([class*="accent"]) {
+  background-color: #FFFFFF;
 }
 
 /* Child elements, by default, are constrained to the central column of the grid. */

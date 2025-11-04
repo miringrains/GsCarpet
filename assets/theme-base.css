@@ -26,9 +26,14 @@ body {
   font-family: var(--font-primary--family);
   font-weight: var(--font-primary--weight);
   color: var(--color-text-primary);
-  background-color: var(--color-background);
+  background-color: #FFFFFF;
   line-height: 1.6;
   letter-spacing: -0.01em;
+}
+
+/* Override with theme setting if available, but default to white */
+body:not([style*="background"]) {
+  background-color: var(--color-background, #FFFFFF);
 }
 
 /* Typography System
@@ -141,9 +146,19 @@ h1, h2, h3, h4, h5, h6,
 
 .container {
   width: 100%;
-  max-width: var(--container-max-width);
+  max-width: var(--container-max-width, 1200px);
   margin: 0 auto;
-  padding: 0 var(--container-padding);
+  padding: 0 var(--container-padding, 24px);
+  background-color: transparent;
+}
+
+/* Ensure sections have proper backgrounds */
+.shopify-section {
+  background-color: transparent;
+}
+
+.shopify-section > * {
+  background-color: transparent;
 }
 
 /* Full-width sections with contained content */

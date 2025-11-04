@@ -26,16 +26,16 @@
 {% style %}
   #shopify-section-{{ section.id }}.{{ bg_class }} {
     {% if color_scheme == 'light' %}
-      background-color: var(--color-surface);
+      background-color: #FFFFFF;
       color: var(--color-text-primary);
     {% elsif color_scheme == 'dark' %}
-      background-color: var(--color-pine-tree);
-      color: var(--color-text-inverse);
+      background-color: var(--color-pine-tree, #2B2C25);
+      color: var(--color-text-inverse, #FFFFFF);
     {% elsif color_scheme == 'accent' %}
-      background-color: var(--color-accent);
-      color: var(--color-text-inverse);
+      background-color: var(--color-accent, #2B2C25);
+      color: var(--color-text-inverse, #FFFFFF);
     {% else %}
-      background-color: var(--color-background);
+      background-color: #FFFFFF;
       color: var(--color-text-primary);
     {% endif %}
   }

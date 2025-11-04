@@ -7,9 +7,9 @@
     {% # Load and preload the critical CSS %}
     {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
     
-    {% # Design System Foundation %}
-    {{ 'design-tokens.css' | asset_url | stylesheet_tag }}
+    {% # Design System Foundation - Load in correct order %}
     {{ 'grid-system.css' | asset_url | stylesheet_tag }}
+    {{ 'design-tokens.css' | asset_url | stylesheet_tag }}
     
     {% # Load theme base styles %}
     {{ 'theme-base.css' | asset_url | stylesheet_tag }}
