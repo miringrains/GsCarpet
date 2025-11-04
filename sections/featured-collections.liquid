@@ -3,13 +3,27 @@
   Minimal grid of collection cards with generous spacing
 {% endcomment %}
 
-{% if section.settings.color_scheme == 'custom' %}
-  {% render 'section-theme-styles', section: section %}
-{% else %}
-  {% render 'section-color-schemes', section: section %}
-{% endif %}
+{% liquid
+  if section.settings.color_scheme == 'custom'
+    render 'section-theme-styles', section: section
+    assign color_class = ''
+  else
+    assign color_scheme = section.settings.color_scheme | default: 'default'
+    case color_scheme
+      when 'light'
+        assign color_class = 'color-scheme-light'
+      when 'dark'
+        assign color_class = 'color-scheme-dark'
+      when 'accent'
+        assign color_class = 'color-scheme-accent'
+      else
+        assign color_class = 'color-scheme-default'
+    endcase
+    render 'section-color-schemes', section: section
+  endif
+%}
 
-<section class="featured-collections py-3xl" data-section-id="{{ section.id }}" id="featured-collections-{{ section.id }}">
+<section class="featured-collections py-3xl {{ color_class }}" data-section-id="{{ section.id }}" id="featured-collections-{{ section.id }}">
   <div class="container">
     {% if section.settings.title or section.settings.subtitle %}
       <div class="section-header text-center mb-2xl">

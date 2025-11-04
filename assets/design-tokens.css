@@ -1,169 +1,23 @@
 /* 
- * Design Tokens
- * Systematic design values following Swiss principles
+ * Design Tokens - Utility Classes Only
+ * 
+ * Note: All CSS variables are defined in snippets/css-variables.liquid
+ * This file contains only utility classes that use those variables
  */
 
-:root {
-  /* Grid System */
-  --baseline: 8px;
-  --grid-columns: 12;
-  --grid-margin: 64px;
-  --grid-margin-tablet: 32px;
-  --grid-margin-mobile: 16px;
-  --grid-gutter: 32px;
-  --grid-gutter-tablet: 24px;
-  --grid-gutter-mobile: 16px;
-  
-  /* Typography Scale - Golden Ratio (1.618) */
-  --type-xs: 12px;
-  --type-sm: 14px;
-  --type-base: 16px;
-  --type-lg: 20px;
-  --type-xl: 32px;
-  --type-2xl: 52px;
-  --type-display: 84px;
-  
-  /* Line Heights (multiples of 8px) */
-  --lh-xs: 16px;
-  --lh-sm: 24px;
-  --lh-base: 24px;
-  --lh-lg: 32px;
-  --lh-xl: 40px;
-  --lh-2xl: 64px;
-  --lh-display: 96px;
-  
-  /* Font Weights */
-  --font-light: 300;
-  --font-regular: 400;
-  --font-medium: 500;
-  --font-semibold: 600;
-  
-  /* Font Families */
-  --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'SF Mono', Monaco, 'Inconsolata', 'Fira Code', monospace;
-  
-  /* Colors - Minimal Palette */
-  --color-black: #000000;
-  --color-white: #FFFFFF;
-  --color-gray-50: #FAFAF8;
-  --color-gray-100: #F5F5F3;
-  --color-gray-200: #E8E8E6;
-  --color-gray-300: #D4D4D2;
-  --color-gray-400: #A8A8A6;
-  --color-gray-500: #737371;
-  --color-gray-600: #525250;
-  --color-gray-700: #3A3A38;
-  --color-gray-800: #262624;
-  --color-gray-900: #171716;
-  
-  /* Semantic Colors */
-  --color-text: var(--color-black);
-  --color-text-secondary: var(--color-gray-600);
-  --color-text-tertiary: var(--color-gray-500);
-  --color-text-inverse: var(--color-white);
-  --color-background: var(--color-white);
-  --color-surface: var(--color-gray-50);
-  --color-border: rgba(0, 0, 0, 0.08);
-  --color-border-light: rgba(0, 0, 0, 0.04);
-  
-  /* Spacing Scale (baseline units) */
-  --space-1: 8px;   /* 1 baseline unit */
-  --space-2: 16px;  /* 2 baseline units */
-  --space-3: 24px;  /* 3 baseline units */
-  --space-4: 32px;  /* 4 baseline units */
-  --space-5: 40px;  /* 5 baseline units */
-  --space-6: 48px;  /* 6 baseline units */
-  --space-8: 64px;  /* 8 baseline units */
-  --space-10: 80px; /* 10 baseline units */
-  --space-12: 96px; /* 12 baseline units */
-  --space-16: 128px; /* 16 baseline units */
-  
-  /* Border Radius */
-  --radius-none: 0px;
-  --radius-soft: 4px;
-  
-  /* Transitions */
-  --transition-fast: 150ms ease-out;
-  --transition-base: 200ms ease-out;
-  --transition-slow: 400ms ease-out;
-  --easing-standard: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --easing-decelerate: cubic-bezier(0, 0, 0.2, 1);
-  --easing-accelerate: cubic-bezier(0.4, 0, 1, 1);
-  
-  /* Shadows (none - using borders instead) */
-  --shadow-none: none;
-  --elevation-low: 0 0 0 1px var(--color-border);
-  --elevation-medium: 0 0 0 1px var(--color-border);
-  --elevation-high: 0 0 0 1px var(--color-black);
-  
-  /* Z-index Scale */
-  --z-base: 0;
-  --z-dropdown: 100;
-  --z-sticky: 200;
-  --z-overlay: 300;
-  --z-modal: 400;
-  --z-notification: 500;
-  
-  /* Container Widths */
-  --container-max: 1440px;
-  --container-wide: 1200px;
-  --container-medium: 960px;
-  --container-narrow: 720px;
-  
-  /* Aspect Ratios */
-  --ratio-square: 1;
-  --ratio-landscape: 1.33;
-  --ratio-portrait: 0.75;
-  --ratio-wide: 1.78;
-  --ratio-ultrawide: 2.35;
-  --ratio-golden: 1.618;
-}
-
-/* Dark Mode Support - Only if explicitly enabled in theme settings */
-/* Dark mode is controlled by css-variables.liquid based on settings.enable_dark_mode */
-
-/* Responsive Adjustments */
-@media (max-width: 1024px) {
-  :root {
-    --grid-margin: var(--grid-margin-tablet);
-    --grid-gutter: var(--grid-gutter-tablet);
-  }
-}
-
-@media (max-width: 768px) {
-  :root {
-    --grid-margin: var(--grid-margin-mobile);
-    --grid-gutter: var(--grid-gutter-mobile);
-    
-    /* Slightly smaller type on mobile */
-    --type-2xl: 40px;
-    --type-display: 56px;
-  }
-}
-
-/* Utility Classes */
-.text-xs { font-size: var(--type-xs); line-height: var(--lh-xs); }
-.text-sm { font-size: var(--type-sm); line-height: var(--lh-sm); }
-.text-base { font-size: var(--type-base); line-height: var(--lh-base); }
-.text-lg { font-size: var(--type-lg); line-height: var(--lh-lg); }
-.text-xl { font-size: var(--type-xl); line-height: var(--lh-xl); }
-.text-2xl { font-size: var(--type-2xl); line-height: var(--lh-2xl); }
-.text-display { font-size: var(--type-display); line-height: var(--lh-display); }
-
-.font-light { font-weight: var(--font-light); }
-.font-regular { font-weight: var(--font-regular); }
-.font-medium { font-weight: var(--font-medium); }
-.font-semibold { font-weight: var(--font-semibold); }
-
-.text-primary { color: var(--color-text); }
+/* Text Color Utilities - Using actual variables from css-variables.liquid */
+.text-primary { color: var(--color-text-primary); }
 .text-secondary { color: var(--color-text-secondary); }
 .text-tertiary { color: var(--color-text-tertiary); }
+.text-muted { color: var(--color-text-muted); }
 .text-inverse { color: var(--color-text-inverse); }
 
-.bg-white { background-color: var(--color-white); }
-.bg-black { background-color: var(--color-black); }
+/* Background Utilities */
 .bg-surface { background-color: var(--color-surface); }
+.bg-background { background-color: var(--color-background); }
+.bg-background-subtle { background-color: var(--color-background-subtle); }
 
+/* Border Utilities */
 .border { border: 1px solid var(--color-border); }
-.border-light { border: 1px solid var(--color-border-light); }
+.border-medium { border: 1px solid var(--color-border-medium); }
+.border-dark { border: 1px solid var(--color-border-dark); }

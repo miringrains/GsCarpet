@@ -9,44 +9,6 @@
  */
 {
   "sections": {
-    "hero": {
-      "type": "hero-banner",
-      "settings": {
-        "image": "shopify://shop_images/AdobeStock_1369793718.webp",
-        "subtitle": "Premium Collection",
-        "heading": "Handcrafted Rugs for Modern Living",
-        "subheading": "Discover our curated collection of premium rugs, crafted with care and designed to transform your space.",
-        "button_label": "Shop Collection",
-        "button_link": "/collections/all",
-        "button_2_label": "Learn More",
-        "button_2_link": "",
-        "contained": false,
-        "height": 80,
-        "height_mobile": 70,
-        "border_radius": 8,
-        "text_alignment": "center",
-        "vertical_alignment": "center",
-        "content_width": 700,
-        "padding_top": 60,
-        "padding_bottom": 60,
-        "title_size": 2.8,
-        "title_weight": "300",
-        "subtitle_size": 0.8,
-        "text_size": 1.2,
-        "custom_colors": false,
-        "bg_color": "#ffffff",
-        "text_color": "#2b2c25",
-        "button_primary_bg": "#2b2c25",
-        "button_primary_text": "#ffffff",
-        "button_secondary_bg": "rgba(0,0,0,0)",
-        "button_secondary_text": "#ffffff",
-        "button_secondary_border": "#2b2c25",
-        "button_secondary_text_hover": "#ffffff",
-        "enable_overlay": true,
-        "overlay_color": "#2b2c25",
-        "overlay_opacity": 30
-      }
-    },
     "featured_collections": {
       "type": "featured-collections",
       "blocks": {
@@ -159,7 +121,6 @@
     }
   },
   "order": [
-    "hero",
     "hero_refined_wxcEjU",
     "featured_collections",
     "testimonials"

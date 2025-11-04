@@ -43,9 +43,21 @@
       </button>
     </div>
     
-    <div class="cart-drawer__body">
+    <div class="cart-drawer__body" :class="{ 'cart-drawer__body--updating': updating }">
+      <!-- Loading Overlay -->
+      <div class="cart-drawer__loading" x-show="updating">
+        <div class="cart-drawer__spinner"></div>
+        <p>Updating cart...</p>
+      </div>
+      
+      <!-- Error Message -->
+      <div class="cart-drawer__error" x-show="error" x-cloak>
+        <p x-text="error"></p>
+        <button @click="error = null" class="cart-drawer__error-close">×</button>
+      </div>
+      
       <!-- Empty Cart -->
-      <div class="cart-drawer__empty" x-show="$store.cart.items.length === 0">
+      <div class="cart-drawer__empty" x-show="$store.cart.items.length === 0 && !updating">
         <p>Your cart is empty</p>
         <button 
           class="btn btn--primary"
@@ -56,7 +68,7 @@
       </div>
       
       <!-- Cart Items -->
-      <div class="cart-drawer__items" x-show="$store.cart.items.length > 0">
+      <div class="cart-drawer__items" x-show="$store.cart.items.length > 0 && !updating">
         <template x-for="item in $store.cart.items" :key="item.key">
           <div class="cart-item">
             <div class="cart-item__image">
@@ -73,7 +85,7 @@
                 <button 
                   class="cart-item__quantity-btn"
                   @click="updateQuantity(item.key, item.quantity - 1)"
-                  :disabled="item.quantity <= 1"
+                  :disabled="item.quantity <= 1 || updating"
                 >
                   -
                 </button>
@@ -82,11 +94,13 @@
                   class="cart-item__quantity-input"
                   :value="item.quantity"
                   @change="updateQuantity(item.key, $event.target.value)"
+                  :disabled="updating"
                   min="1"
                 >
                 <button 
                   class="cart-item__quantity-btn"
                   @click="updateQuantity(item.key, item.quantity + 1)"
+                  :disabled="updating"
                 >
                   +
                 </button>
@@ -98,6 +112,7 @@
               <button 
                 class="cart-item__remove"
                 @click="removeItem(item.key)"
+                :disabled="updating"
                 aria-label="Remove item"
               >
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -125,7 +140,7 @@
         <button 
           class="btn btn--primary"
           @click="checkout()"
-          :disabled="updating"
+          :disabled="updating || $store.cart.items.length === 0"
         >
           <span x-show="!updating">Checkout</span>
           <span x-show="updating">Updating...</span>
@@ -192,6 +207,71 @@
     flex: 1;
     overflow-y: auto;
     padding: var(--space-md);
+    position: relative;
+  }
+  
+  .cart-drawer__body--updating {
+    pointer-events: none;
+    opacity: 0.6;
+  }
+  
+  .cart-drawer__loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    z-index: 10;
+    gap: var(--space-md);
+  }
+  
+  .cart-drawer__spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-text-primary);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  .cart-drawer__error {
+    position: relative;
+    padding: var(--space-sm) var(--space-md);
+    margin-bottom: var(--space-md);
+    background-color: #FEF2F2;
+    border: 1px solid #FECACA;
+    border-radius: var(--radius-sm);
+    color: #991B1B;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+  }
+  
+  .cart-drawer__error p {
+    margin: 0;
+    font-size: 0.875rem;
+  }
+  
+  .cart-drawer__error-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: #991B1B;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .cart-drawer__empty {
@@ -268,8 +348,14 @@
     border-color: var(--color-accent);
   }
   
-  .cart-item__quantity-btn:disabled {
+  .cart-item__quantity-btn:disabled,
+  .cart-item__remove:disabled {
     opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .cart-item__quantity-input:disabled {
+    opacity: 0.7;
     cursor: not-allowed;
   }
   
