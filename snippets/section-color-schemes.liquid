@@ -1,0 +1,43 @@
+{% comment %}
+  Section Color Schemes
+  Applies color scheme classes based on section.settings.color_scheme
+  Supports: default, light, dark, accent, custom
+{% endcomment %}
+
+{% liquid
+  assign color_scheme = section.settings.color_scheme | default: 'default'
+  
+  case color_scheme
+    when 'light'
+      assign bg_class = 'color-scheme-light'
+      assign text_class = 'color-scheme-light-text'
+    when 'dark'
+      assign bg_class = 'color-scheme-dark'
+      assign text_class = 'color-scheme-dark-text'
+    when 'accent'
+      assign bg_class = 'color-scheme-accent'
+      assign text_class = 'color-scheme-accent-text'
+    else
+      assign bg_class = 'color-scheme-default'
+      assign text_class = 'color-scheme-default-text'
+  endcase
+%}
+
+{% style %}
+  #shopify-section-{{ section.id }}.{{ bg_class }} {
+    {% if color_scheme == 'light' %}
+      background-color: var(--color-surface);
+      color: var(--color-text-primary);
+    {% elsif color_scheme == 'dark' %}
+      background-color: var(--color-pine-tree);
+      color: var(--color-text-inverse);
+    {% elsif color_scheme == 'accent' %}
+      background-color: var(--color-accent);
+      color: var(--color-text-inverse);
+    {% else %}
+      background-color: var(--color-background);
+      color: var(--color-text-primary);
+    {% endif %}
+  }
+{% endstyle %}
+

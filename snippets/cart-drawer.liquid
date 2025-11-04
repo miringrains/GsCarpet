@@ -3,8 +3,6 @@
   Includes item management and checkout features
 {% endcomment %}
 
-{{ 'section-cart-drawer.css' | asset_url | stylesheet_tag }}
-
 <div 
   class="cart-drawer"
   x-data="cartDrawer()"
@@ -137,7 +135,7 @@
   </div>
 </div>
 
-<style>
+{% stylesheet %}
   .cart-drawer__overlay {
     position: fixed;
     inset: 0;
@@ -163,7 +161,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.5rem;
+    padding: var(--space-md);
     border-bottom: 1px solid var(--color-border);
   }
   
@@ -193,24 +191,24 @@
   .cart-drawer__body {
     flex: 1;
     overflow-y: auto;
-    padding: 1.5rem;
+    padding: var(--space-md);
   }
   
   .cart-drawer__empty {
     text-align: center;
-    padding: 3rem 1rem;
+    padding: var(--space-2xl) var(--space-md);
   }
   
   .cart-drawer__empty p {
-    margin-bottom: 2rem;
+    margin-bottom: var(--space-xl);
     color: var(--color-text-secondary);
   }
   
   .cart-item {
     display: grid;
     grid-template-columns: 80px 1fr auto;
-    gap: 1rem;
-    padding: 1rem 0;
+    gap: var(--space-md);
+    padding: var(--space-md) 0;
     border-bottom: 1px solid var(--color-border);
   }
   
@@ -234,7 +232,7 @@
   .cart-item__title {
     font-size: 0.9375rem;
     font-weight: 500;
-    margin: 0 0 0.25rem;
+    margin: 0 0 var(--space-xs);
   }
   
   .cart-item__title a {
@@ -245,13 +243,13 @@
   .cart-item__variant {
     font-size: 0.875rem;
     color: var(--color-text-secondary);
-    margin: 0 0 0.5rem;
+    margin: 0 0 var(--space-sm);
   }
   
   .cart-item__quantity {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-xs);
   }
   
   .cart-item__quantity-btn {
@@ -290,11 +288,11 @@
   .cart-item__price span {
     display: block;
     font-weight: 500;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--space-sm);
   }
   
   .cart-item__remove {
-    padding: 0.25rem;
+    padding: var(--space-xs);
     background: none;
     border: none;
     cursor: pointer;
@@ -307,7 +305,7 @@
   }
   
   .cart-drawer__footer {
-    padding: 1.5rem;
+    padding: var(--space-md);
     border-top: 1px solid var(--color-border);
   }
   
@@ -316,20 +314,20 @@
     justify-content: space-between;
     font-size: 1.125rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--space-sm);
   }
   
   .cart-drawer__note {
     font-size: 0.875rem;
     color: var(--color-text-secondary);
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--space-lg);
   }
   
   .cart-drawer__actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: var(--space-md);
   }
   
   @media (max-width: 480px) {
@@ -337,4 +335,4 @@
       max-width: 100%;
     }
   }
-</style>
+{% endstylesheet %}

@@ -1,4 +1,59 @@
 /* Unified Animation System - Spring & Smooth Transitions */
+/* Consolidates: unified-animations.css, spring-animations.css */
+
+/* Base animation setup */
+[data-scroll-animate] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--transition-slow), transform var(--transition-slow);
+}
+
+[data-scroll-animate].in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Subtler text animations */
+[data-scroll-animate="text"] {
+  opacity: 0.8;
+  transform: translateY(10px);
+}
+
+[data-scroll-animate="text"].in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Parallax elements */
+[data-parallax] {
+  will-change: auto;
+  transition: transform 0.1s linear;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  [data-parallax] {
+    transform: none !important;
+  }
+  
+  [data-scroll-animate] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.reduced-motion * {
+  animation: none !important;
+  transition: none !important;
+}
 
 /* Button Animations */
 .btn,
@@ -211,31 +266,6 @@
   }
 }
 
-/* Entrance Animations for Hero Text */
-.hero-banner__text--visible .hero-banner__subtitle {
-  animation: slideUpSpring 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
-  animation-delay: 0.1s;
-  opacity: 0;
-}
-
-.hero-banner__text--visible .hero-banner__heading {
-  animation: slideUpSpring 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
-  animation-delay: 0.2s;
-  opacity: 0;
-}
-
-.hero-banner__text--visible .hero-banner__subheading {
-  animation: slideUpSpring 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
-  animation-delay: 0.3s;
-  opacity: 0;
-}
-
-.hero-banner__text--visible .hero-banner__buttons {
-  animation: slideUpSpring 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
-  animation-delay: 0.4s;
-  opacity: 0;
-}
-
 /* Smooth Link Transitions */
 a:not(.btn) {
   transition: color var(--transition-base), opacity var(--transition-base);
@@ -273,16 +303,8 @@ button:focus {
   transform: none !important;
 }
 
-/* Ensure All Interactive Elements Have Smooth Transitions */
-* {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 /* Prevent Animation on Page Load */
 .preload * {
   animation-duration: 0s !important;
   transition: none !important;
 }
-
-/* Remove preload class after page loads - handled in theme.liquid */

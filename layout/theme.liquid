@@ -22,7 +22,6 @@
     
     {% # Unified Animation System %}
     {{ 'unified-animations.css' | asset_url | stylesheet_tag }}
-    {{ 'spring-animations.css' | asset_url | stylesheet_tag }}
 
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}
@@ -38,54 +37,6 @@
     {% sections 'footer-group' %}
     
     {% # JavaScript files %}
-    <script>
-      // Pre-initialize Alpine data to ensure it's available when components load
-      window.Alpine = window.Alpine || { data: {}, store: {} };
-      
-      // Global helper functions
-      window.formatMoney = function(cents) {
-        return `$${(cents / 100).toFixed(2)}`;
-      };
-      
-      // Define cartDrawer component
-      window.Alpine.data = window.Alpine.data || {};
-      window.Alpine.data.cartDrawer = () => ({
-        updating: false,
-        
-        formatMoney(cents) {
-          return window.formatMoney(cents);
-        },
-        
-        async updateQuantity(key, quantity) {
-          if (quantity < 1) quantity = 1;
-          this.updating = true;
-          
-          try {
-            const response = await fetch('/cart/change.js', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ id: key, quantity: parseInt(quantity) })
-            });
-            
-            const cart = await response.json();
-            this.$store.cart.updateCart(cart);
-          } catch (error) {
-            console.error('Error updating quantity:', error);
-          } finally {
-            this.updating = false;
-          }
-        },
-        
-        async removeItem(key) {
-          await this.updateQuantity(key, 0);
-        },
-        
-        checkout() {
-          window.location.href = '/checkout';
-        }
-      });
-    </script>
-    
     {{ 'alpine-collapse.min.js' | asset_url | script_tag }}
     {{ 'alpine.min.js' | asset_url | script_tag }}
     {{ 'alpine-animations.js' | asset_url | script_tag }}
@@ -94,66 +45,104 @@
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     
     <script>
-      // Ensure Alpine starts with stores properly initialized
+      // Global helper functions
+      window.formatMoney = function(cents) {
+        return `$${(cents / 100).toFixed(2)}`;
+      };
+      
+      // Initialize Alpine.js stores and components
       document.addEventListener('alpine:init', () => {
-        // Initialize cart store if not already done
-        if (!Alpine.store('cart')) {
-          Alpine.store('cart', {
-            isOpen: false,
-            updating: false,
-            items: {{ cart.items | json }},
-            itemCount: {{ cart.item_count | default: 0 }},
-            total_price: {{ cart.total_price | default: 0 }},
-            
-            openDrawer() {
-              this.isOpen = true;
-              document.body.style.overflow = 'hidden';
-            },
-            
-            closeDrawer() {
-              this.isOpen = false;
-              document.body.style.overflow = '';
-            },
-            
-            open() {
-              this.openDrawer();
-            },
-            
-            close() {
-              this.closeDrawer();
-            },
-            
-            updateCart(cart) {
-              this.items = cart.items || [];
-              this.itemCount = cart.item_count || 0;
-              this.total_price = cart.total_price || 0;
-            }
-          });
-        }
+        // Cart store
+        Alpine.store('cart', {
+          isOpen: false,
+          updating: false,
+          items: {{ cart.items | json }},
+          itemCount: {{ cart.item_count | default: 0 }},
+          total_price: {{ cart.total_price | default: 0 }},
+          
+          openDrawer() {
+            this.isOpen = true;
+            document.body.style.overflow = 'hidden';
+          },
+          
+          closeDrawer() {
+            this.isOpen = false;
+            document.body.style.overflow = '';
+          },
+          
+          open() {
+            this.openDrawer();
+          },
+          
+          close() {
+            this.closeDrawer();
+          },
+          
+          updateCart(cart) {
+            this.items = cart.items || [];
+            this.itemCount = cart.item_count || 0;
+            this.total_price = cart.total_price || 0;
+          }
+        });
         
-        // Initialize quick view store if not already done
-        if (!Alpine.store('quickView')) {
-          Alpine.store('quickView', {
-            isOpen: false,
-            productHandle: null,
+        // Quick view store
+        Alpine.store('quickView', {
+          isOpen: false,
+          productHandle: null,
 
-            show(productHandle) {
-              this.productHandle = productHandle;
-              this.isOpen = true;
-              document.body.style.overflow = 'hidden';
-            },
+          show(productHandle) {
+            this.productHandle = productHandle;
+            this.isOpen = true;
+            document.body.style.overflow = 'hidden';
+          },
 
-            close() {
-              this.isOpen = false;
-              document.body.style.overflow = '';
-              setTimeout(() => {
-                this.productHandle = null;
-              }, 300); // Wait for close animation
+          close() {
+            this.isOpen = false;
+            document.body.style.overflow = '';
+            setTimeout(() => {
+              this.productHandle = null;
+            }, 300);
+          }
+        });
+
+        // Cart drawer component
+        Alpine.data('cartDrawer', () => ({
+          updating: false,
+          
+          formatMoney(cents) {
+            return window.formatMoney(cents);
+          },
+          
+          async updateQuantity(key, quantity) {
+            if (quantity < 1) quantity = 1;
+            this.updating = true;
+            
+            try {
+              const response = await fetch('/cart/change.js', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: key, quantity: parseInt(quantity) })
+              });
+              
+              const cart = await response.json();
+              this.$store.cart.updateCart(cart);
+            } catch (error) {
+              console.error('Error updating quantity:', error);
+            } finally {
+              this.updating = false;
             }
-          });
-        }
+          },
+          
+          async removeItem(key) {
+            await this.updateQuantity(key, 0);
+          },
+          
+          checkout() {
+            window.location.href = '/checkout';
+          }
+        }));
 
-        // Define quickViewModal component
+        // Quick view modal component
         Alpine.data('quickViewModal', () => ({
           product: null,
           selectedVariant: null,
@@ -177,7 +166,6 @@
               const response = await fetch(`/products/${productHandle}.js`);
               const productData = await response.json();
               
-              // Format the product data
               this.product = {
                 id: productData.id,
                 title: productData.title,
@@ -189,10 +177,11 @@
                 images: productData.images || [],
                 url: productData.url,
                 available: productData.available,
+                variants: productData.variants || [],
                 material: productData.tags?.find(tag => tag.includes('Material:'))?.replace('Material:', '').trim() || null
               };
               
-              this.selectedVariant = productData.variants?.[0];
+              this.selectedVariant = this.product.variants?.[0];
             } catch (error) {
               console.error('Error loading product:', error);
               this.$store.quickView.close();
@@ -218,7 +207,6 @@
                 })
               });
               
-              // Refresh cart
               window.location.reload();
             } catch (error) {
               console.error('Error adding to cart:', error);
@@ -226,14 +214,13 @@
           }
         }));
 
-        // Define productContent component for product pages
+        // Product content component
         Alpine.data('productContent', () => ({
           selectedVariant: null,
           quantity: 1,
           currentImageIndex: 0,
 
           init() {
-            // Initialize with first available variant
             if (window.productData && window.productData.variants.length > 0) {
               this.selectedVariant = window.productData.variants[0];
             }
@@ -260,20 +247,14 @@
                 })
               });
               
-              // Open cart drawer
               Alpine.store('cart').openDrawer();
             } catch (error) {
               console.error('Error adding to cart:', error);
             }
           }
-        }))
+        }));
       });
-      
-      // Start Alpine
-      Alpine.start();
     </script>
-    <script src="{{ 'animations.js' | asset_url }}" defer></script>
-    <script src="{{ 'spring-animations.js' | asset_url }}" defer></script>
     <script src="{{ 'custom-calculator.js' | asset_url }}" defer></script>
     
     <!-- Remove preload class after load to enable animations -->

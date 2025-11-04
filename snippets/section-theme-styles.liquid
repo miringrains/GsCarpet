@@ -1,0 +1,40 @@
+{% comment %}
+  Section Theme Styles
+  Outputs custom CSS variables for section styling when color_scheme is set to 'custom'
+  Expects section with settings:
+  - bg_color: Background color
+  - text_color: Text color
+  - card_bg_color: Card background color (optional)
+  - card_overlay_color: Card overlay color (optional)
+  - card_overlay_opacity: Card overlay opacity (optional)
+{% endcomment %}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    {% if section.settings.bg_color %}
+      --section-bg-color: {{ section.settings.bg_color }};
+    {% endif %}
+    
+    {% if section.settings.text_color %}
+      --section-text-color: {{ section.settings.text_color }};
+    {% endif %}
+    
+    {% if section.settings.card_bg_color %}
+      --section-card-bg-color: {{ section.settings.card_bg_color }};
+    {% endif %}
+    
+    {% if section.settings.card_overlay_color %}
+      --section-card-overlay-color: {{ section.settings.card_overlay_color }};
+    {% endif %}
+    
+    {% if section.settings.card_overlay_opacity %}
+      --section-card-overlay-opacity: {{ section.settings.card_overlay_opacity | divided_by: 100.0 }};
+    {% endif %}
+  }
+  
+  #shopify-section-{{ section.id }} {
+    background-color: var(--section-bg-color, var(--color-background));
+    color: var(--section-text-color, var(--color-text-primary));
+  }
+{% endstyle %}
+
